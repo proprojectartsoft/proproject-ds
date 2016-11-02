@@ -12,9 +12,9 @@ angular.module($APP.name).factory('SubcontractorsService', [
                         }
                 );
             },
-            list_defects: function (subcontractorId) {
+            list_defects: function (projectId, subcontractorId) {
                 return $http.get($APP.server + 'api/subcontractor/tasks', {
-                    params: {subcontractorId: subcontractorId, projectId: $rootScope.project.id}
+                    params: {projectId: projectId, subcontractorId: subcontractorId}
                 }).then(
                         function (payload) {
                             return payload.data;
@@ -31,6 +31,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                 );
             },
             create: function (dataIn) {
+                console.log(dataIn)
                 return $http({
                     method: 'POST',
                     url: $APP.server + '/api/subcontractor',
@@ -43,6 +44,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                 );
             },
             invite: function (dataIn) {
+                console.log(dataIn)
                 var email = 'a@a'
                 var projectId = 1
                 var aux = {
@@ -82,6 +84,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                 );
             },
             create_comment: function (dataIn) {
+                console.log(dataIn)
                 return $http({
                     method: 'POST',
                     url: $APP.server + '/api/subcontractor/comments',
@@ -93,7 +96,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
             },
             list_comments: function (subcontractorId) {
                 return $http.get($APP.server + '/api/subcontractor/comments', {
-                    params: {subcontractorId: subcontractorId, projectId: $rootScope.project.id}
+                    params: {subcontractorId: subcontractorId}
                 }).then(
                         function (payload) {
                             return payload.data;
@@ -101,6 +104,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                 );
             },
             signup: function (dataIn) {
+                console.log(dataIn)
                 return $http({
                     method: 'POST',
                     url: $APP.server + '/pub/signup/subcontractor',
