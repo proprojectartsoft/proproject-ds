@@ -22,7 +22,6 @@
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
     <plugin name="com.synconset.imagepicker" spec="1.0.4" source="pgb" />
     <gap:plugin name="org.apache.cordova.camera" source="npm" />
-    <gap:plugin name="cordova-plugin-contacts" source="npm" />
     
     <access origin="*"/>
     <allow-navigation href="*" />  
@@ -32,7 +31,7 @@
     <preference name="webviewbounce" value="false"/>
     <preference name="UIWebViewBounce" value="false"/>
     <preference name="DisallowOverscroll" value="true"/>
-    <preference name="android-minSdkVersion" value="16"/>
+    <preference name="android-minSdkVersion" value="10"/>
     <preference name="BackupWebStorage" value="none"/>
     <preference name="SplashScreen" value="screen"/>
     <preference name="orientation" value="portrait"/>
@@ -42,7 +41,7 @@
         <param name="ios-package" onload="true" value="CDVStatusBar"/>
     </feature>
     <platform name="android">
-        <preference name="android-minSdkVersion" value="14"/>
+        <preference name="android-minSdkVersion" value="10"/>
     </platform>
     
     <icon src="img/icons/android/drawable-ldpi/ic_launcher.png" gap:platform="android" gap:qualifier="ldpi" />
