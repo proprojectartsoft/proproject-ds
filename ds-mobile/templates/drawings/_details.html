@@ -1,0 +1,44 @@
+<ion-view hide-back-button="true" cache-view="false">
+  <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+    <button class="button ion-ios-arrow-left"></button>
+    <h1 class="title">{{settings.subHeader}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header ds-blackscroll ds-page ds-page-details">
+    <div class="title">{{local.data.title}}</div>
+    <ion-item class="ds-grh-cont active">
+      <div class="ds-grh">
+        <h3>Drawing details<i class="ion ion-ios-arrow-down"></i></h3>
+      </div>
+      <div class="ds-container">
+        <label>
+          <div class="ds-content">
+            <span class="ds-title">Name</span>
+            <span class="ds-description">A title describing your drawing</span>
+          </div>
+          <input type="text" ng-model="local.data.title" ng-disabled="disableedit">
+        </label>
+        <label>
+          <div class="ds-content">
+            <span class="ds-title">Code</span>
+            <span class="ds-description">Alpha-numeric identifier</span>
+          </div>
+          <input type="text" ng-model="local.data.code" ng-disabled="disableedit">
+        </label>
+        <label>
+          <div class="ds-content">
+            <span class="ds-title">Revisions</span>
+            <span class="ds-description">Current version</span>
+          </div>
+          <input type="text" ng-model="local.data.revision" ng-disabled="disableedit">
+        </label>
+        <label>
+          <div class="ds-content">
+            <span class="ds-title">Date</span>
+            <span class="ds-description">Date</span>
+          </div>
+          <div class="ds-date">{{local.data.drawing_date | date}}</div>
+        </label>
+      </div>
+    </ion-item>
+  </ion-content>
+</ion-view>

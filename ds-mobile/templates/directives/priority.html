@@ -1,0 +1,24 @@
+<div id="ds-priority">
+  <div class="ds-input" ng-click='toggle()' ng-class="{'ds-active':local.active}">
+    {{local.txtActive}}</div>
+    <div class="ds-container" ng-if="local.active">
+      <div class="ds-item" ng-click="changePriority({id: 0, name: 'None'})" ng-class="{'ds-underline':local.data.id === 0}">
+        None
+      </div>
+      <div class="ds-item" ng-click="changePriority({id: 1, name: 'Low'})" ng-class="{'ds-underline':local.data.id === 1}">
+        Low
+      </div>
+      <div class="ds-item" ng-click="changePriority({id: 2, name: 'Medium'})" ng-class="{'ds-underline':local.data.id === 2}">
+        Medium
+      </div>
+      <div class="ds-item" ng-click="changePriority({id: 3, name: 'High'})" ng-class="{'ds-underline':local.data.id === 3}">
+        High
+      </div>
+      <div class="ds-item" ng-click="changePriority({id: 4, name: 'Critical'})" ng-class="{'ds-underline':local.data.id === 4}">
+        Critical
+      </div>
+      <div class="ds-item" ng-click="changePriority({id: 5, name: 'Other'})" ng-class="{'ds-underline':local.data.id === 5}">
+        Other
+      </div>
+    </div>
+  </div>

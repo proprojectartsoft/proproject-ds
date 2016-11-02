@@ -1,0 +1,87 @@
+<ion-view id="account" hide-back-button="true" cache-view="false">
+    <ion-header-bar align-title="left" class="bar-subheader bar-calm">
+        <h1 class="title">My account -
+            {{currentUser.email}}</h1>
+    </ion-header-bar>
+    <ion-content class="has-header">
+        <ion-list>
+            <div ng-if="!editMode">
+                <ion-item>
+                    Company:
+                    <span class="account-item">{{currentUser.company}}</span>
+                </ion-item>
+                <ion-item>
+                    First Name:
+                    <span class="account-item">{{currentUser.first_name}}</span>
+                </ion-item>
+                <ion-item>
+                    Last Name:
+                    <span class="account-item">{{currentUser.last_name}}</span>
+                </ion-item>
+                <ion-item>
+                    Address:
+                    <span class="account-item">{{currentUser.address}}</span>
+                </ion-item>
+                <ion-item>
+                    Country:
+                    <span class="account-item">{{currentUser.country}}</span>
+                </ion-item>
+                <ion-item>
+                    Zip Code:
+                    <span class="account-item">{{currentUser.zip}}</span>
+                </ion-item>
+                <ion-item>
+                    Registration Number:
+                    <span class="account-item">{{currentUser.reg_number}}</span>
+                </ion-item>
+                <ion-item>
+                    Phone:
+                    <span class="account-item">{{currentUser.phone}}</span>
+                </ion-item>
+                <button class="button button-block" ng-click="editCurrentUser()">
+                    Edit
+                </button>
+            </div>
+            <div ng-if="editMode">
+                <ion-item>
+                    Company:
+                    <span class="account-item">{{currentUser.company}}</span>
+                </ion-item>
+                <ion-item>
+                    First Name:
+                    <input class="account-item" ng-model="currentUser.first_name">
+                </ion-item>
+                <ion-item>
+                    Last Name:
+                    <input class="account-item" ng-model="currentUser.last_name">
+                </ion-item>
+                <ion-item>
+                    Address:
+                    <input class="account-item" ng-model="currentUser.address">
+                </ion-item>
+                <ion-item>
+                    Country:
+                    <input class="account-item" ng-model="currentUser.country">
+                </ion-item>
+                <ion-item>
+                    Zip Code:
+                    <input class="account-item" ng-model="currentUser.zip">
+                </ion-item>
+                <ion-item>
+                    Registration Number:
+                    <input class="account-item" ng-model="currentUser.reg_number">
+                </ion-item>
+                <ion-item>
+                    Phone:
+                    <input class="account-item" ng-model="currentUser.phone">
+                </ion-item>
+                <button class="button button-block" ng-click="update()">
+                    Update
+                </button>
+                <button class="button button-block button-dark" ng-click="editCurrentUser()">
+                    Cancel
+                </button>
+            </div>
+        </ion-list>
+    </ion-content>
+</ion-view>

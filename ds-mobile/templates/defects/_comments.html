@@ -1,0 +1,24 @@
+<ion-view hide-back-button="true" cache-view="false">
+  <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+    <button class="button ion-ios-arrow-left"></button>
+    <h1 class="title">Defect&nbsp;-&nbsp;{{local.data.title}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header ds-blackscroll ds-page ds-tabslist ds-comments">
+    <ion-item ng-repeat="item in local.list track by $index" ng-click="goItem(item)">
+      <span class="ds-tile">{{getInitials(item.user_name)}}</span>
+      <h3>
+        <div>{{item.user_name}}<span class="ds-date">{{item.date|date}}</span></div>
+        <div>{{item.text}}</div>
+      </h3>
+    </ion-item>
+    <div ng-if="!local.list.length && local.loaded" class="ds-nodata">
+      <span>No comments</span>
+    </div>
+  </ion-content>
+  <div class="bar bar-footer ds-footer">
+    <input ng-model="local.comment" placeholder="Type comment here" ng-keydown="addComentAtEnter($event)">
+    <div class="ds-actions" ng-click="addComment()">
+      <img src="img/use/send.png">
+    </div>
+  </div>
+</ion-view>

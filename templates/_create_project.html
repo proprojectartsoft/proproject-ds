@@ -1,0 +1,29 @@
+<div class="row"> 
+    <div class="pp-form clearfix">
+        <label>
+            Project number
+            <input type="number" class="form-control ng-valid ng-not-empty ng-dirty ng-valid-number ng-touched" string-to-number="" ng-model="dataPreview.project_number">
+        </label>
+        <label>
+            Name
+            <input type="text" class="form-control ng-pristine ng-valid ng-empty ng-touched" ng-model="dataPreview.name">
+        </label>
+        <label>
+            Address line 1
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="dataPreview.addr_firstline">
+        </label>
+        <label>
+            Address line 2
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="dataPreview.addr_secondline">
+        </label>
+        <label>
+            Address line 3
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="dataPreview.addr_thirdline">
+        </label>
+        <label>
+            Address line 4
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" ng-model="dataPreview.addr_fourthline">
+        </label>
+    </div>
+</div>
+<button class="de-btn" ng-click="create()">Add</button>

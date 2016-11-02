@@ -1,0 +1,22 @@
+<div class="de-container">
+    <div class="de-item" ui-sref="app.defects" ng-class="{'de-active':state === 'defects'}">
+        <img src="img/ic/mainmenu/defects.png" ng-if="state !== 'defects'">            
+        <img src="img/ic/mainmenu/defects_active.png" ng-if="state === 'defects'">     
+        <span>Defects</span>    
+    </div>
+    <div class="de-item " ui-sref="app.drawings" ng-class="{'de-active':state === 'drawings'}">
+        <img src="img/ic/mainmenu/drawings.png" ng-if="state !== 'drawings'">            
+        <img src="img/ic/mainmenu/drawings_active.png" ng-if="state === 'drawings'">   
+        <span>Drawings</span>
+    </div>
+    <div class="de-item" ui-sref="app.contractors" ng-class="{'de-active':state === 'subcontractors'}" ng-if="current_user.roleDs.title!== 'subcontractor'">
+        <img src="img/ic/mainmenu/subcontractors.png" ng-if="state !== 'subcontractors'">            
+        <img src="img/ic/mainmenu/subcontractors_active.png" ng-if="state === 'subcontractors'">            
+        <span>Subcontractors</span>            
+    </div>        
+    <div class="de-item" ui-sref="app.punchlist" ng-class="{'de-active':state === 'punchlist'}">
+        <img src="img/ic/mainmenu/punchlist.png" ng-if="state !== 'punchlist'">            
+        <img src="img/ic/mainmenu/punchlist_active.png" ng-if="state === 'punchlist'">            
+        <span>Punch Lists</span>    
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="de-photos clearfix">
+    <div class="row" >
+        <div class="de-item" ng-repeat="draw in drawings track by $index"ng-click="selectThis(draw)">
+            <div>
+                <i >
+                    <img ng-if="!draw.selected" src="img/ic/action/checkbox_unchecked.png">
+                    <img ng-if="draw.selected" src="img/ic/action/checkbox.png">
+                </i>
+                <img src="img/ic/action/PDF.png">
+            </div>
+            <hr/>
+            <div class="de-label">
+                <span>Drawing name</span>
+            </div>
+        </div>
+    </div>
+</div>

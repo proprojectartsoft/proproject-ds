@@ -1,0 +1,148 @@
+<div class="de-rh" ng-class="{'de-active':filter.active, 'de-preview':filter.preview && !filter.edit}">
+    <div class="de-header" ng-click="toggle(false)">
+        <div class="de-back">        
+            <img src="img/ic/action/preview_close.png">
+        </div>
+        <div class="de-title">
+            <span ng-if="filter.preview && filter.edit">Add new task</span>
+            <span ng-if="filter.preview && !filter.edit">Preview</span>
+            <span ng-if="!filter.preview && filter.edit">Edit</span>
+            <span class="pull-right" ng-if="filter.preview && !filter.edit">                
+                <img src="img/ic/action/edit_white.png"  ng-if="current_user.roleDs.title !== 'subcontractor'" ng-click="toggleEdit();
+                    $event.stopPropagation();">
+                <img src="img/ic/action/delete_white.png"  ng-if="current_user.roleDs.title !== 'subcontractor'" ng-click="deleteDefect(dial.id)">
+            </span>
+        </div>
+    </div>
+    <div class="de-container">        
+        <div class="de-content">
+            <div class="de-form">
+                <div>
+                    <span class="de-required">
+                        Give Title
+                    </span>
+                    <input ng-model="dataDefect.title" ng-disabled="filter.preview && !filter.edit">
+                </div>
+                <div class="de-actions">
+                    <select ng-options="option as option.name for option in filter.priority track by option.id" ng-model="dataDefect.priority_obj" ng-disabled="filter.preview && !filter.edit">                       
+                        <option value="" disabled selected hidden>Priority</option>
+                    </select>                    
+                    <select ng-options="option as option.name for option in filter.severity track by option.id" ng-model="dataDefect.severity_obj" ng-disabled="filter.preview && !filter.edit">                       
+                        <option value="" disabled selected hidden>Severity</option>
+                    </select>
+                    <div class="de-date" >
+                        <span ng-click="open1()" ng-if="!dataDefect.date_obj">Due Date</span>
+                        <input style="display:none" type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="dataDefect.date_obj" is-open="popup1.opened" close-text="Close" ng-disabled="filter.preview && !filter.edit"/>
+                        <span ng-click="open1()" ng-if="dataDefect.date_obj && dataDefect.date_obj.getTime() !== 0">{{dataDefect.date_obj| date}}</span>
+                        <span ng-click="open1()" ng-if="dataDefect.date_obj && dataDefect.date_obj.getTime() === 0">None</span>
+                    </div>
+                    <assignee item="dataDefect" table="false" dsb="filter.edit || (!filter.edit && !filter.preview)"></assignee>
+                    <status item="dataDefect" table="false" dsb="filter.edit || (!filter.edit && !filter.preview)"></status>
+                </div>
+                <div class="clearfix" style="margin-bottom:0px">
+                    <span>
+                        <img src="img/ic/action/location.png">
+                        Location
+                    </span>
+                    <div class="de-subdrawing" style="height: 150px;" >
+                        <input placeholder="Type location" ng-model="dataDefect.location" ng-disabled="filter.preview && !filter.edit">
+                        <span ng-if="!isDrawing" >Select a drawing</span>
+                        <div id="canvasDiv" style="margin-left:30%;"></div>
+                    </div>
+                    <button class="de-btn de-btn-primary" ng-click="selectDrawing()" ng-disabled="filter.preview && !filter.edit"><img src="img/ic/action/drawing_upload.png"></button>
+                </div>
+                <div>
+                    <span>
+                        <img src="img/ic/action/description.png">
+                        Description
+                    </span>
+                    <input ng-model="dataDefect.description" ng-disabled="filter.preview && !filter.edit">
+                </div>
+                <div class="clearfix" style="margin-bottom:0px">
+                    <span>
+                        <img src="img/ic/action/attachements.png">
+                        Attach photos
+                    </span>
+                    <div>
+                        <div class="de-subdrawing" ng-class="{'de-smoothbrd':files.length || photos_preview.length}">
+                            <span ng-if="!filter.uploadphotos.length && !photos_preview.length">Upload photos</span>
+                            <div class="gallery-box" ng-repeat="f in filter.uploadphotos" style="font:smaller">
+                                <div class="thumbnail" style=" margin-bottom: 5px;" ng-click="launchComplexModal(f)">
+                                    <img data-ng-src ="data:image/png;base64,{{f.base_64_string}}">
+                                </div>
+                                <div class="btn-group" ng-if="filter.edit" style="float:right">
+                                    <a class="btn btn-xs btn-danger" ng-click="deleteFile('file', f, filter.uploadphotos)">
+                                        Remove
+                                    </a>
+                                </div>
+                            </div>
+                            <div ng-repeat="file in photos_preview | orderBy:'-id'" class="gallery-box">
+                                <div class="thumbnail"  style=" margin-bottom: 5px;" ng-click="launchComplexModal(file)"> 
+                                    <img  ng-src="{{file.url}}"/>
+                                </div>
+                                <div class="btn-group" style="float:right" ng-if="edit">
+                                    <a class="btn btn-xs btn-danger" ng-click="deleteFile('photos',file)" >
+                                        Remove
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <button ngf-select="uploadFiles($files, $invalidFiles)" multiple
+                                accept="image/*" ngf-max-size="5MB" class="de-btn de-btn-primary" ng-disabled="filter.preview && !filter.edit" >
+                            <img src="img/ic/action/drawing_upload.png">
+                        </button>
+                    </div>                    
+                </div>
+                <div>
+                    <span>
+                        <img src="img/ic/action/task_add_related.png">
+                        Add related tasks
+                        <relatedtasks item="dataDefect" disabled="filter.edit"></relatedtasks>
+                    </span>                    
+                </div>   
+                <div>
+                    <span>
+                        <img src="img/ic/action/cost.png">
+                        Estimated costs
+                    </span>
+                    <div class="input-group">
+                        <input type="number" class="form-control" ng-model="dataDefect.cost" ng-disabled="filter.preview && !filter.edit">
+                        <span class="input-group-btn">
+                            <button class="btn de-btn de-btn-primary" id="currencyButton" >{{dataDefect.currency_name}}</button>
+                        </span>
+                    </div>                    
+                </div>
+                <hr/>
+                <div class="de-comments" >
+                    <span>
+                        <img src="img/ic/action/comments.png" >
+                        Comments
+                    </span>
+                    <div class="de-list" ng-if="filter.preview">
+                        <div class="de-item" ng-repeat="comm in filter.comments">
+                            <h3>{{comm.user_name}}<i>&nbsp;added a comment&nbsp;-&nbsp;{{comm.date| date:'medium'}}</i></h3>
+                            <span>{{comm.text}}</span>                            
+                        </div>
+
+                    </div>
+
+                    <div class="input-group" ng-if="(!(filter.preview && !filter.edit) || (current_user.roleDs.id == 2))">
+                        <input id="commentinput" type="text" class="form-control" ng-model="dataDefect.comment" ng-keydown="submitCommentOnEnter($event)">
+                        <span class="input-group-btn">
+                            <span class="btn de-btn de-btn-primary" ng-click="submitComment()">Post</span>
+                        </span>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="de-footer" ng-if="!(filter.preview && !filter.edit)">
+        <div class="de-container">
+            <div class="de-actions">
+                <button class="de-btn de-red" ng-click="toggle()">Cancel</button>
+                <button class="de-btn de-green" ng-click="create()">Save</button>
+            </div>        
+        </div>
+    </div>
+
+</div>

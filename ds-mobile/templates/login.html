@@ -1,0 +1,35 @@
+<ion-view title="Login" id="login" cache-view="false">
+  <ion-content>
+    <div class="ds-container">
+      <div class="ds-content">
+        <h1>Login</h1>
+
+        <form class="ds-form" role="form" name="loginForm" novalidate="">
+          <div class="input-container">
+            <input type="email" ng-model="user.username" required="required" readonly onfocus="this.removeAttribute('readonly');">
+            <label class="label-bar">Username</label>
+          </div>
+          <div class="input-container">
+            <input type="password" ng-model="user.password" required="required" readonly onfocus="this.removeAttribute('readonly');">
+            <label class="label-bar">Password</label>
+          </div>
+        </form>
+        <div class="clearfix">
+          <button class="button button-calm clearfix" ng-click="login()">
+            Login
+          </button>
+        </div>
+        <label class="ds-checkbox clearfix">
+          <span>Remember me</span>
+          <input  type='checkbox'  class="blue-ck" ondrop="return false;" ng-model="user.remember" id="dsremember"/><label for="dsremember"></label>
+        </label>
+      </div>
+    </div>
+  </ion-content>
+  <div class="bar bar-footer ds-footer">
+    <span>Not a member? Create account</span>
+    <div class="ds-actions">
+      <span>Forgot password?</span>
+    </div>
+  </div>
+</ion-view>

@@ -1,0 +1,90 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+Created on : Sep 10, 2016, 5:33:58 PM
+Author     : buchi
+*/
+.ds-menu {
+  font-family: 'FreightLight';
+  background-color: #2f4759; }
+  .ds-menu ion-item {
+    background-color: #2f4759;
+    color: #fff;
+    position: relative;
+    border-color: #171d21; }
+    .ds-menu ion-item .user-circle-img {
+      padding-bottom: 10px; }
+      .ds-menu ion-item .user-circle-img img {
+        width: 110px;
+        margin: 0 auto;
+        display: block;
+        border-radius: 100%;
+        border: 5px solid #35bdee; }
+    .ds-menu ion-item .ds-link {
+      color: #35bdee;
+      font-size: 15px !important;
+      font-weight: 100; }
+    .ds-menu ion-item .ds-txt {
+      font-size: 15px !important;
+      font-weight: 100; }
+    .ds-menu ion-item .item-toggle {
+      display: inline-block;
+      padding: 0px;
+      background-color: transparent;
+      border: none;
+      color: #fff;
+      font-size: 14px; }
+      .ds-menu ion-item .item-toggle > div {
+        display: inline-block;
+        padding-right: 5px; }
+      .ds-menu ion-item .item-toggle .toggle {
+        position: relative;
+        top: 0px;
+        right: 0px; }
+        .ds-menu ion-item .item-toggle .toggle .track {
+          width: 30px;
+          height: 10px;
+          border-color: #fff !important;
+          background-color: #fff !important; }
+        .ds-menu ion-item .item-toggle .toggle .handle {
+          top: 8px;
+          left: 4px;
+          width: 15px;
+          height: 15px;
+          border-color: #11c1f3;
+          background-color: #11c1f3; }
+      .ds-menu ion-item .item-toggle .toggle input:checked + .track .handle {
+        -webkit-transform: translate3d(16px, 0, 0);
+        transform: translate3d(16px, 0, 0); }
+    .ds-menu ion-item:first-child {
+      text-align: center;
+      padding-bottom: 10px;
+      font-size: 15px; }
+    .ds-menu ion-item.ds-option {
+      position: relative;
+      padding: 10px 15px; }
+      .ds-menu ion-item.ds-option img {
+        position: absolute;
+        left: 15px;
+        height: 24px; }
+      .ds-menu ion-item.ds-option span {
+        color: #fff;
+        padding-left: 40px;
+        font-weight: 400; }
+    .ds-menu ion-item.ds-option-link {
+      position: absolute;
+      width: 100%;
+      bottom: 0px;
+      right: 1px; }
+      .ds-menu ion-item.ds-option-link img {
+        position: absolute;
+        left: 15px;
+        height: 24px; }
+      .ds-menu ion-item.ds-option-link span {
+        color: #2f4759;
+        padding-left: 45px; }
+
+/*# sourceMappingURL=menu.css.map */

@@ -1,0 +1,28 @@
+<ion-view hide-back-button="true" cache-view="false">
+  <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+    <button class="button ion-ios-arrow-left"></button>
+    <h1 class="title">{{settings.subHeader}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header ds-blackscroll ds-page ds-tabslist ds-attachments">
+    <ion-item ng-repeat="item in local.list track by $index" ng-click="go(item)">
+      <span class="ds-img">
+        <img ng-src="{{item.url}}">
+      </span>
+      <h3>
+        <div>{{item.title}}</div>
+        <div class="ds-tags">Tags</div>
+        <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu tortor, efficitur molestie tellus nec, luctus bibendum ipsum. Maecenas id nunc dapibus, accumsan massa vitae, auctor lorem. Sed malesuada quam id luctus condimentum. Proin a porttitor ipsum. Nulla at rhoncus ipsum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam eleifend imperdiet dapibus. Quisque pharetra lacus non convallis euismod.</div>
+      </h3>
+    </ion-item>
+    <div ng-if="!local.list.length && local.loaded" class="ds-nodata">
+      <span>No attachments</span>
+    </div>
+  </ion-content>
+  <div class="bar bar-footer ds-footer">
+    <span>Add Pictures</span>
+    <div class="ds-actions">
+      <img src="img/use/takePicture.png">
+      <img src="img/use/cameraRoll.png">
+    </div>
+  </div>
+</ion-view>

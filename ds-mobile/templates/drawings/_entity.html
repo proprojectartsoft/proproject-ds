@@ -1,0 +1,30 @@
+<ion-view hide-back-button="true" cache-view="false">
+  <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+    <button class="button ion-ios-arrow-left"></button>
+    <h1 class="title">{{settings.subHeader}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header ds-blackscroll ds-page">
+    <div class="title">{{local.data.title}}<img src="img/use/edit.png" ng-click="toggleEdit()"  ng-if="disableedit"/><i class="ion-arrow-expand" ng-click="getFullscreen()"></i></div>
+    <ion-item class="ds-pdf" >
+      <div style="position:relative" id="canvasCointainer" class="ds-container">
+        <div ng-repeat="marker in markers">
+          <img src="img/completed.png" ng-if="marker.status == 'Completed'"  ng-click="go('defects',marker.defect_id)" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px" >
+          <img src="img/incomplete.png" ng-if="marker.status == 'Incomplete'" ng-click="go('defects',marker.defect_id)" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px" >
+          <img src="img/contested.png" ng-if="marker.status == 'Contested'" ng-click="go('defects',marker.defect_id)" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px" >
+          <img src="img/delayed.png" ng-if="marker.status == 'Delayed'" ng-click="go('defects',marker.defect_id)" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px" >
+          <img src="img/closed_out.png" ng-if="marker.status == 'Closed Out'" ng-click="go('defects',marker.defect_id)" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px" >
+          <img src="img/partially_completed.png" ng-if="marker.status == 'Partially Completed'" ng-click="go('defects',marker.defect_id)" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px">
+        </div>
+        <canvas  id="drawingPreviewCanvas"></canvas>
+      </div>
+    </ion-item>
+    <ion-item class="ds-grh" ng-click="go('drawingdetails', settings.entityId)">
+      <h3>Drawing details<i class="ion ion-ios-arrow-down"></i></h3>
+    </ion-item>
+    <ion-item class="ds-grh" ng-click="go('drawingrelated', settings.entityId)" >
+      <h3>Tasks<i class="ion ion-ios-folder-outline"></i></h3>
+    </ion-item>
+    <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="saveEdit()">Save changes</div>
+    <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="cancelEdit()">Cancel</div>
+  </ion-content>
+</ion-view>

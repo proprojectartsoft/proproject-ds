@@ -1,0 +1,67 @@
+#ds-status {
+  position: relative; }
+  #ds-status .ds-input {
+    padding-left: 8px !important; }
+    #ds-status .ds-input.ds-active {
+      background-color: #c3c3c3;
+      padding-left: 12px !important;
+      color: #ffffff; }
+  #ds-status .ds-container {
+    position: absolute;
+    width: 50%;
+    background-color: red;
+    z-index: 99;
+    top: 40px;
+    right: 0; }
+    #ds-status .ds-container .ds-item {
+      padding: 7px 5px;
+      display: block;
+      background-color: #fff !important;
+      min-height: 40px;
+      border-top: 1px solid #ECECEC;
+      font-weight: 100;
+      color: #5a677a; }
+
+#ds-severity {
+  position: relative; }
+  #ds-severity .ds-input.ds-active {
+    background-color: #c3c3c3;
+    color: #ffffff; }
+  #ds-severity .ds-container {
+    position: absolute;
+    width: 50%;
+    background-color: red;
+    z-index: 99;
+    top: 40px;
+    right: 0; }
+    #ds-severity .ds-container .ds-item {
+      padding: 7px 5px;
+      display: block;
+      background-color: #fff !important;
+      min-height: 40px;
+      border-top: 1px solid #ECECEC;
+      font-weight: 100;
+      color: #5a677a; }
+
+#ds-priority {
+  position: relative; }
+  #ds-priority .ds-input.ds-active {
+    background-color: #c3c3c3;
+    color: #ffffff; }
+  #ds-priority .ds-container {
+    position: absolute;
+    width: 50%;
+    background-color: red;
+    z-index: 99;
+    top: 40px;
+    right: 0; }
+    #ds-priority .ds-container .ds-item {
+      padding: 7px 5px;
+      display: block;
+      background-color: #fff !important;
+      min-height: 40px;
+      border-top: 1px solid #ECECEC;
+      font-weight: 100;
+      color: #5a677a; }
+
+/*# sourceMappingURL=directives.css.map */

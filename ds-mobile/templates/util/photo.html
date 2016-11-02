@@ -1,0 +1,23 @@
+<ion-view hide-back-button="true" cache-view="false">
+  <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+    <button class="button ion-ios-arrow-left"></button>
+    <h1 class="title">{{settings.tabActive}}-{{settings.subHeader}}</h1>
+  </ion-header-bar>
+  <ion-content class="has-header ds-blackscroll ds-page ds-photo">
+    <div class="ds-img">
+      <img ng-src="{{local.data.url_original}}">
+    </div>
+    <label class="ds-title">
+      <span>Title</span>
+      <input ng-model="local.data.title">
+    </label>
+    <label>
+      <span>Tags</span>
+      <input ng-model="local.data.tags">
+    </label>
+    <label class="ds-description">
+      <span>Description</span>
+      <textarea ng-model="local.data.description"></textarea>
+    </label>
+  </ion-content>
+</ion-view>

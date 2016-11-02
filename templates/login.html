@@ -1,0 +1,46 @@
+
+<div class="login">    
+    <div class="de-topbar">
+        <div class="de-image">
+            <img src="img/proprojectpill.png">
+        </div>
+    </div>
+    <div class="de-container">
+        <div class="de-content" ng-if="filter.state === 'login'">
+            <h1>login</h1>
+            <form autocomplete="off" formnovalidate spellcheck="false" name="loginForm">
+                <label>
+                    <input type="email" placeholder="Username" ng-model="user.username" readonly onfocus="this.removeAttribute('readonly');" ng-keydown="keydown($event, 'email')">
+                </label>
+                <label>
+                    <input id="loginpassword" type="password" placeholder="Password" ng-model="user.password" readonly onfocus="this.removeAttribute('readonly');" ng-keydown="keydown($event, 'password')">
+                </label>
+            </form>
+
+            <div class="de-actions">
+                <label>
+                    <input type="checkbox" ng-model="user.rememberMe">
+                    <span><i class="ion ion-checkmark"></i></span>
+                    <i>Remember me</i>
+                </label>
+                <a ng-click="filter.state = 'forgot'">Forgot password?</a>
+            </div>
+            <button ng-click="login()">Login</button> 
+            <div class="de-footer">
+                Not a member? <span>Create Account</span>
+            </div>
+        </div> 
+        <div class="de-content" ng-if="filter.state === 'forgot'">
+            <h1> forgot your password?</h1>
+            <form autocomplete="off" formnovalidate spellcheck="false" name="forgotForm">
+                <label>
+                    <input type="email" placeholder="Username" ng-model="filter.username" readonly onfocus="this.removeAttribute('readonly');">
+                </label>
+            </form>
+
+            <button ng-click="forgot()">Send renewal request</button> 
+            <button ng-click="filter.state = 'login'" style="margin-top:5px">Cancel</button> 
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="de-header" ng-if="project.name.length < 30" style="height: 139px">
+    <div class="de-pagination">
+        <span>Home</span><i class="ion-ios-arrow-right"></i><span>{{project.name}}</span><i class="ion-ios-arrow-right"></i><span>Drawings</span>
+    </div>
+    
+    <mainmenu state="'drawings'"></mainmenu>
+</div>
+<div class="de-header" ng-if="project.name.length >= 30" style="height: 160px">
+    <div class="de-pagination">
+        <span>Home</span><i class="ion-ios-arrow-right"></i><span>{{project.name}}</span><i class="ion-ios-arrow-right"></i><span>Drawings</span>
+    </div>
+    
+    <mainmenu state="'drawings'"></mainmenu>
+</div>
+<div class="de-main de-drawings">
+    <div class="de-actions clearfix" ng-if="current_user.roleDs.title!== 'subcontractor'">
+        <div class="pull-right">
+            <button class="de-btn" ng-click="addDrawing()"><i class="ion-android-add"></i>Add new drawing</button>
+            <button class="de-btn" ng-click="deleteDrawings()"><img src="img/ic/action/delete_white.png"></button>
+        </div>
+    </div>
+    <div class='de-table'>
+        <table ng-table="tableParams" show-filter="false">
+            <thead>
+            <tr>
+                <th width="100">Actions</th>
+                <th ng-click="changeSorting('title')">Name<img class="ml5" ng-src="{{getIcon('title')}}"></th>
+                <th ng-click="changeSorting('code')">Code<img class="ml5" ng-src="{{getIcon('code')}}"></th>
+                <th ng-click="changeSorting('revision')">Revisions<img class="ml5" ng-src="{{getIcon('revision')}}"></th>
+                <th ng-click="changeSorting('drawing_date')">Date<img class="ml5" ng-src="{{getIcon('drawing_date')}}"></th>
+                <th>Tasks</th>
+                <th>
+                    <label style="padding-left: 0px;">
+                        <input type='checkbox' class="grey-ck" ondrop="return false;" ng-model="checkAll"
+                               id="drawingck" ng-change="setCheck()"/>
+                        <label for="drawingck"
+                               style="margin-top:5px;vertical-align: middle; margin-right: 3px;"></label>
+                    </label>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="drawing in drawings | orderBy:sort.active:sort.descending | filter: global.search">
+                <td>
+                    <img src="img/ic/action/PDF.png" ui-sref="app.location({ id: drawing.id })">
+                    <img src="img/ic/action/edit.png" ng-click="editDrawing(drawing)">
+                    <img src="img/ic/action/delete.png" ng-click="deleteDrawing(drawing)">
+                </td>
+                <td ng-if="drawing.title">{{drawing.title}}</td>
+                <td ng-if="!drawing.title"> - </td>
+                <td ng-if="drawing.code">{{drawing.code}}</td>
+                <td ng-if="!drawing.code"> - </td>
+                <td ng-if="drawing.revision">{{drawing.revision}}</td>
+                <td ng-if="!drawing.revision"> - </td>
+                <td ng-if="drawing.drawing_date">{{drawing.drawing_date| date}}</td>
+                <td ng-if="!drawing.drawing_date"> - </td>
+                <td>
+                    <span class="de-square de-blue">{{drawing.incomplete_defects}}</span>
+                    <span class="de-square de-red">{{drawing.contested_defects}}</span>
+                    <span class="de-square de-grey">{{drawing.delayed_defects}}</span>
+                    <span class="de-square de-orange">{{drawing.partially_completed_defects}}</span>
+                    <span class="de-square de-purple">{{drawing.completed_defects}}</span>
+                    <span class="de-square de-green">{{drawing.closed_out_defects}}</span>
+                </td>
+                <td>
+                    <label>
+                        <input type='checkbox' class="grey-ck" ondrop="return false" 
+                               id='{{drawing.id}}' ng-model="drawing.checkit" ng-change='gotChanged(drawing.id)'/>
+                        <label for='{{drawing.id}}' 
+                               style="margin-top:5px;vertical-align: middle; margin-right: 3px;"></label>
+                    </label>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

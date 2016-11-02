@@ -1,0 +1,24 @@
+<div id="ds-severity">
+  <div class="ds-input" ng-click='toggle()' ng-class="{'ds-active':local.active}">
+    {{local.txtActive}}</div>
+    <div class="ds-container" ng-if="local.active">
+      <div class="ds-item" ng-click="changeSeverity({id: 0, name: 'None'})" ng-class="{'ds-underline':local.data.id === 0}">
+        None
+      </div>
+      <div class="ds-item" ng-click="changeSeverity({id: 1, name: 'Information'})" ng-class="{'ds-underline':local.data.id === 1}">
+        Information
+      </div>
+      <div class="ds-item" ng-click="changeSeverity({id: 2, name: 'Minor'})" ng-class="{'ds-underline':local.data.id === 2}">
+        Minor
+      </div>
+      <div class="ds-item" ng-click="changeSeverity({id: 3, name: 'Normal'})" ng-class="{'ds-underline':local.data.id === 3}">
+        Normal
+      </div>
+      <div class="ds-item" ng-click="changeSeverity({id: 4, name: 'Major'})" ng-class="{'ds-underline':local.data.id === 4}">
+        Major
+      </div>
+      <div class="ds-item" ng-click="changeSeverity({id: 5, name: 'Other'})" ng-class="{'ds-underline':local.data.id === 5}">
+        Other
+      </div>
+    </div>
+  </div>

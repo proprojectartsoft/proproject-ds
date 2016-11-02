@@ -1,0 +1,12 @@
+<ion-view id="projects" hide-back-button="true" cache-view="false">
+    <ion-content class="has-header">
+        <ion-list>
+            <ion-item ng-repeat="project in projects track by $index" ng-click="go(project)">
+                {{project.project_number}}&nbsp;-&nbsp;{{project.name}}
+            </ion-item>
+        </ion-list>
+    </ion-content>
+    <span class="ds-actionbtn" ng-click="showPopup()">
+        <i class="ion-ios-plus-empty"></i>
+    </span>
+</ion-view>

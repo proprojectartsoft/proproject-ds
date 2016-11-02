@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <title>Pro Project</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+  <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+  <link href="css/menu.css" rel="stylesheet">
+  <link href="css/page.css" rel="stylesheet">
+  <link href="css/directives.css" rel="stylesheet">
+
+  <!-- ionic/angularjs js -->
+  <script src="lib/ionic/js/ionic.bundle.js"></script>
+  <script src="lib/jquery/jquery-2.1.4.js"></script>
+  <script src="lib/sketch/sketch.js"></script>
+  <script src="lib/angular-moment/angular-moment.min.js"></script>
+  <script src="lib/angular-cache/angular-cache.min.js"></script>
+  <script src="lib/pdf.js"></script>
+  <script src="lib/pdf.worker.js"></script>
+
+
+  <!-- your app's js -->
+  <script src="js/app.js"></script>
+  <!--controllers-->
+  <script src="js/controllers/AppCtrl.js"></script>
+  <script src="js/controllers/util/TabCtrl.js"></script>
+  <script src="js/controllers/util/NavCtrl.js"></script>
+  <script src="js/controllers/util/LoginCtrl.js"></script>
+  <script src="js/controllers/util/FullscreenCtrl.js"></script>
+  <script src="js/controllers/util/PhotoCtrl.js"></script>
+  <script src="js/controllers/projects/ProjectsCtrl.js"></script>
+  <script src="js/controllers/drawings/DrawingsCtrl.js"></script>
+  <script src="js/controllers/drawings/_DrawingDetailsCtrl.js"></script>
+  <script src="js/controllers/drawings/_DrawingRelatedCtrl.js"></script>
+  <script src="js/controllers/defects/DefectsCtrl.js"></script>
+  <script src="js/controllers/defects/_DefectDetailsCtrl.js"></script>
+  <script src="js/controllers/defects/_DefectRelatedCtrl.js"></script>
+  <script src="js/controllers/defects/_DefectAttachmentsCtrl.js"></script>
+  <script src="js/controllers/defects/_DefectCommentsCtrl.js"></script>
+  <script src="js/controllers/subcontractors/SubcontractorsCtrl.js"></script>
+  <script src="js/controllers/subcontractors/_SubcontractorsRelatedCtrl.js"></script>
+
+  <!--directives-->
+  <script src="js/directives/status.js"></script>
+  <script src="js/directives/severity.js"></script>
+  <script src="js/directives/priority.js"></script>
+
+  <!--services-->
+  <script src="js/services/AuthService.js"></script>
+  <script src="js/services/ProjectService.js"></script>
+  <script src="js/services/DrawingsService.js"></script>
+  <script src="js/services/DefectsService.js"></script>
+  <script src="js/services/SubcontractorsService.js"></script>
+  <script src="js/services/SettingsService.js"></script>
+  <script src="js/services/ConvertersService.js"></script>
+
+  <!-- cordova script (this will be a 404 during development) -->
+  <script src="lib/ng-cordova.min.js"></script>
+  <!--<script src="cordova.js"></script>-->
+</head>
+<body ng-app="proproject" ng-controller="AppCtrl">
+  <ion-nav-view diable-scroll ></ion-nav-view>
+</body>
+</html>

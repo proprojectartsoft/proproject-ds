@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<widget id="io.proproject.app" 
+        version="2.0.35" 
+        xmlns="http://www.w3.org/ns/widgets" 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:cdv="http://cordova.apache.org/ns/1.0" 
+        xmlns:gap="http://phonegap.com/ns/1.0">
+   
+    <name>proproject preprod</name>
+  
+    <description></description>
+    
+    <author email="anthony.hanna@proproject.io" href="http://proproject.io/"></author>
+  
+    <gap:config-file platform="android" parent="/manifest/application" >
+        <application android:debuggable="true" />
+    </gap:config-file>
+  	
+    <content src="index.html"/>
+    
+    <gap:config-file platform="android" parent="/manifest">
+        <application android:theme="@android:style/Theme.NoTitleBar"></application>
+    </gap:config-file>
+    
+    <gap:plugin name="org.apache.cordova.splashscreen" />
+    <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
+    <plugin name="com.synconset.imagepicker" spec="1.0.4" source="pgb" />
+    <gap:plugin name="org.apache.cordova.camera" source="npm" />
+    <gap:plugin name="cordova-plugin-contacts" source="npm" />
+    
+    <access origin="*"/>
+    <allow-navigation href="*" />  
+  
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="4000"/>
+    <preference name="webviewbounce" value="false"/>
+    <preference name="UIWebViewBounce" value="false"/>
+    <preference name="DisallowOverscroll" value="true"/>
+    <preference name="android-minSdkVersion" value="16"/>
+    <preference name="BackupWebStorage" value="none"/>
+    <preference name="SplashScreen" value="screen"/>
+    <preference name="orientation" value="portrait"/>
+    <preference name="fullscreen" value="false" />
+  
+    <feature name="StatusBar">
+        <param name="ios-package" onload="true" value="CDVStatusBar"/>
+    </feature>
+    <platform name="android">
+        <preference name="android-minSdkVersion" value="14"/>
+    </platform>
+    
+    <icon src="img/icons/android/drawable-ldpi/ic_launcher.png" gap:platform="android" gap:qualifier="ldpi" />
+    <icon src="img/icons/android/drawable-madpi/ic_launcher.png" gap:platform="android" gap:qualifier="mdpi" />
+    <icon src="img/icons/android/drawable-hdpi/ic_launcher.png" gap:platform="android" gap:qualifier="hdpi" />
+    <icon src="img/icons/android/drawable-xhdpi/ic_launcher.png" gap:platform="android" gap:qualifier="xhdpi" />
+    <icon src="img/icons/android/drawable-xxhdpi/ic_launcher.png" gap:platform="android" gap:qualifier="xxhdpi" />
+    <icon src="img/icons/android/playstore-icon.png" gap:platform="android" gap:qualifier="fr-xxhdpi" />
+	
+    <gap:splash src="splash.png"       gap:platform="android" gap:qualifier="port-ldpi" />
+    <gap:splash src="splash.png"       gap:platform="android" gap:qualifier="port-mdpi" />
+    <gap:splash src="splash.png"       gap:platform="android" gap:qualifier="port-hdpi" />
+    <gap:splash src="splash.png"      gap:platform="android" gap:qualifier="port-xhdpi" />
+    <gap:splash src="splash.png" />
+	
+    <icon src="img/icons/ios7/Icon-60.png" gap:platform="ios" width="60" height="60" />
+    <icon src="img/icons/ios7/Icon-60@2x.png" gap:platform="ios" width="120" height="120" />
+    <icon src="img/icons/ios7/Icon-76.png" gap:platform="ios" width="76" height="76" />
+    <icon src="img/icons/ios7/Icon-76@2x.png" gap:platform="ios" width="152" height="152" />
+    <icon src="img/icons/ios7/Icon-Small.png" gap:platform="ios" width="29" height="29" />
+    <icon src="img/icons/ios7/Icon-Small@2x.png" gap:platform="ios" width="58" height="58" />
+    <icon src="img/icons/ios7/Icon-40.png" gap:platform="ios" width="40" height="40" />
+    <icon src="img/icons/ios7/Icon-40@2x.png" gap:platform="ios" width="80" height="80" />
+	
+    <icon src="img/icons/ios/Icon.png" gap:platform="ios" width="57" height="57" />
+    <icon src="img/icons/ios/Icon@2x.png" gap:platform="ios" width="114" height="114" />
+    <icon src="img/icons/ios/Icon-72.png" gap:platform="ios" width="72" height="72" />
+    <icon src="img/icons/ios/Icon-72@2x.png" gap:platform="ios" width="144" height="144" />
+    <icon src="img/icons/ios/Icon-Small.png" gap:platform="ios" width="29" height="29" />
+    <icon src="img/icons/ios/Icon-Small@2x.png" gap:platform="ios" width="58" height="58" />
+    <icon src="img/icons/ios/Icon-50.png" gap:platform="ios" width="50" height="50" />
+    <icon src="img/icons/ios/Icon-50@2x.png" gap:platform="ios" width="100" height="100" />
+	
+    <gap:splash src="img/splash/Default.png" gap:platform="ios" width="320" height="480" />
+    <gap:splash src="img/splash/Default@2x.png" gap:platform="ios" width="640" height="960" />
+    <gap:splash src="img/splash/Default-568h@2x.png" gap:platform="ios" width="640" height="1136" />
+    <gap:splash src="img/splash/Default-Portrait.png" gap:platform="ios" width="768" height="1024" />
+    <gap:splash src="img/splash/Default-Landscape.png" gap:platform="ios" width="1024" height="768" />
+    <gap:splash src="img/splash/Default-Portrait@2x.png" gap:platform="ios" width="1536" height="2048" />
+    <gap:splash src="img/splash/Default-Landscape@2x.png" gap:platform="ios" width="2048" height="1536" />
+    
+    <platform name="ios" />
+    <platform name="android" />
+</widget>

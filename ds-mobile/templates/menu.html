@@ -1,0 +1,42 @@
+<ion-side-menus id="menu" cache-view="false" drag-content="false"  class="custom-menu">
+    <ion-side-menu-content scroll="true">
+        <ion-header-bar class="bar bar-header">
+            <button class="button button-icon icon ion-navicon" ng-click="toggleLeft($event)"></button>
+            <div class="title-right">{{settings.header}}</div>
+        </ion-header-bar>
+        <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu side="left" class="dark" drag-content="toggledrag">
+        <header class="bar bar-header bar-dark">
+        </header>
+        <ion-content class="ds-menu" scroll="false">
+            <ion-item nav-clear menu-close>
+                <div class="user-circle-img">
+                    <img src="img/new/user_default.png">
+                </div>
+                <div class="ds-txt">{{currentUser.role_title}}</div>
+                <div class="ds-txt">{{currentUser.username}}</div>
+                <div class="ds-link">{{currentUser.email}}</div>
+                <ion-toggle ng-click="logout()" ng-model="disconnectDesignValue" toggle-class="toggle-calm">Disconnect</ion-toggle>
+            </ion-item>
+            <ion-item nav-clear menu-close ng-click="sync()" class="ds-option">
+                <img src="img/new/synchronize.png">
+                <span>Synchronize</span>
+            </ion-item>
+            <ion-item nav-clear menu-close class="ds-option" ng-click="redirect('account')">
+                <img src="img/new/user_1.png">
+                <span>My Account</span>
+            </ion-item>
+            <ion-item nav-clear menu-close class="ds-option" ng-click="redirect('projects')">
+                <img src="img/new/projects.png">
+                <span>Projects</span>
+            </ion-item>
+            <ion-item nav-clear menu-close href="" onclick="navigator.app.loadUrl('http://app.preprod.proproject.io/', {openExternal: true});"
+                      class="ds-option-link">
+                <img src="img/new/onWeb.svg">
+                <span>Defects on web</span>
+            </ion-item>
+        </ion-content>
+    </ion-side-menu>
+
+</ion-side-menus>

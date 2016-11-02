@@ -1,0 +1,222 @@
+<div class="de-main de-profile" >
+    <defectslide dial="dial" callback="reload()"></defectslide>
+    <div class="row">
+        <h1>Profile information</h1>
+        <div class="col-md-8 ">
+            <div class="de-container clearfix">
+                <div class="de-img">
+                    <img ng-if="!userProfileData.company_logo" src="img/logo-placeholder.jpg">
+                    <img ng-if="userProfileData.company_logo" ng-src="{{userProfileData.company_logo}}">
+                    <div class="pp-btn2">
+                        <span flow-init="{target: '/upload', singleFile: true}" flow-name="uploader.flow"  flow-files-added="processFiles($files)" >
+                            <button ng-model="userProfileLogo" flow-btn type="file" ng-if="editMode.full" flow-attrs="{accept: 'image/*'}" class="de-btn">Upload logo</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="de-content">
+                    <div class="de-title">{{userProfileData.user_name}}<span>({{userProfileData.company}})</span><img class="pl10" ng-if="!editMode.basic" ng-click="editCurrentUser()" src="img/ic/action/edit.png"></div>
+                    <div class="row">
+                        <div class="col-md-6">      
+                            <div ng-if="!editMode.basic">
+                                <div>
+                                    <div class="dinline">
+                                        <span class="de-label">Address:</span>
+                                        <span ng-if="userProfileData.address" class="de-text">{{userProfileData.address}}</span>
+                                        <span ng-if="!userProfileData.address" class="de-text"> - </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="dinline">
+                                        <span class="de-label">Country:</span>
+                                        <span ng-if="userProfileData.country" class="de-text">{{userProfileData.country}}</span>
+                                        <span ng-if="!userProfileData.country" class="de-text"> - </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="dinline">
+                                        <span class="de-label" >ZIP Code:</span>
+                                        <span ng-if="userProfileData.zip_code" class="de-text">{{userProfileData.zip_code}}</span>
+                                        <span ng-if="!userProfileData.zip_code" class="de-text"> - </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="dinline">
+                                        <span class="de-label" >Registration Number:</span>
+                                        <span ng-if="userProfileData.registration_number" class="de-text">{{userProfileData.registration_number}}</span>
+                                        <span ng-if="!userProfileData.registration_number" class="de-text"> - </span>       
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="dinline">
+                                        <span class="de-label">Phone:</span>
+                                        <span ng-if="userProfileData.phone_number" class="de-text">{{userProfileData.phone_number}}</span>
+                                        <span ng-if="!userProfileData.phone_number" class="de-text"> - </span>        
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="editMode.basic && !editMode.sub && !editMode.full">
+                                <div class="mb5">
+                                    <div class="dinline">
+                                        <span class="de-label">Address:</span>
+                                        <span ng-if="userProfileData.address" class="de-text">{{userProfileData.address}}</span>
+                                        <span ng-if="!userProfileData.address" class="de-text"> - </span>
+                                    </div>
+                                </div>
+                                <div class="mb5">
+                                    <div class="dinline">
+                                        <span class="de-label">Country:</span>
+                                        <span ng-if="userProfileData.country" class="de-text">{{userProfileData.country}}</span>
+                                        <span ng-if="!userProfileData.country" class="de-text"> - </span>
+                                    </div>
+                                </div>
+                                <div class="mb5">
+                                    <div class="dinline">
+                                        <span class="de-label" >ZIP Code:</span>
+                                        <span ng-if="userProfileData.zip_code" class="de-text">{{userProfileData.zip_code}}</span>
+                                        <span ng-if="!userProfileData.zip_code" class="de-text"> - </span>
+                                    </div>
+                                </div>
+                                <div class="mb5">
+                                    <div class="dinline">
+                                        <span class="de-label" >Registration Number:</span>
+                                        <span ng-if="userProfileData.registration_number" class="de-text">{{userProfileData.registration_number}}</span>
+                                        <span ng-if="!userProfileData.registration_number" class="de-text"> - </span>       
+                                    </div>
+                                </div>
+                                <div class="mb5">
+                                    <div class="dinline">
+                                        <span class="de-label">Phone:</span>
+                                        <span ng-if="userProfileData.phone_number" class="de-text">{{userProfileData.phone_number}}</span>
+                                        <span ng-if="!userProfileData.phone_number" class="de-text"> - </span>        
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="editMode.sub">
+                                <div style="margin-bottom: 3px;">
+                                    <div class="dinline" style="background-color:#f3f3f3;border:solid 1px #e3e3e3;width:90%;height: 25px;padding-top: 2px;padding-bottom: 3px;" ng-if="editMode.sub">
+                                        <span class="de-label" style="padding-left:5px">Address:</span>
+                                        <input style="background-color:transparent;width:calc(100% - 68px);text-align: right; border:none;padding:0px 5px 3px 0px;" ng-model="editingUser.address">
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 3px;">
+                                    <div class="dinline" style="background-color:#f3f3f3;border:solid 1px #e3e3e3;width:90%;height: 25px;padding-top: 2px;padding-bottom: 3px;" ng-if="editMode.sub">
+                                        <span class="de-label" style="padding-left:5px">Country:</span>
+                                        <input style="background-color:transparent;width:calc(100% - 69px);text-align: right; border:none;padding:0px 5px 3px 0px;" ng-model="editingUser.country">
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 3px;">
+                                    <div class="dinline" style="background-color:#f3f3f3;border:solid 1px #e3e3e3;width:90%;height: 25px;padding-top: 2px;padding-bottom: 3px;" ng-if="editMode.sub">
+                                        <span class="de-label" style="padding-left:5px">ZIP Code:</span>
+                                        <input style="background-color:transparent;width:calc(100% - 73px);text-align: right; border:none;padding:0px 5px 3px 0px;" ng-model="editingUser.zip_code">
+                                    </div>
+                                </div >
+                                <div style="margin-bottom: 3px;">
+                                    <div class="dinline" style="background-color:#f3f3f3;border:solid 1px #e3e3e3;width:90%;height: 25px;padding-top: 2px;padding-top: 2px;padding-bottom: 3px;" ng-if="editMode.sub">
+                                        <span class="de-label" style="padding-left:5px">Registration Number:</span>
+                                        <input style="background-color:transparent;width:calc(100% - 145px);text-align: right; border:none;padding:0px 5px 3px 0px;" ng-model="editingUser.registration_number">
+                                    </div>
+                                </div >  
+                                <div style="margin-bottom: 3px;">
+                                    <div class="dinline" style="background-color:#f3f3f3;border:solid 1px #e3e3e3;width:90%;height: 25px;padding-top: 2px;padding-bottom: 3px;" ng-if="editMode.basic">
+                                        <span class="de-label" style="padding-left:5px">Phone:</span>
+                                        <input style="background-color:transparent;width:calc(100% - 57px);text-align: right; border:none;padding:0px 5px 3px 0px;" ng-model="editingUser.phone_number">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div ng-if="!editMode.basic">
+                                <div class="mb5">
+                                    <div class="dinline">
+                                        <span class="de-label">First Name:</span>
+                                        <span ng-if="userProfileData.first_name" class="de-text">{{userProfileData.first_name}}</span>
+                                        <span ng-if="!userProfileData.first_name" class="de-text"> - </span>
+                                    </div>
+                                </div>
+                                <div class="mb5">
+                                    <div class="dinline">
+                                        <span class="de-label">Last Name:</span>
+                                        <span ng-if="userProfileData.last_name" class="de-text">{{userProfileData.last_name}}</span>
+                                        <span ng-if="!userProfileData.last_name" class="de-text"> - </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div ng-if="editMode.basic">
+                                <div style="margin-bottom: 3px;">
+                                    <div class="dinline" style="background-color:#f3f3f3;border:solid 1px #e3e3e3;width:90%;height: 25px;padding-top: 2px;padding-bottom: 3px;" ng-if="editMode.basic">
+                                        <span class="de-label" style="padding-left:5px">First Name:</span>
+                                        <input style="background-color:transparent;width:calc(100% - 95px);text-align: right; border:none;padding:0px 5px 3px 0px;" ng-model="editingUser.first_name">
+                                    </div>
+                                </div >
+                                <div style="margin-bottom: 3px;">                
+                                    <div class="dinline" style="background-color:#f3f3f3;border:solid 1px #e3e3e3;width:90%;height: 25px;padding-top: 2px;padding-bottom: 3px;" ng-if="editMode.basic">
+                                        <span class="de-label" style="padding-left:5px">Last Name:</span>
+                                        <input style="background-color:transparent;width:calc(100% - 93px);text-align: right; border:none;padding:0px 5px 3px 0px;" ng-model="editingUser.last_name">
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class="clearfix">
+                                <button ng-if="editMode.basic" class="de-btn dinline col-md-5" ng-click="cancelEdit()">Cancel</button>
+                                <button ng-if="editMode.basic" class="de-btn btn-danger dinline col-md-5 pull-right" style="background-color:#1BBC9B; margin-right: 12px;" ng-click="update()">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="de-container"> 
+                <div class="de-content">
+                    <div class="de-title">Account recovery options</div>
+                    <div class="de-text">
+                        If you forget your password or cannot access your account, we will use this information to help you get back in.
+                    </div>
+                    <div>
+                        <span class="de-label">Recovery email:</span>
+                        <span ng-if="userProfileData.email" class="de-text">{{userProfileData.email}}</span>
+                        <span ng-if="!userProfileData.email" class="de-text"> {{userProfileData.user_name}} </span>  
+                    </div>
+                    <div>
+                        <span class="de-label">Password:</span>
+
+                        <span class="de-link" ng-click="changePassword()">Change password</span>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <div class="de-activityfeed">
+        <div>
+            <span class="de-title">Activity feed</span>
+            <div class="de-actions pull-right">
+                <button class="de-btn de-btn-primary" ng-click="changeSorting('user_name')">Name<img class="ml5" ng-src="{{getIcon('user_name')}}"></button>
+                <button class="de-btn de-btn-primary" ng-click="changeSorting('update_date')">Date<img class="ml5" ng-src="{{getIcon('update_date')}}"></button>
+                <button class="de-btn de-btn-primary" ng-click="changeSorting('project_name')">Project<img class="ml5" ng-src="{{getIcon('project_name')}}"></button>
+            </div>
+
+            <div class="de-container" ng-repeat="activity in recentActivityData| orderBy:sort.active:sort.descending" ng-if="recentActivityData.length > 0">
+                <div class="de-content">
+                    <div>
+                        <span class="de-label">{{activity.user_name}}</span>
+                        <span class="de-text">update a task on</span>
+                        <span class="de-label">{{activity.project_name}}</span>
+                    </div>                        
+                    <div>
+                        <img src="img/ic/task preview/calendar.png">
+                        <span class="de-text">{{activity.update_date| date:'short'}}</span>
+                    </div>                        
+                </div>
+                <button class="de-btn de-btn-large" ng-click="toggleDefect(activity.defect_id)">Open</button>
+            </div>
+            <div class="de-container" ng-if="recentActivityData.length === 0">
+                <div class="de-content">
+                    <div style="text-align: center;font-size:22px;">
+                        No recent activity
+                    </div>                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

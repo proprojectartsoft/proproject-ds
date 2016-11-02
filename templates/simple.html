@@ -1,0 +1,30 @@
+<ul dnd-list="list" dnd-drop="myCallback(event, index, item, external, type, 'itemType')">
+    <li ng-repeat="item in list | orderBy:sort.active:sort.descending"
+        dnd-draggable="item"
+        dnd-moved="list.splice($index, 1)"
+        dnd-effect-allowed="move"
+        dnd-selected="toggleNewTask(item.id)"
+        ng-class="{'selected': models.selected === item}"
+        >
+        <!--  {{item.label}}  -->
+        <span class="item-description">
+            <span class="de-img">
+                {{item.assignee_name | limitTo:1 | uppercase}}
+            </span>
+            <span class="item-right">
+                <span class="task-name">{{item.title|capitalize:true}}</span>
+                <span class="priority">
+                    <span class="task-desc">Priority: </span><span class="level">{{item.priority_name|capitalize:true}}</span></span>
+                <span class="task-desc">Severity: </span><span class="level last">{{item.severity_name|capitalize:true}}</span>
+            </span>
+
+        </span>
+        <span class="item-footer">
+            <span class="item-date"><img src="img/ic/action/due_date.png">&nbsp;{{item.due_date|date}}</span>
+            <span class="item-details">
+                <span class="item-attach"><img src="img/ic/action/attachements.png">&nbsp;{{item.number_of_photos}}</span>
+                <span class="item-comments"><img src="img/ic/action/comments.png">&nbsp;{{item.number_of_comments}}</span>
+            </span>
+        </span>
+    </li>
+</ul>

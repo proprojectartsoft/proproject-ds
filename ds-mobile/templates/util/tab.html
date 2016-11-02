@@ -1,0 +1,57 @@
+<div class="tabs-striped tabs-top tabs-color-light">
+  <div class="tabs">
+    <a class="tab-item" ng-click="tabSelect('drawings')" ng-class="{'active':settings.tabActive === 'drawings'}">
+      <img ng-src="{{settings.tabs['drawings']}}">
+    </a>
+    <a class="tab-item" ng-click="tabSelect('subcontractors')" ng-class="{'active':settings.tabActive === 'subcontractors'}">
+      <img ng-src="{{settings.tabs['subcontractors']}}">
+    </a>
+    <a class="tab-item"ng-click="tabSelect('defects')" ng-class="{'active':settings.tabActive === 'defects'}">
+      <img ng-src="{{settings.tabs['defects']}}">
+    </a>
+  </div>
+</div>
+<ion-content class="has-subheader ds-tabslist">
+  <ion-list ng-if="settings.tabActive==='drawings'">
+    <ion-item ng-repeat="item in list track by $index" ng-click="goItem(item)">
+      <img src="img/pdf.png">
+      <h3>
+        <div>{{item.name}}</div>
+        <div>{{item.tasks}} Tasks</div>
+      </h3>
+    </ion-item>
+  </ion-list>
+  <ion-list ng-if="settings.tabActive==='subcontractors'">
+    <ion-item ng-repeat="item in list track by $index" ng-click="goItem(item)">
+      <span class="ds-tile ds-delayed">
+        {{item.icon}}
+      </span>
+      <h3>
+        <div>{{item.name}}<span class="ds-date pull-right">{{item.tasks}} tasks</span></div>
+        <div>{{item.description}}</div>
+      </h3>
+    </ion-item>
+  </ion-list>
+  <ion-list ng-if="settings.tabActive==='defects'">
+    <ion-item ng-repeat="item in list | orderBy: date" ng-click="goItem(item)">
+      <span class="ds-tile" ng-class="{'ds-incomplete':item.status_name === 'Incomplete', 'ds-delayed': item.status_name === 'Delayed','ds-contested': item.status_name === 'Contested', 'ds-completed':item.status_name === 'Completed', 'ds-partiallycompleted':item.status_name === 'Partially Completed', 'ds-closedout':item.status_name === 'Closed Out'}">
+        {{item.icon}}
+      </span>
+      <h3>
+        <div>{{item.title}}</div>
+        <div class="ds-description">
+          <i>Priority&nbsp;:&nbsp;</i><span>{{item.priority_name}}</span>
+          <i>Severity&nbsp;:&nbsp;</i><span>{{item.severity_name}}</span>
+          <span class="ds-date" ng-if="item.due_date"><img src="img/use/due_date.png">{{item.due_date|date}}</span>
+          <span class="ds-date" ng-if="!item.due_date"><img src="img/use/due_date.png">No date</span>
+        </div>
+      </h3>
+    </ion-item>
+  </ion-list>
+  <div ng-if="!list.length && settings.loaded" class="ds-nodata">
+    <span>No data</span>for {{settings.tabActive}}
+  </div>
+</ion-content>
+<span class="ds-actionbtn" ng-show="settings.tabActive !== 'drawings'" ng-click="showPopup()">
+  <i class="ion-ios-plus-empty"></i>
+</span>

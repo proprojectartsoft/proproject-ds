@@ -1,0 +1,23 @@
+<div class="row">
+    <form class="clearfix">
+        <label>
+            <span class="de-required">Title</span>
+            <input type="text" ng-model="drawing.title">
+        </label>
+        <label>
+            <span class="de-required">Code</span>
+            <input type="text" ng-model="drawing.code">
+        </label>
+        <label>
+            <span>Revisions</span>
+            <textarea ng-model="drawing.revision"></textarea>
+        </label>
+        <label style="position: relative;" class="de-date">
+            <span>Date</span>
+            <span ng-click="open1()" ng-if="!drawing.date_obj" class="de-block">Tap to add date</span>
+            <span ng-click="open1()" ng-if="drawing.date_obj" class="de-block">{{drawing.date_obj| date}}</span>
+            <input  style="display:none" type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="drawing.date_obj" is-open="popup1.opened" close-text="Close"/>
+        </label>
+    </form>
+</div>
+<button class="de-btn pull-right" ng-click="update()">Update</button>

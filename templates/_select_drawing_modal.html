@@ -1,0 +1,24 @@
+<div class="row-fluid container-selectD">
+    <div class="drawing-file" ng-repeat="drawing in drawings">
+        <div class="drawing-fileCont">
+            
+            <img src="img/ic/action/PDF.png">
+            <label style="padding-left: 0px;position: relative;left: 25px;">
+                        
+                        <input class="grey-ra" type="radio" id="{{drawing.id}}" ng-model="radioDrawing.id" name="{{drawing.title}}" ng-value="{{drawing}}" />   
+                        <label for='{{drawing.id}}'
+                               style="margin-top:5px;vertical-align: middle; margin-right: 3px;"></label>
+                    </label>   
+            
+        </div>
+        <div class="drawing-name">{{drawing.title}}</div>
+    </div>  
+</div>
+<div class="drawing-footer">
+        <div class="de-container">
+            <div class="de-actions">
+                <button class="de-btn de-red" ng-click="$modalCancel()">Cancel</button>
+                <button class="de-btn de-green" ng-click="selectDrawings()">Add drawing</button>
+            </div>        
+        </div>
+</div>

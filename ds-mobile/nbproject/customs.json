@@ -1,0 +1,11 @@
+{
+    "elements": {
+        "ion-nav-view": {},
+        "ion-refresher": {},
+        "ion-content": {},
+        "ion-view": {}
+    },
+    "attributes": {
+        "ui-sref": {}
+    }
+}

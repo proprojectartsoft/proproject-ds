@@ -1,0 +1,68 @@
+<ion-view hide-back-button="true" cache-view="false">
+    <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+        <button class="button ion-ios-arrow-left"></button>
+        <h1 class="title">{{settings.subHeader}}</h1>
+    </ion-header-bar>
+    <ion-content class="has-header ds-blackscroll ds-page ds-page-details">
+        <div class="title" ng-if="local.entityId !== '0'">{{local.data.title}}</div>
+        <ion-item class="ds-grh-cont active" ng-class="{'ds-spacingtop' : local.entityId === '0'}">
+            <div class="ds-grh">
+                <h3>Drawing details<i class="ion ion-ios-arrow-down"></i>
+                </h3>
+            </div>
+            <div class="ds-container">
+                <label>
+                    <div class="ds-content">
+                        <span class="ds-title">Name</span>
+                    </div>
+                    <input ng-model="local.data.title" ng-disabled="disableedit">
+                </label>
+                <label>
+                    <div class="ds-content">
+                        <span class="ds-title">Status</span>
+                    </div>
+                </label>
+                <status item="local.data.status_obj" ng-disabled="disableedit"></status>
+                <label>
+                    <div class="ds-content">
+                        <span class="ds-title">Priority</span>
+                    </div>
+                </label>
+                <priority item="local.data.priority_obj" ng-disabled="disableedit"></priority>
+                <label>
+                    <div class="ds-content">
+                        <span class="ds-title">Severity</span>
+                    </div>
+                </label>
+                <severity item="local.data.severity_obj" ng-disabled="disableedit"></severity>
+                <label>
+                    <div class="ds-content">
+                        <span class="ds-title">Assignee</span>
+                    </div>
+                    <input class="ds-input" ng-model="local.data.assignee_name" ng-click="assignee()" ng-disabled="disableedit">
+                </label>
+                <label>
+                    <div class="ds-content">
+                        <span class="ds-title">Due date</span>
+                    </div>
+                    <input ng-if="local.date.due_date" ng-model="local.data.due_date">
+                    <div ng-if="!local.date.due_date" class="ds-input">
+                        No data
+                    </div>
+                </label>
+                <label>
+                    <div class="ds-content">
+                        <span class="ds-title">Location</span>
+                    </div>
+                    <input ng-model="local.data.location" ng-disabled="disableedit">
+                </label>
+                <label>
+                    <div class="ds-content">
+                        <span class="ds-title">Cost</span>
+                    </div>
+                    <input ng-model="local.data.cost" ng-disabled="disableedit">
+                </label>
+            </div>
+        </ion-item>
+    </ion-content>
+</ion-view>

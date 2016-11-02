@@ -1,0 +1,24 @@
+<div id="ds-status">
+  <div class="ds-input" ng-click='toggle()' ng-class="{'ds-active':local.active, 'ds-incomplete-brd':local.data.name === 'Incomplete', 'ds-delayed-brd': local.data.name === 'Delayed','ds-contested-brd': local.data.name === 'Contested', 'ds-completed-brd':local.data.name === 'Completed', 'ds-partiallycompleted-brd':local.data.name === 'Partially Completed', 'ds-closedout-brd':local.data.name === 'Closed Out'}">
+    {{local.txtActive}}</div>
+  <div class="ds-container" ng-if="local.active">
+    <div class="ds-item ds-incomplete-brd" ng-click="changeStatus({id: 0, name: 'Incomplete'})" ng-class="{'ds-underline':local.data.id === 0}">
+        Incomplete
+    </div>
+    <div class="ds-item ds-contested-brd" ng-click="changeStatus({id: 1, name: 'Contested'})" ng-class="{'ds-underline':local.data.id === 1}">
+        Contested
+    </div>
+    <div class="ds-item ds-delayed-brd" ng-click="changeStatus({id: 2, name: 'Delayed'})" ng-class="{'ds-underline':local.data.id === 2}">
+        Delayed
+    </div>
+    <div class="ds-item ds-partiallycompleted-brd" ng-click="changeStatus({id: 3, name: 'Partially Completed'})" ng-class="{'ds-underline':local.data.id === 3}">
+        Partially Completed
+    </div>
+    <div class="ds-item ds-completed-brd" ng-click="changeStatus({id: 4, name: 'Completed'})" ng-class="{'ds-underline':local.data.id === 4}">
+        Completed
+    </div>
+    <div class="ds-item ds-closedout-brd" ng-click="changeStatus({id: 5, name: 'Closed Out'})" ng-class="{'ds-underline':local.data.id === 5}">
+        Closed Out
+    </div>
+  </div>
+</div>

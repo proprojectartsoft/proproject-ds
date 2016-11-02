@@ -1,0 +1,366 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+Created on : Sep 28, 2016, 9:25:45 PM
+Author     : buchi
+*/
+.ds-tabslist {
+    ion-item {
+        img {
+            height: 35px;
+            vertical-align: middle;
+        }
+
+        h3 {
+            display: inline-block;
+            vertical-align: middle;
+            padding-left: 8px;
+            text-transform: capitalize;
+            width: calc(100% - 50px);
+
+            div:last-child {
+                font-weight: 100;
+            }
+
+            .ds-description {
+                span {
+                    font-weight: 100;
+                    border-right: 1px solid #aaa;
+                    padding-right: 5px;
+                }
+
+                i {
+                    font-weight: 400;
+                    font-style: normal;
+                }
+            }
+        }
+
+        .ds-date {
+            margin-top: -3px;
+            font-weight: 100;
+            border: none !important;
+
+            img {
+                height: initial;
+                padding: 0 3px;
+            }
+        }
+    }
+}
+
+.ds-page {
+    button {
+        margin: 0 5px !important;
+        width: calc(100% - 10px);
+    }
+
+    .title {
+        color: #fff;
+        font-size: 18px;
+        padding: 10px;
+        font-weight: 400;
+
+        .ion-arrow-expand {
+            float: right;
+            font-size: 26px !important;
+            margin-top: -3px;
+        }
+    }
+
+    .ds-pdf {
+        background-color: #2f4759;
+        border: none;
+        padding: 5px;
+        clear: both;
+
+        .ds-container {
+            padding: 5px;
+            background-color: #efefef;
+            border-radius: 3px;
+
+            canvas {
+                width: 100%;
+                vertical-align: middle;
+                border: 1px solid #aaa;
+            }
+        }
+
+        canvas {
+            width: 100%;
+            background: #fff;
+        }
+    }
+}
+
+.ds-grh {
+    width: calc(100% - 8px);
+    margin: 0 0 4px 4px;
+    border-radius: 2px;
+    background-color: #35bdee;
+    border: none;
+
+    h3 {
+        font-weight: 400;
+        font-size: 16px;
+        color: #fff;
+
+        .ion {
+            float: right;
+        }
+    }
+}
+
+.ds-grh-cont {
+    padding: 0;
+    margin: 0;
+    background-color: #2f4759;
+    border: none;
+    width: calc(100% - 8px);
+    margin: 3px 0 4px 4px;
+
+    .ds-grh {
+        width: 100%;
+        margin: 0;
+        padding: 16px;
+        position: relative;
+        margin-bottom: 0;
+
+        &:after {
+            content: '';
+            position: absolute;
+            display: none;
+            bottom: 5px;
+            left: 10px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 10px 10px 0 10px;
+            border-color: #11C1F3 transparent transparent transparent;
+            z-index: 9001;
+            margin-bottom: -15px;
+        }
+    }
+
+    .ds-container {
+        height: 0;
+        background-color: #fff;
+        transition: 0.3 s;
+        /*display: none;*/
+    }
+
+    &.active {
+        .ds-grh {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+
+            &:after {
+                display: block;
+            }
+        }
+
+        > .ds-container {
+            /*display: block;*/
+            height: auto;
+            transition: 0.3 s;
+        }
+    }
+}
+
+.ds-related {
+    ion-item h3 {
+        width: calc(100% - 55px);
+
+        .ds-date {
+            font-weight: 100;
+
+            i {
+                font-size: 23px !important;
+                vertical-align: middle;
+                margin-right: 5px;
+                color: #677384;
+            }
+        }
+
+        div:last-child {
+            font-size: 14px !important;
+            font-weight: 400;
+            line-height: 25px;
+        }
+    }
+}
+
+.ds-attachments {
+    bottom: 25px;
+
+    .item {
+        padding: 8px;
+        background-color: #e6e7e6;
+        border-color: #fff;
+    }
+
+    h3 {
+        vertical-align: top !important;
+
+        .ds-tags {
+            color: #a9a8a8;
+            font-size: 14px !important;
+        }
+
+        div:first-child {
+            color: #818282;
+        }
+
+        div:last-child {
+            font-weight: 100;
+            max-width: calc(100% - 100px);
+            max-height: 48px;
+            white-space: pre-wrap;
+            color: #a9a8a8;
+            font-size: 14px !important;
+        }
+    }
+
+    .ds-img {
+        position: relative;
+        overflow: hidden;
+        vertical-align: middle;
+        display: inline-block;
+        width: 90px;
+        height: 90px;
+    }
+}
+
+.ds-comments {
+    bottom: 25px;
+
+    .item {
+        border-color: #fff;
+        padding: 7px 10px;
+    }
+
+    .ds-tile {
+        background-color: #677383;
+    }
+
+    h3 {
+        width: calc(100% - 55px);
+
+        .ds-date {
+            float: right;
+            font-weight: 100;
+        }
+
+        div:last-child {
+            white-space: pre-wrap;
+        }
+    }
+}
+
+.ds-fullscreen {
+    .ds-pdf {
+        background-color: transparent;
+    }
+
+    .ds-actions {
+        float: right;
+        display: inline-block;
+        background-color: #2f4759;
+        margin-right: 10px;
+        margin-top: 10px;
+        overflow: hidden;
+
+        img {
+            height: 24px;
+            vertical-align: middle;
+            padding: 4px;
+        }
+
+        i {
+            font-size: 22px !important;
+            vertical-align: middle;
+            padding: 4px 6px;
+            color: #fff;
+            border-left: 1px solid #000;
+        }
+    }
+}
+
+.ds-subcontractors {
+    .ds-grh-cont {
+        margin-top: 5px;
+    }
+
+    .title {
+        padding: 5px 10px 0;
+
+        i {
+            margin-right: 3px;
+        }
+    }
+}
+
+.ds-photo {
+    .ds-img {
+        margin-bottom: -4px;
+
+        img {
+            width: 100%;
+            -webkit-user-select: all;
+            /* Chrome 49+ */
+            -moz-user-select: all;
+            /* Firefox 43+ */
+            -ms-user-select: all;
+            /* No support yet */
+            user-select: all;
+            /* Likely future */
+        }
+    }
+
+    label {
+        span {
+            display: block;
+            width: 100%;
+            background-color: #fff;
+            padding: 5px 10px 0;
+        }
+
+        input {
+            padding: 0 10px;
+            font-size: 15px !important;
+            font-weight: 100;
+        }
+
+        textarea {
+            width: 100%;
+            resize: none;
+            min-height: 100px;
+            padding: 0 10px;
+            font-size: 15px !important;
+            font-weight: 100;
+        }
+    }
+
+    .ds-description span {
+        border-top: 1px solid #dedede;
+    }
+
+    .ds-title {
+        span {
+            background-color: #35bdee;
+            color: #fff;
+        }
+
+        input {
+            background-color: #35bdee;
+            color: #fff;
+        }
+    }
+}
+
+.ds-spacingtop {
+    margin-top: 5px;
+}

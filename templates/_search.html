@@ -1,0 +1,265 @@
+<div class="pp-preview ">
+    <div ng-class="{'pp-toggle': active === true}">
+        <div class="pp-btn">
+            <img src="img/icons/side_menu/arrow.png" ng-click="toggle(false)">
+            <div>
+                <span ng-if="filter.state === 'design'">Preview Design</span>                    
+                <span ng-if="filter.state === 'instance'">Preview Instance</span>    
+                <span ng-if="filter.state === 'instance'">
+                    <span tooltip-class="pp-tooltip-bottom" uib-tooltip="Download" tooltip-placement="bottom" style="float: right;display: inline-block;padding-left: 0px">
+                        <a  href="{{aux}}"><img src="img/icons/preview/pdf.png" class="pull-right"></a>                   
+                    </span>                      
+                </span>
+            </div>
+        </div>
+        <div class="pp-container">                
+            <div class="pp-content">   
+                <div class="pp-form" ng-if="filter.state === 'design'">
+                    <div class="pp-subform">
+                        <h1>
+                            <span ng-if="design.code && design.code !== ''">{{design.code}}</span><span ng-if="!design.code || design.code === ''">Form code</span>&nbsp;-&nbsp;
+                            <span ng-if="design.name && design.name !== ''">{{design.name}}</span><span ng-if="!design.name || design.name === ''">Form name</span>
+                        </h1>
+                        <div>
+                            {{design.guidance}}
+                        </div>            
+
+                        <div ng-repeat="group in design.field_group_designs">
+                            <hr/>
+                            <h2>
+                                <span ng-if="group.name && group.name !== ''">{{group.name}}</span><span ng-if="!group.name || group.name === ''">Group name</span>
+                            </h2>
+                            <div class="pp-description">{{group.guidance}}</div>
+                            <div ng-repeat="field in group.field_designs">
+                                <label ng-if="field.type === 'text'">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <input type="text" class="form-control" disabled ng-model="field.default_value" placeholder="{{field.placeholder}}">
+                                </label>
+                                <label ng-if="field.type === 'textarea' || field.type === 'comment'">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <textarea disabled class="form-control" ng-model="field.default_value" placeholder="{{field.placeholder}}"></textarea>
+                                </label>
+                                <label ng-if="field.type === 'email'">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <input type="email" disabled class="form-control" ng-model="field.default_value" placeholder="{{field.placeholder}}">
+                                </label>
+                                <label ng-if="field.type === 'checkbox'" class="pp-checkbox">                                    
+                                    <span>{{field.name}}</span>                                    
+                                    <i>{{field.guidance}}</i>
+                                    <input type='checkbox' ng-model="field.default_value" class="blue-ck" id="{{hash}}" disabled/><label for="{{hash}}" style="vertical-align: middle; margin-bottom:0px"></label>
+                                    <small ng-if="field.required" class="pp-required"></small>
+
+                                </label>
+                                <label ng-if="field.type === 'date'" class="pp-date">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <p class="input-group">
+                                        <input type="text" disabled class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="field.default_value" is-open="field.opened" datepicker-options="dateOptions" date-disabled="false" close-text="Close" placeholder="{{field.placeholder}}" />
+                                        <span class="input-group-btn">
+                                            <button type="button" disabled  class="btn btn-default"  style="padding: 8px 10px 5px; border-radius: 0px;height: 40px;" ng-click="open(field)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                </label>
+                                <label ng-if="field.type === 'time'" class="pp-time">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <input ng-model="field.default_value" disabled>
+                                    <!--<uib-timepicker ng-model="field.parsed_model" placeholder="{{field.placeholder}}" hour-step="0" minute-step="0" show-meridian="false" readonly-input="true"></uib-timepicker>-->
+                                </label>
+                                <label ng-if="field.type === 'radio'">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <div ng-repeat="radio in field.option_designs">
+                                        <label class="pp-checkbox-list">
+                                            <img src="img/icons/form/radiobutton_on.png"  ng-if="radio.name === field.default_value.name" style="height: 15px;width: 15px;bordeR: none;display: inline-block;">
+                                            <img src="img/icons/form/radiobutton_off.png" ng-if="radio.name !== field.default_value.name" style="height: 15px;width: 15px;bordeR: none;display: inline-block;">
+                                            <!--                                            <input type='radio' class="blue-ck" id="{{hash}}" disabled ng-if="radio.name === field.default_value.name" ng-value="true" checked/><label for="{{hash}}" style="vertical-align: middle; margin-bottom:0px"></label>
+                                                                                        <input type='radio' class="blue-ck" id="{{hash}}" ng-if="radio.name !== field.default_value.name" /><label for="{{hash}}" style="vertical-align: middle; margin-bottom:0px"></label>-->
+                                            <span style="display:inline-block">{{radio.name}}</span>
+                                            <!--                                            <input type="radio" disabled ng-if="radio.name === field.default_value.name"  checked>  
+                                                                                        <input type="radio" disabled ng-if="radio.name !== field.default_value.name" >  -->
+                                        </label>
+                                    </div>                                    
+                                </label>
+                                <label ng-if="field.type === 'checkbox_list'">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <div ng-repeat="radio in field.option_designs">
+                                        <label class="pp-checkbox">
+                                            <input type='checkbox' class="blue-ck" id="{{hash}}"/><label for="{{hash}}" style="vertical-align: middle; margin-bottom:0px"></label>
+                                            <span style="display:inline-block">{{radio.name}}</span>
+                                        </label>
+                                    </div> 
+                                </label>
+                                <label ng-if="field.type === 'signature'">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <img alt="signature" style="border: 1px solid #D7E0E2">
+                                </label>
+                                <label ng-if="field.type === 'select'">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <select class="form-control" ng-options="option as option.name for option in field.option_designs track by option.id" ng-model="field.default_value" disabled="true">
+                                    </select>
+                                </label>
+                                <label ng-if="field.type === 'number'">
+                                    {{field.name}}<small ng-if="field.required" class="pp-required"></small>
+                                    <i>{{field.guidance}}</i>
+                                    <input type="number" class="form-control" disabled string-to-number ng-model="field.default_value" placeholder="{{field.placeholder}}">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pp-group" ng-if="design.resource_field_design" >
+                            <hr>
+                            <div class="pp-header" style="background-color: #F8F8F8;padding: 5px;">Resource field<button style=" margin-top: 0px;">Open</button></div>
+                        </div>
+                        <div  class="pp-group" ng-if="design.scheduling_field_design" >
+                            <hr>
+                            <div class="pp-header" style="background-color: #F8F8F8;padding: 5px;">Scheduling field<button style=" margin-top: 0px;">Open</button></div>
+                        </div>        
+                        <div class="pp-group" ng-if="design.pay_item_field_design" >
+                            <hr>
+                            <div class="pp-header" style="background-color: #F8F8F8;padding: 5px;">Pay-item field<button style=" margin-top: 0px;">Open</button></div>
+                        </div>
+                        <div  class="pp-group" ng-if="design.staff_field_design">
+                            <hr>
+                            <div class="pp-header" style="background-color: #F8F8F8;padding: 5px;">Staff field<button style=" margin-top: 0px;">Open</button></div>
+                        </div>
+                    </div>
+                </div>     
+                <div class="pp-form" ng-if="filter.state === 'instance'">
+                    <div class="pp-subform">
+                        <h1 style="margin-bottom: 15px;color: #01aaef;">{{dataPreview.project_number}}-{{dataPreview.code}}-{{dataPreview.form_number}}<span ng-show="dataPreview.revision !== '0'">-Rev {{dataPreview.revision}}</span> {{dataPreview.name}}</h1>
+                        <div>
+                            {{dataPreview.guidance}}
+                        </div>            
+                        <div ng-repeat="group in dataPreview.field_group_instances" ng-if="filter.substate === 'form'">
+                            <h2>{{group.name}}
+                                <button ng-if="group.repeatable && edit"  ng-click="repeat(group, group.$$hashKey);
+                                        $event.stopPropagation();" class="pp-preview-repeat"><i class="ion-ios-refresh-empty"></i></button>
+                            </h2>
+                            <div class="pp-description">{{group.guidance}}</div>
+                            <div ng-repeat="field in group.field_instances" ng-class="{'pp-padding-top': field.repeatable && edit}" class="pp-gr">
+                                <!--                                <button ng-if="field.repeatable && edit"  class="pp-preview-repeat" ng-click="repeatField(group, field);
+                                                                            $event.stopPropagation();" ><i class="ion-ios-refresh-empty"></i></button>-->
+                                <img src="img/icons/form/duplicate.png" ng-if="field.repeatable && !field.new && edit" style="vertical-align: top;" ng-click="repeatField(group, field, field.$$hashKey);
+                                            $event.stopPropagation();" ng-class="{'pp-margin-top-first': $first && field.repeatable}">
+                                <img src="img/icons/form/delete field.png" ng-if="field.repeatable && field.new && edit" style="vertical-align: top;" ng-click="deleteRepeat(group.field_designs, field);
+                                            $event.stopPropagation();">
+                                <label ng-if="field.type === 'text'"  ng-class="{'pp-repeatable':field.repeatable && edit, 'pp-margin-top-first': $first && field.repeatable}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <input type="text" class="form-control" ng-disabled="!edit" ng-model="field.field_values[0].value">
+                                </label>
+                                <label ng-if="field.type === 'textarea'"  ng-class="{'pp-repeatable':field.repeatable && edit}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <textarea ng-disabled="!edit" class="form-control" ng-model="field.field_values[0].value"></textarea>
+                                </label>
+                                <label ng-if="field.type === 'email'"  ng-class="{'pp-repeatable':field.repeatable && edit}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <input type="email" ng-disabled="!edit" class="form-control" ng-model="field.field_values[0].value">
+                                </label>
+                                <label ng-if="field.type === 'checkbox'" class="pp-checkbox"  ng-class="{'pp-repeatable':field.repeatable && edit}">                                    
+                                    <span>{{field.name}}</span>                                                         
+                                    <input ng-disabled="!edit" type='checkbox' ng-model="field.value" id="{{field.id}}" class="blue-ck"/>
+                                    <label for="{{field.id}}" style="margin-top:5px;vertical-align: middle;"></label><small ng-if="field.required" class="pp-required"></small>                                                   
+                                </label>
+                                <label ng-if="field.type === 'date'" class="pp-date"  ng-class="{'pp-repeatable':field.repeatable && edit}" style="width:100%">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <p class="input-group">
+                                        <input type="text" ng-disabled="!edit" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="field.field_values[0].value" is-open="field.opened" datepicker-options="dateOptions" date-disabled="false" close-text="Close" />
+                                        <span class="input-group-btn">
+                                            <button type="button"ng-disabled="!edit"  class="btn btn-default"  style="padding: 8px 10px 5px;border-radius: 0px;margin-left: 30px;height: 40px;" ng-click="open(field)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                </label>
+                                <label ng-if="field.type === 'time'"  ng-class="{'pp-repeatable':field.repeatable && edit}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <uib-timepicker ng-if="!edit" ng-model="field.field_values[0].value" ng-change="changed()" hour-step="0" minute-step="0" show-meridian="false" readonly-input="true"></uib-timepicker>
+                                    <uib-timepicker ng-if="edit" ng-model="field.field_values[0].value" ng-change="changed()" hour-step="1" minute-step="15" show-meridian="false"></uib-timepicker>
+                                </label>
+                                <label ng-if="field.type === 'radio'"  ng-class="{'pp-repeatable':field.repeatable && edit}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <div ng-repeat="radio in field.field_values" >
+                                        <label class="pp-checkbox-list">
+                                            <input type='radio' ng-model="field.value" class="blue-ck" ng-disabled="!edit" ng-value="radio.name" id="{{radio.id}}"/><label for="{{radio.id}}" style="vertical-align: middle; margin-bottom:0px"></label>
+                                            <span>{{radio.name}}</span>
+                                            <!--<input type="radio" ng-disabled="!edit" ng-model="field.value"  ng-value="radio.name">-->  
+                                        </label>
+                                    </div>                                    
+                                </label>
+                                <label ng-if="field.type === 'checkbox_list'"  ng-class="{'pp-repeatable':field.repeatable && edit}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <div ng-repeat="radio in field.field_values">
+                                        <label class="pp-checkbox-list">
+                                            <span>{{radio.name}}</span>
+                                            <input type='checkbox' ng-model="radio.value" class="blue-ck" id="{{radio.id}}" ng-disabled="!edit"/><label for="{{radio.id}}" style="vertical-align: middle; margin-bottom:0px"></label>
+                                        </label>
+                                    </div> 
+                                </label>
+                                <label ng-if="field.type === 'signature'"  ng-class="{'pp-repeatable':field.repeatable && edit}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <img ng-if="!edit" ng-src="{{field.field_values[0].value}}" alt="signature" style="border: 1px solid #D7E0E2">
+                                    <div style="position: relative; width: 340px" ng-if="edit && !field.repsignature">
+                                        <canvas  id="{{field.id}}" class="pp-sketch" height="390px" width="340px" ng-model="field.field_values[0].value" sketch style="border: 1px solid #D7E0E2;display: block"></canvas>
+                                        <a class="btn btn-large btn-default" sketch-erase="{{field.id}}"  ng-click="erase()" style=" position: absolute;right: -1px;top: 0px;">Clear</a>            
+                                    </div>
+                                    <div style="position: relative; width: 340px" ng-if="edit && field.repsignature">
+                                        <canvas  id="{{field.repsignature}}" class="pp-sketch" height="390px" width="340px" ng-model="field.field_values[0].value" sketch style="border: 1px solid #D7E0E2;display: block"></canvas>
+                                        <a class="btn btn-large btn-default" sketch-erase="{{field.repsignature}}"  ng-click="erase()" style=" position: absolute;right: -1px;top: 0px;">Clear</a>            
+                                    </div>
+                                </label>
+                                <label ng-if="field.type === 'select'"  ng-class="{'pp-repeatable':field.repeatable && edit}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <select class="form-control" ng-options="option as option.name for option in field.field_values track by option.id" ng-model="field.value" ng-if="!edit" disabled="true">
+                                    </select>
+                                    <select class="form-control" ng-options="option as option.name for option in field.field_values track by option.id" ng-if="edit" ng-model="field.value">
+                                    </select>
+                                </label>
+                                <label ng-if="field.type === 'number'"  ng-class="{'pp-repeatable':field.repeatable && edit}">
+                                    {{field.name}}
+                                    <i>{{field.guidance}}</i>
+                                    <input type="number" class="form-control" ng-disabled="!edit" string-to-number ng-model="field.field_values[0].value">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pp-group" ng-if="dataPreview.resource_field_id && filter.substate === 'form' && dataPreview.resource_field_id !== '0                       '" >
+                            <hr>
+                            <div class="pp-header" style="background-color: #F8F8F8;padding: 5px;">Resource field<button ng-click="changeSubState('resource')"  style=" margin-top: 0px;">Open</button></div>
+                        </div>
+                        <div  class="pp-group" ng-if="dataPreview.scheduling_field_id && filter.substate === 'form' && dataPreview.scheduling_field_id !== '0                       '" >
+                            <hr>
+                            <div class="pp-header" style="background-color: #F8F8F8;padding: 5px;">Scheduling field<button ng-click="changeSubState('scheduling')"  style=" margin-top: 0px;">Open</button></div>
+                        </div>        
+                        <div class="pp-group" ng-if="dataPreview.pay_item_field_id && filter.substate === 'form' && dataPreview.pay_item_field_id !== '0                       '" >
+                            <hr>
+                            <div class="pp-header" style="background-color: #F8F8F8;padding: 5px;">Pay-item field<button ng-click="changeSubState('payitem')"  style=" margin-top: 0px;">Open</button></div>
+                        </div>
+                        <div  class="pp-group" ng-if="dataPreview.staff_field_id && filter.substate === 'form' && dataPreview.staff_field_id !== '0                       '">
+                            <hr>
+                            <div class="pp-header" style="background-color: #F8F8F8;padding: 5px;">Staff field<button ng-click="changeSubState('staff')"  style=" margin-top: 0px;">Open</button></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div ng-include="'templates/instances/small_payitem.html'" ng-if="dataPreview.pay_item_field_id && filter.substate === 'payitem'"></div>
+                        <div ng-include="'templates/instances/small_scheduling.html'" ng-if="dataPreview.scheduling_field_id && filter.substate === 'scheduling'"></div>
+                        <div ng-include="'templates/instances/small_resource.html'" ng-if="dataPreview.resource_field_id && filter.substate === 'resource'"></div>
+                        <div ng-include="'templates/instances/small_staff.html'" ng-if="dataPreview.staff_field_id && filter.substate === 'staff'"></div>
+                        <div ng-include="'templates/instances/small_gallery.html'" ng-if="filter.state === 'photos'"></div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,89 @@
+
+<html ng-app="devempire">
+    <head>
+        <title>Defects and Snagging</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="favicon.ico">
+        <!--library css-->
+        <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="libs/ng-table/ng-table.min.css" rel="stylesheet">
+        <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="libs/sweetalert/sweetalert.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+        <!--custom css-->
+        <link href="css/main.css" rel="stylesheet">
+        <link href="css/menus.css" rel="stylesheet">
+        <link href="css/page.css" rel="stylesheet">
+        <link href="css/directives.css" rel="stylesheet">
+        <link href="css/locationImage.css" rel="stylesheet">
+        <link href="css/generic.css" rel="stylesheet">
+
+        <link rel="stylesheet" type="text/css" href="css/style.css"/>
+        <script src="js/pdf.js"></script>
+        <script src="js/pdf.worker.js"></script>
+
+    </head>
+    <body ng-controller="AppCtrl">    
+        <div ui-view class="de-ui"></div>
+        <script src="libs/jquery-3.0.0.min.js"></script>
+        <script src="libs/angular.min.js"></script>
+        <script src="libs/ui-route.min.js"></script>  
+        <script src="libs/ng-table/ng-table.min.js"></script>  
+        <script src="libs/angular-drag-and-drop-lists.js"></script>
+        <script src="libs/angular-cache.min.js"></script>
+        <script src="libs/ng-file-upload/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
+        <script src="libs/ng-file-upload/ng-file-upload-all.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script>
+        <script src="libs/ui-bootstrap-tpls-2.0.0.min.js"></script>
+        <script src="libs/ng-flow-standalone.min.js"></script>
+        <script src="libs/createDialog.js"></script>
+        <script src="libs/sweetalert/sweetalert.min.js" type="text/javascript"></script>
+        <script src="libs/ngSweetAlert/SweetAlert.min.js" type="text/javascript"></script>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~angular main ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <script src ="js/app.js"></script>
+        <script src ="js/controllers/AppCtrl.js"></script>
+        <script src ="js/controllers/MainCtrl.js"></script>
+        <script src ="js/controllers/LoginCtrl.js"></script>
+        <script src ="js/controllers/HomeCtrl.js"></script>
+        <script src ="js/controllers/DefectsCtrl.js"></script>
+        <script src ="js/controllers/DrawingsCtrl.js"></script>
+        <script src ="js/controllers/DrawingCtrl.js"></script>
+        <script src ="js/controllers/SelectDrawingCtrl.js"></script>
+        <script src ="js/controllers/SubcontractorsCtrl.js"></script>
+        <script src ="js/controllers/SubcontractorCtrl.js"></script>
+        <script src ="js/controllers/PunchListCtrl.js"></script>
+        <script src ="js/controllers/LocationCtrl.js"></script>
+        <script src ="js/controllers/SignUpCtrl.js"></script>
+        <script src="js/controllers/_EditDrawingCtrl.js"></script>
+        <script src="js/controllers/_AddDrawingCtrl.js"></script>
+        <script src="js/controllers/_createProjectCtrl.js"></script>
+        <script src="js/controllers/_ChangeLogoCtrl.js"></script>
+        <script src="js/controllers/_ChangePasswordCtrl.js"></script>
+        <script src="js/controllers/_SelectDrawingCtrl.js"></script>
+        <script src="js/controllers/GlobalSearchCtrl.js"></script>
+        <script src="js/controllers/ForgotPasswordCtrl.js"></script>
+        <script src="js/controllers/SearchResultsCtrl.js"></script>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~angular controllers~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+
+        <script src ="js/directives/topbar.js"></script>
+        <script src ="js/directives/relatedtasks.js"></script>
+        <script src ="js/directives/addtask.js"></script>
+        <script src ="js/directives/assignee.js"></script>
+        <script src ="js/directives/defectslide.js"></script>
+        <script src ="js/directives/subcontractorslide.js"></script>
+        <script src ="js/directives/taskslide.js"></script>
+
+        <script src ="js/services/SelectDrawingService.js"></script>
+        <script src ="js/services/SearchService.js"></script>
+        <script src ="js/services/AuthService.js"></script>
+        <script src ="js/services/ProjectService.js"></script>
+        <script src ="js/services/DefectsService.js"></script>
+        <script src ="js/services/DrawingsService.js"></script>
+        <script src ="js/services/SettingsService.js"></script>
+        <script src ="js/services/ConvertersService.js"></script>
+        <script src ="js/services/SubcontractorsService.js"></script>
+
+    </body>
+</html>
