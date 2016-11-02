@@ -11,11 +11,7 @@
     <description></description>
     
     <author email="anthony.hanna@proproject.io" href="http://proproject.io/"></author>
-  
-    <gap:config-file platform="android" parent="/manifest/application" >
-        <application android:debuggable="true" />
-    </gap:config-file>
-  	
+   	
     <content src="index.html"/>
     
     <gap:config-file platform="android" parent="/manifest">
