@@ -20,8 +20,8 @@
     
     <gap:plugin name="org.apache.cordova.splashscreen" />
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
-    <plugin name="com.synconset.imagepicker" spec="1.0.4" source="pgb" />
-    <gap:plugin name="org.apache.cordova.camera" source="npm" />
+<!--     <plugin name="com.synconset.imagepicker" spec="1.0.4" source="pgb" />
+    <gap:plugin name="org.apache.cordova.camera" source="npm" /> -->
     
     <access origin="*"/>
     <allow-navigation href="*" />  
