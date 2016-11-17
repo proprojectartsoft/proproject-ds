@@ -267,9 +267,9 @@ Author     : buchi
     .item {
         border-color: #fff;
         padding: 7px 10px;
-        margin:0px;
+        margin: 0;
         border-radius: 0;
-        border-bottom:1px solid #efefef
+        border-bottom: 1px solid #efefef;
     }
 
     .ds-tile {
@@ -304,17 +304,19 @@ Author     : buchi
         overflow: hidden;
 
         img {
-            height: 24px;
+            height: 34px;
+            padding: 8px 14px;
+            width: 46px;
             vertical-align: middle;
-            padding: 4px;
         }
 
         i {
             font-size: 22px !important;
-            vertical-align: middle;
-            padding: 4px 6px;
+            padding: 6px 13px;
             color: #fff;
             border-left: 1px solid #000;
+            display: inline-block;
+            vertical-align: middle;
         }
     }
 }

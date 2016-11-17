@@ -177,13 +177,13 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     $scope.local.markers = [];
                                     $scope.local.markers.push(newMarker);
                                 } else {
-                                  var aux = {
-                                      id: $scope.local.data.id,
-                                      path: $scope.local.data.base64String,
-                                      base64String: $scope.local.data.base64String,
-                                      markers: [newMarker]
-                                  }
-                                  localStorage.setObject('ds.drawing.defect', aux)
+                                    var aux = {
+                                        id: $scope.local.data.id,
+                                        path: $scope.local.data.base64String,
+                                        base64String: $scope.local.data.base64String,
+                                        markers: [newMarker]
+                                    }
+                                    localStorage.setObject('ds.drawing.defect', aux)
                                     $state.go('app.defects', {
                                         id: 0
                                     })
@@ -246,7 +246,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                     })
                 });
             });
-        }        
+        }
         if (localStorage.getObject('ds.fullscreen.back').state === 'app.defects' && localStorage.getObject('ds.defect.drawing')) {
             $scope.local.data = localStorage.getObject('ds.defect.drawing')
             $scope.local.singleMarker = true;
@@ -287,9 +287,11 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             }
         }
         $scope.go = function(predicate, id) {
-            $state.go('app.' + predicate, {
-                id: id
-            });
+            if (id) {
+                $state.go('app.' + predicate, {
+                    id: id
+                });
+            }
         }
     }
 ]);

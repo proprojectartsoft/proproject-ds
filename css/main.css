@@ -232,21 +232,26 @@ input[type=checkbox]:checked.blue-ck + label {
   .scroll-content.ds-blackscroll {
     background-color: #2f4759; }
 
-label .ds-date, .ds-label .ds-date {
+.ds-label .ds-date,
+label .ds-date {
   height: 34px;
   padding: 8px 12px !important;
   font-weight: 100; }
-label .ds-content, .ds-label .ds-content {
+.ds-label .ds-content,
+label .ds-content {
   background-color: #e6e7e6;
   padding: 7px 15px 4px;
   position: relative; }
-  label .ds-content .ds-title, .ds-label .ds-content .ds-title {
+  .ds-label .ds-content .ds-title,
+  label .ds-content .ds-title {
     display: block; }
-  label .ds-content .ds-description, .ds-label .ds-content .ds-description {
+  .ds-label .ds-content .ds-description,
+  label .ds-content .ds-description {
     display: block;
     margin-top: -5px;
     font-weight: 100; }
-  label .ds-content:after, .ds-label .ds-content:after {
+  .ds-label .ds-content:after,
+  label .ds-content:after {
     content: '';
     z-index: 9;
     position: absolute;
@@ -257,7 +262,8 @@ label .ds-content, .ds-label .ds-content {
     border-style: solid;
     border-width: 11px 7px 0 7px;
     border-color: #e6e7e6 transparent transparent transparent; }
-label input, .ds-label input {
+.ds-label input,
+label input {
   display: block;
   width: 100%;
   height: 40px;
@@ -386,6 +392,9 @@ label input, .ds-label input {
   text-decoration: underline; }
 
 .title img {
+  padding: 8px 5px 6px 15px;
+  margin-top: -5px;
+  margin-right: -3px;
   float: right; }
 
 .pp-formbtn {
