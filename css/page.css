@@ -78,7 +78,11 @@ Author     : buchi
     .ds-page .ds-pdf .ds-container canvas {
       width: 100%;
       vertical-align: middle;
-      border: 1px solid #aaa; }
+      border: 1px solid #aaa;
+      -webkit-user-select: all;
+      -moz-user-select: all;
+      -ms-user-select: all;
+      user-select: all; }
   .ds-page .ds-pdf canvas {
     width: 100%;
     background: #fff; }
@@ -267,6 +271,10 @@ Author     : buchi
   margin-top: 5px; }
 
 .ds-marker {
-  transform: translateZ(0); }
+  transform: translateZ(0);
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all; }
 
 /*# sourceMappingURL=page.css.map */

@@ -113,6 +113,10 @@ Author     : buchi
                 width: 100%;
                 vertical-align: middle;
                 border: 1px solid #aaa;
+                -webkit-user-select: all;
+                -moz-user-select: all;
+                -ms-user-select: all;
+                user-select: all;
             }
         }
 
@@ -399,4 +403,8 @@ Author     : buchi
 
 .ds-marker {
     transform: translateZ(0);
+    -webkit-user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
 }
