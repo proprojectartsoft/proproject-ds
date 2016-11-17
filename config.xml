@@ -18,7 +18,7 @@
     </gap:config-file>
 
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
-    <plugin name="com.synconset.imagepicker" spec="1.0.4" source="pgb"/>
+    <plugin name="cordova-plugin-imagepicker" source="npm"/>
     <gap:plugin name="org.apache.cordova.camera" source="npm"/>
     <gap:plugin name="cordova-plugin-contacts" source="npm"/>
 
