@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="io.proproject.dspreprod" version="1.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
 
-    <name>proproject preprod</name>
+    <name>D&S artvm</name>
 
     <description></description>
 
@@ -17,8 +17,9 @@
         <application android:theme="@android:style/Theme.NoTitleBar"></application>
     </gap:config-file>
 
+    <gap:plugin name="org.apache.cordova.splashscreen"/>
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
-    <plugin name="cordova-plugin-imagepicker" source="npm"/>
+    <plugin name="com.synconset.imagepicker" spec="1.0.4" source="pgb"/>
     <gap:plugin name="org.apache.cordova.camera" source="npm"/>
     <gap:plugin name="cordova-plugin-contacts" source="npm"/>
 
