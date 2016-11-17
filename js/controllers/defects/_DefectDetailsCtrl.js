@@ -52,6 +52,7 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
             $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
         }
         $scope.objtofields = function() {
+          console.log($scope.local.data);
             $scope.local.data.status_id = $scope.local.data.status_obj.id;
             $scope.local.data.status_name = $scope.local.data.status_obj.name;
             $scope.local.data.priority_id = $scope.local.data.priority_obj.id;

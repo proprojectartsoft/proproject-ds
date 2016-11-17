@@ -27,6 +27,7 @@ angular.module($APP.name).directive('priority', function($rootScope) {
 
         $scope.changePriority = function(option) {
             $scope.local.data = option;
+            $scope.item = option;
             $scope.toggle();
         }
 

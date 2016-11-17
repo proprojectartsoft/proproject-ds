@@ -27,6 +27,7 @@ angular.module($APP.name).directive('severity', function($rootScope) {
 
         $scope.changeSeverity = function(option) {
             $scope.local.data = option;
+            $scope.item = option;
             $scope.toggle();
         }
 

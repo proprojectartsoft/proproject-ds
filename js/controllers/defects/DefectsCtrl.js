@@ -201,7 +201,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
         }
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
-            DefectsService.update($scope.local.data).then(function(result) {
+            DefectsService.update(ConvertersService.save_defect($scope.local.data)).then(function(result) {
                 localStorage.setObject('ds.defect.active.data', $scope.local.data)
                 localStorage.removeItem('ds.defect.backup')
                 localStorage.setObject('ds.reloadevent', {
@@ -212,7 +212,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
         $scope.saveCreate = function() {
             if ($scope.local.drawing && $scope.local.drawing.markers && $scope.local.drawing.markers.length && $scope.local.data.title) {
                 $rootScope.disableedit = true;
-                DefectsService.create($scope.local.data).then(function(result) {
+                DefectsService.create(ConvertersService.save_defect($scope.local.data)).then(function(result) {
                     localStorage.setObject('ds.defect.active.data', $scope.local.data)
                     localStorage.removeItem('ds.defect.backup')
                     DrawingsService.get_original($scope.local.drawing.id).then(function(drawing) {
