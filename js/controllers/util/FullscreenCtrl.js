@@ -111,139 +111,141 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         }
         var perc = $scope.width / 12;
         var setPdf = function(base64String) {
-            var url = $APP.server + '/pub/drawings/' + base64String;
-            PDFJS.getDocument(url).then(function(pdf) {
-                pdf.getPage(1).then(function(page) {
-                    var widthToBe = 1200;
-                    var viewport = page.getViewport(1);
-                    var scale = widthToBe / viewport.width;
-                    var usedViewport = page.getViewport(scale);
-                    var canvas = document.getElementById('fullPreviewCanvas');
-                    var context = canvas.getContext('2d');
-                    canvas.height = usedViewport.height;
-                    canvas.width = usedViewport.width;
-                    canvas.onclick = function(event) {
-                        if ($scope.addingMarker) {
-                            $scope.addingMarker = false;
-                            var newstatus = 'Incomplete';
-                            var img = 'img/incomplete.png';
-                            if (localStorage.getObject('ds.defect.new.data')) {
-                                newstatus = localStorage.getObject('ds.defect.new.data').status_obj.name
-                                generateDefectImg(newstatus);
-                            }
-                            if (index !== 2) {
-                                var x = (Math.floor(event.offsetX) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
-                                var y = (Math.floor(event.offsetY) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
-                                var newMarker = {
-                                    id: 0,
-                                    xInit: x,
-                                    yInit: y,
-                                    position_x: x,
-                                    position_y: y,
-                                    drawing_id: parseInt($stateParams.id),
-                                    status: newstatus,
-                                    img: img
+            $timeout(function() {
+                var url = $APP.server + '/pub/drawings/' + base64String;
+                PDFJS.getDocument(url).then(function(pdf) {
+                    pdf.getPage(1).then(function(page) {
+                        var widthToBe = 1200;
+                        var viewport = page.getViewport(1);
+                        var scale = widthToBe / viewport.width;
+                        var usedViewport = page.getViewport(scale);
+                        var canvas = document.getElementById('fullPreviewCanvas');
+                        var context = canvas.getContext('2d');
+                        canvas.height = usedViewport.height;
+                        canvas.width = usedViewport.width;
+                        canvas.onclick = function(event) {
+                            if ($scope.addingMarker) {
+                                $scope.addingMarker = false;
+                                var newstatus = 'Incomplete';
+                                var img = 'img/incomplete.png';
+                                if (localStorage.getObject('ds.defect.new.data')) {
+                                    newstatus = localStorage.getObject('ds.defect.new.data').status_obj.name
+                                    generateDefectImg(newstatus);
                                 }
-                                if ($scope.local.singleMarker) {
-                                    $scope.local.markers = [];
-                                    $scope.local.markers.push(newMarker);
-                                } else {
-                                    var aux = {
-                                        id: $scope.local.data.id,
-                                        path: $scope.local.data.base64String,
-                                        base64String: $scope.local.data.base64String,
-                                        markers: [newMarker]
+                                if (index !== 2) {
+                                    var x = (Math.floor(event.offsetX) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
+                                    var y = (Math.floor(event.offsetY) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
+                                    var newMarker = {
+                                        id: 0,
+                                        xInit: x,
+                                        yInit: y,
+                                        position_x: x,
+                                        position_y: y,
+                                        drawing_id: parseInt($stateParams.id),
+                                        status: newstatus,
+                                        img: img
                                     }
-                                    localStorage.setObject('ds.drawing.defect', aux)
-                                    $state.go('app.defects', {
-                                        id: 0
-                                    })
-                                }
-                                renderPoints(index);
-                            } else {
-                                var x = Math.floor(event.offsetX) - 6;
-                                var y = Math.floor(event.offsetY) - 6;
-                                var newMarker = {
-                                    id: 0,
-                                    xInit: x,
-                                    yInit: y,
-                                    position_x: x,
-                                    position_y: y,
-                                    drawing_id: parseInt($stateParams.id),
-                                    status: newstatus,
-                                    img: img
-                                }
-                                if ($scope.local.singleMarker) {
-                                    $scope.local.markers = [];
-                                    $scope.local.markers.push(newMarker);
-                                } else {
-                                    var aux = {
-                                        id: $scope.local.data.id,
-                                        path: $scope.local.data.base64String,
-                                        base64String: $scope.local.data.base64String,
-                                        markers: [newMarker]
+                                    if ($scope.local.singleMarker) {
+                                        $scope.local.markers = [];
+                                        $scope.local.markers.push(newMarker);
+                                    } else {
+                                        var aux = {
+                                            id: $scope.local.data.id,
+                                            path: $scope.local.data.base64String,
+                                            base64String: $scope.local.data.base64String,
+                                            markers: [newMarker]
+                                        }
+                                        localStorage.setObject('ds.drawing.defect', aux)
+                                        $state.go('app.defects', {
+                                            id: 0
+                                        })
                                     }
-                                    localStorage.setObject('ds.drawing.defect', aux)
-                                    $state.go('app.defects', {
-                                        id: 0
-                                    })
-                                }
-                                renderPoints(index);
+                                    renderPoints(index);
+                                } else {
+                                    var x = Math.floor(event.offsetX) - 6;
+                                    var y = Math.floor(event.offsetY) - 6;
+                                    var newMarker = {
+                                        id: 0,
+                                        xInit: x,
+                                        yInit: y,
+                                        position_x: x,
+                                        position_y: y,
+                                        drawing_id: parseInt($stateParams.id),
+                                        status: newstatus,
+                                        img: img
+                                    }
+                                    if ($scope.local.singleMarker) {
+                                        $scope.local.markers = [];
+                                        $scope.local.markers.push(newMarker);
+                                    } else {
+                                        var aux = {
+                                            id: $scope.local.data.id,
+                                            path: $scope.local.data.base64String,
+                                            base64String: $scope.local.data.base64String,
+                                            markers: [newMarker]
+                                        }
+                                        localStorage.setObject('ds.drawing.defect', aux)
+                                        $state.go('app.defects', {
+                                            id: 0
+                                        })
+                                    }
+                                    renderPoints(index);
 
+                                }
                             }
                         }
-                    }
 
-                    var renderContext = {
-                        canvasContext: context,
-                        viewport: usedViewport
-                    };
-                    page.render(renderContext).then(function() {
-                        $timeout(function() {
-                            $scope.local.markers = [];
-                            angular.forEach($scope.local.data.markers, function(markerResult) {
-                                if (!(markerResult.position_x === 0 && markerResult.position_y === 0)) {
-                                    var img = '';
-                                    switch (markerResult.status) {
-                                        case 'Incomplete':
-                                            img = 'img/incomplete.png'
-                                            break;
-                                        case 'Completed':
-                                            img = 'img/completed.png'
-                                            break;
-                                        case 'Contested':
-                                            img = 'img/contested.png'
-                                            break;
-                                        case 'Delayed':
-                                            img = 'img/delayed.png'
-                                            break;
-                                        case 'Closed Out':
-                                            img = 'img/closed_out.png'
-                                            break;
-                                        case 'Partially Completed':
-                                            img = 'img/partially_completed.png'
-                                            break;
+                        var renderContext = {
+                            canvasContext: context,
+                            viewport: usedViewport
+                        };
+                        page.render(renderContext).then(function() {
+                            $timeout(function() {
+                                $scope.local.markers = [];
+                                angular.forEach($scope.local.data.markers, function(markerResult) {
+                                    if (!(markerResult.position_x === 0 && markerResult.position_y === 0)) {
+                                        var img = '';
+                                        switch (markerResult.status) {
+                                            case 'Incomplete':
+                                                img = 'img/incomplete.png'
+                                                break;
+                                            case 'Completed':
+                                                img = 'img/completed.png'
+                                                break;
+                                            case 'Contested':
+                                                img = 'img/contested.png'
+                                                break;
+                                            case 'Delayed':
+                                                img = 'img/delayed.png'
+                                                break;
+                                            case 'Closed Out':
+                                                img = 'img/closed_out.png'
+                                                break;
+                                            case 'Partially Completed':
+                                                img = 'img/partially_completed.png'
+                                                break;
+                                        }
+                                        var auxPoint = {
+                                            xInit: markerResult.position_x,
+                                            yInit: markerResult.position_y,
+                                            position_x: markerResult.position_x,
+                                            position_y: markerResult.position_y,
+                                            x: markerResult.position_x * (60 / 100) - 6,
+                                            y: markerResult.position_y * (60 / 100) - 6,
+                                            defect_id: markerResult.defect_id,
+                                            drawing_id: markerResult.drawing_id,
+                                            id: markerResult.id,
+                                            status: markerResult.status,
+                                            img: img,
+                                            z: 99
+                                        };
+                                        $scope.local.markers.push(auxPoint);
                                     }
-                                    var auxPoint = {
-                                        xInit: markerResult.position_x,
-                                        yInit: markerResult.position_y,
-                                        position_x: markerResult.position_x,
-                                        position_y: markerResult.position_y,
-                                        x: markerResult.position_x * (60 / 100) - 6,
-                                        y: markerResult.position_y * (60 / 100) - 6,
-                                        defect_id: markerResult.defect_id,
-                                        drawing_id: markerResult.drawing_id,
-                                        id: markerResult.id,
-                                        status: markerResult.status,
-                                        img: img,
-                                        z: 99
-                                    };
-                                    $scope.local.markers.push(auxPoint);
-                                }
+                                });
+                                renderPoints(index);
                             });
-                            renderPoints(index);
-                        });
-                    })
+                        })
+                    });
                 });
             });
         }

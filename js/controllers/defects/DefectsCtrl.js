@@ -31,36 +31,38 @@ angular.module($APP.name).controller('DefectsCtrl', [
         });
 
         var setPdf = function(base64String) {
-            var url = $APP.server + '/pub/drawings/' + base64String;
-            PDFJS.getDocument(url).then(function(pdf) {
-                pdf.getPage(1).then(function(page) {
-                    var widthToBe = 480;
-                    var viewport = page.getViewport(1);
-                    var scale = widthToBe / viewport.width;
-                    var usedViewport = page.getViewport(scale);
-                    var canvas = document.getElementById('defectPreviewCanvas');
-                    var context = canvas.getContext('2d');
-                    canvas.height = usedViewport.height;
-                    canvas.width = usedViewport.width;
-                    canvas.onclick = function(event) {}
-                    var renderContext = {
-                        canvasContext: context,
-                        viewport: usedViewport
-                    };
-                    page.render(renderContext).then(function() {
-                        var width = $("#defectPreviewCanvas").width();
-                        $scope.perc = width / 12;
-                        if ($scope.local.drawing && $scope.local.drawing.markers && $scope.local.drawing.markers.length) {
-                            $scope.$apply(function() {
-                                $scope.local.marker = {};
-                                $scope.local.marker.id = $scope.local.drawing.markers[0].id;
-                                $scope.local.marker.x = $scope.local.drawing.markers[0].position_x * ($scope.perc / 100) - 6;
-                                $scope.local.marker.y = $scope.local.drawing.markers[0].position_y * ($scope.perc / 100) - 6;
-                                $scope.local.marker.status = $scope.local.drawing.markers[0].status;
-                            })
+            $timeout(function() {
+                var url = $APP.server + '/pub/drawings/' + base64String;
+                PDFJS.getDocument(url).then(function(pdf) {
+                    pdf.getPage(1).then(function(page) {
+                        var widthToBe = 480;
+                        var viewport = page.getViewport(1);
+                        var scale = widthToBe / viewport.width;
+                        var usedViewport = page.getViewport(scale);
+                        var canvas = document.getElementById('defectPreviewCanvas');
+                        var context = canvas.getContext('2d');
+                        canvas.height = usedViewport.height;
+                        canvas.width = usedViewport.width;
+                        canvas.onclick = function(event) {}
+                        var renderContext = {
+                            canvasContext: context,
+                            viewport: usedViewport
+                        };
+                        page.render(renderContext).then(function() {
+                            var width = $("#defectPreviewCanvas").width();
+                            $scope.perc = width / 12;
+                            if ($scope.local.drawing && $scope.local.drawing.markers && $scope.local.drawing.markers.length) {
+                                $scope.$apply(function() {
+                                    $scope.local.marker = {};
+                                    $scope.local.marker.id = $scope.local.drawing.markers[0].id;
+                                    $scope.local.marker.x = $scope.local.drawing.markers[0].position_x * ($scope.perc / 100) - 6;
+                                    $scope.local.marker.y = $scope.local.drawing.markers[0].position_y * ($scope.perc / 100) - 6;
+                                    $scope.local.marker.status = $scope.local.drawing.markers[0].status;
+                                })
 
-                        }
-                    })
+                            }
+                        })
+                    });
                 });
             });
         }
@@ -113,12 +115,11 @@ angular.module($APP.name).controller('DefectsCtrl', [
         function newDefect() {
             $rootScope.disableedit = false;
             $rootScope.thiscreate = true;
-            if(localStorage.getObject('ds.drawing.defect') && !localStorage.getObject('ds.defect.drawing')){
-              $scope.local.drawing = localStorage.getObject('ds.drawing.defect')
-              localStorage.setObject('ds.defect.drawing', $scope.local.drawing)
-            }
-            else{
-              $scope.local.drawing = localStorage.getObject('ds.defect.drawing');
+            if (localStorage.getObject('ds.drawing.defect') && !localStorage.getObject('ds.defect.drawing')) {
+                $scope.local.drawing = localStorage.getObject('ds.drawing.defect')
+                localStorage.setObject('ds.defect.drawing', $scope.local.drawing)
+            } else {
+                $scope.local.drawing = localStorage.getObject('ds.defect.drawing');
             }
             if ($scope.local.drawing && $scope.local.drawing.path) {
                 setPdf($scope.local.drawing.path)
@@ -203,7 +204,9 @@ angular.module($APP.name).controller('DefectsCtrl', [
             DefectsService.update($scope.local.data).then(function(result) {
                 localStorage.setObject('ds.defect.active.data', $scope.local.data)
                 localStorage.removeItem('ds.defect.backup')
-                localStorage.setObject('ds.reloadevent', {value: true});
+                localStorage.setObject('ds.reloadevent', {
+                    value: true
+                });
             })
         }
         $scope.saveCreate = function() {
@@ -220,9 +223,11 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         aux.position_y = aux.yInit;
                         drawing.markers.push(aux)
                         DrawingsService.update(drawing).then(function(drawingupdate) {
-                          localStorage.removeItem('dsdrwact');
-                          localStorage.setObject('ds.reloadevent', {value: true});
-                          $scope.back();
+                            localStorage.removeItem('dsdrwact');
+                            localStorage.setObject('ds.reloadevent', {
+                                value: true
+                            });
+                            $scope.back();
                         });
                     })
                 })
