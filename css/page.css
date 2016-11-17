@@ -203,19 +203,21 @@ Author     : buchi
 
 .ds-fullscreen .ds-pdf {
   background-color: transparent; }
-.ds-fullscreen .ds-actions {
-  float: right;
-  display: inline-block;
+
+.ds-fullscreentools {
+  position: absolute;
+  display: block;
   background-color: #2f4759;
-  margin-right: 10px;
-  margin-top: 10px;
-  overflow: hidden; }
-  .ds-fullscreen .ds-actions img {
+  right: 0;
+  overflow: hidden;
+  top: 99px;
+  z-index: 99; }
+  .ds-fullscreentools img {
     height: 34px;
     padding: 8px 14px;
     width: 46px;
     vertical-align: middle; }
-  .ds-fullscreen .ds-actions i {
+  .ds-fullscreentools i {
     font-size: 22px !important;
     padding: 6px 13px;
     color: #fff;

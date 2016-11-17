@@ -298,30 +298,31 @@ Author     : buchi
     .ds-pdf {
         background-color: transparent;
     }
+}
 
-    .ds-actions {
-        float: right;
+.ds-fullscreentools {
+    position: absolute;
+    display: block;
+    background-color: #2f4759;
+    right: 0;
+    overflow: hidden;
+    top: 99px;
+    z-index: 99;
+
+    img {
+        height: 34px;
+        padding: 8px 14px;
+        width: 46px;
+        vertical-align: middle;
+    }
+
+    i {
+        font-size: 22px !important;
+        padding: 6px 13px;
+        color: #fff;
+        border-left: 1px solid #000;
         display: inline-block;
-        background-color: #2f4759;
-        margin-right: 10px;
-        margin-top: 10px;
-        overflow: hidden;
-
-        img {
-            height: 34px;
-            padding: 8px 14px;
-            width: 46px;
-            vertical-align: middle;
-        }
-
-        i {
-            font-size: 22px !important;
-            padding: 6px 13px;
-            color: #fff;
-            border-left: 1px solid #000;
-            display: inline-block;
-            vertical-align: middle;
-        }
+        vertical-align: middle;
     }
 }
 
