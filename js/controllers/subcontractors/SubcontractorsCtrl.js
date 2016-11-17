@@ -14,11 +14,11 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
         $rootScope.disableedit = true;
         SettingsService.put_settings('tabActive', 'subcontractors');
         localStorage.setObject('ds.defect.back', {id:$stateParams.id, state:'app.subcontractorrelated'})
+        localStorage.removeItem('ds.reloadevent');
 
         if (!localStorage.getObject('dsscact') || localStorage.getObject('dsscact').id !== parseInt($stateParams.id)) {
             SubcontractorsService.get($stateParams.id).then(function(result) {
                 delete result.company_logo;
-                console.log(result);
                 localStorage.setObject('dsscact', result)
                 $scope.local.data = result;
                 $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
@@ -40,6 +40,7 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
             $rootScope.disableedit = true;
             SubcontractorsService.update($scope.local.data).then(function(result) {
                 localStorage.setObject('dsscact', $scope.local.data)
+                localStorage.setObject('ds.reloadevent', {value: true});
             })
         }
 

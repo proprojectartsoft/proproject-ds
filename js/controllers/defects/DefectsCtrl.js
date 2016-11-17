@@ -22,13 +22,13 @@ angular.module($APP.name).controller('DefectsCtrl', [
             id: $stateParams.id,
             state: 'app.defects'
         })
+        localStorage.removeItem('ds.reloadevent');
 
         $ionicModal.fromTemplateUrl('templates/defects/_drawings.html', {
             scope: $scope
         }).then(function(modal) {
             $scope.modal = modal;
         });
-
 
         var setPdf = function(base64String) {
             var url = $APP.server + '/pub/drawings/' + base64String;
@@ -52,7 +52,6 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         $scope.perc = width / 12;
                         if ($scope.local.drawing && $scope.local.drawing.markers && $scope.local.drawing.markers.length) {
                             $scope.$apply(function() {
-                                console.log($scope.local.drawing);
                                 $scope.local.marker = {};
                                 $scope.local.marker.id = $scope.local.drawing.markers[0].id;
                                 $scope.local.marker.x = $scope.local.drawing.markers[0].position_x * ($scope.perc / 100) - 6;
@@ -114,7 +113,13 @@ angular.module($APP.name).controller('DefectsCtrl', [
         function newDefect() {
             $rootScope.disableedit = false;
             $rootScope.thiscreate = true;
-            $scope.local.drawing = localStorage.getObject('ds.defect.drawing');
+            if(localStorage.getObject('ds.drawing.defect') && !localStorage.getObject('ds.defect.drawing')){
+              $scope.local.drawing = localStorage.getObject('ds.drawing.defect')
+              localStorage.setObject('ds.defect.drawing', $scope.local.drawing)
+            }
+            else{
+              $scope.local.drawing = localStorage.getObject('ds.defect.drawing');
+            }
             if ($scope.local.drawing && $scope.local.drawing.path) {
                 setPdf($scope.local.drawing.path)
             } else {
@@ -159,8 +164,10 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     localStorage.setObject('ds.defect.active.data', $scope.local.data)
                     $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
                     if ($scope.local.data.drawing && $scope.local.data.drawing.base64String) {
-                        $scope.local.drawing = $scope.local.data.drawing;
                         $scope.local.data.drawing.path = $scope.local.data.drawing.base64String;
+                        $scope.local.drawing = $scope.local.data.drawing;
+                        console.log($scope.local.data.drawing);
+                        console.log($scope.local.drawing);
                         localStorage.setObject('ds.defect.drawing', $scope.local.data.drawing);
                         setPdf($scope.local.data.drawing.base64String)
                     } else {
@@ -196,6 +203,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
             DefectsService.update($scope.local.data).then(function(result) {
                 localStorage.setObject('ds.defect.active.data', $scope.local.data)
                 localStorage.removeItem('ds.defect.backup')
+                localStorage.setObject('ds.reloadevent', {value: true});
             })
         }
         $scope.saveCreate = function() {
@@ -211,7 +219,11 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         aux.position_x = aux.xInit;
                         aux.position_y = aux.yInit;
                         drawing.markers.push(aux)
-                        DrawingsService.update(drawing).then(function(result) {});
+                        DrawingsService.update(drawing).then(function(drawingupdate) {
+                          localStorage.removeItem('dsdrwact');
+                          localStorage.setObject('ds.reloadevent', {value: true});
+                          $scope.back();
+                        });
                     })
                 })
             } else {
@@ -244,6 +256,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
             } else {
                 localStorage.removeItem('ds.defect.active.data');
             }
+            localStorage.removeItem('ds.drawing.defect')
             localStorage.removeItem('ds.defect.drawing');
             $rootScope.disableedit = true;
             $ionicViewSwitcher.nextDirection('back')

@@ -87,7 +87,28 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             $scope.addingMarker = !$scope.addingMarker;
         }
 
-
+        function generateDefectImg(newstatus) {
+            switch (newstatus) {
+                case 'Incomplete':
+                    img = 'img/incomplete.png'
+                    break;
+                case 'Completed':
+                    img = 'img/completed.png'
+                    break;
+                case 'Contested':
+                    img = 'img/contested.png'
+                    break;
+                case 'Delayed':
+                    img = 'img/delayed.png'
+                    break;
+                case 'Closed Out':
+                    img = 'img/closed_out.png'
+                    break;
+                case 'Partially Completed':
+                    img = 'img/partially_completed.png'
+                    break;
+            }
+        }
         var perc = $scope.width / 12;
         var setPdf = function(base64String) {
             var url = $APP.server + '/pub/drawings/' + base64String;
@@ -101,7 +122,6 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                     var context = canvas.getContext('2d');
                     canvas.height = usedViewport.height;
                     canvas.width = usedViewport.width;
-
                     canvas.onclick = function(event) {
                         if ($scope.addingMarker) {
                             $scope.addingMarker = false;
@@ -109,26 +129,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                             var img = 'img/incomplete.png';
                             if (localStorage.getObject('ds.defect.new.data')) {
                                 newstatus = localStorage.getObject('ds.defect.new.data').status_obj.name
-                                switch (newstatus) {
-                                    case 'Incomplete':
-                                        img = 'img/incomplete.png'
-                                        break;
-                                    case 'Completed':
-                                        img = 'img/completed.png'
-                                        break;
-                                    case 'Contested':
-                                        img = 'img/contested.png'
-                                        break;
-                                    case 'Delayed':
-                                        img = 'img/delayed.png'
-                                        break;
-                                    case 'Closed Out':
-                                        img = 'img/closed_out.png'
-                                        break;
-                                    case 'Partially Completed':
-                                        img = 'img/partially_completed.png'
-                                        break;
-                                }
+                                generateDefectImg(newstatus);
                             }
                             if (index !== 2) {
                                 var x = (Math.floor(event.offsetX) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
@@ -139,17 +140,25 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     yInit: y,
                                     position_x: x,
                                     position_y: y,
+                                    drawing_id: parseInt($stateParams.id),
                                     status: newstatus,
                                     img: img
                                 }
-                                console.log('New Marker Here:', newMarker);
                                 if ($scope.local.singleMarker) {
                                     $scope.local.markers = [];
                                     $scope.local.markers.push(newMarker);
                                 } else {
-                                    $scope.local.markers.push(newMarker);
+                                    var aux = {
+                                        id: $scope.local.data.id,
+                                        path: $scope.local.data.base64String,
+                                        base64String: $scope.local.data.base64String,
+                                        markers: [newMarker]
+                                    }
+                                    localStorage.setObject('ds.drawing.defect', aux)
+                                    $state.go('app.defects', {
+                                        id: 0
+                                    })
                                 }
-                                console.log($scope.local);
                                 renderPoints(index);
                             } else {
                                 var x = Math.floor(event.offsetX) - 6;
@@ -160,15 +169,24 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     yInit: y,
                                     position_x: x,
                                     position_y: y,
+                                    drawing_id: parseInt($stateParams.id),
                                     status: newstatus,
                                     img: img
                                 }
-                                console.log('New Marker Here:', newMarker);
                                 if ($scope.local.singleMarker) {
                                     $scope.local.markers = [];
                                     $scope.local.markers.push(newMarker);
                                 } else {
-                                    $scope.local.markers.push(newMarker);
+                                  var aux = {
+                                      id: $scope.local.data.id,
+                                      path: $scope.local.data.base64String,
+                                      base64String: $scope.local.data.base64String,
+                                      markers: [newMarker]
+                                  }
+                                  localStorage.setObject('ds.drawing.defect', aux)
+                                    $state.go('app.defects', {
+                                        id: 0
+                                    })
                                 }
                                 renderPoints(index);
 
@@ -223,20 +241,16 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     $scope.local.markers.push(auxPoint);
                                 }
                             });
-                            $timeout(function() {
-                                $('.ds-marker').find('*').css("zIndex", 10);
-                            }, 1000);
+                            renderPoints(index);
                         });
                     })
                 });
             });
-        }
-
+        }        
         if (localStorage.getObject('ds.fullscreen.back').state === 'app.defects' && localStorage.getObject('ds.defect.drawing')) {
             $scope.local.data = localStorage.getObject('ds.defect.drawing')
             $scope.local.singleMarker = true;
             if ($scope.local.data.markers && $scope.local.data.markers.length && $scope.local.data.markers[0].id) {
-                console.log($scope.local);
                 $scope.local.disableAddMarker = true;
             }
             setPdf($scope.local.data.path)
@@ -273,7 +287,6 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             }
         }
         $scope.go = function(predicate, id) {
-            console.log(predicate);
             $state.go('app.' + predicate, {
                 id: id
             });

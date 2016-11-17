@@ -29,6 +29,20 @@ angular.module($APP.name).controller('TabCtrl', [
                 $scope.tabSelect($scope.settings.tabActive)
             }
         })
+
+        $scope.$watch(function() {
+            return localStorage.getItem('ds.reloadevent')
+        }, function(value) {
+            if (value) {
+                console.log(value);
+                if (!$scope.settings.tabActive) {
+                    $scope.tabSelect('drawings');
+                } else {
+                    $scope.tabSelect($scope.settings.tabActive)
+                }
+            }
+        })
+
         $scope.tabSelect = function(predicate) {
             angular.forEach($scope.settings.tabs, function(value, key) {
                 $scope.settings.tabs[key] = 'img/new/' + key + '.png';
@@ -38,6 +52,7 @@ angular.module($APP.name).controller('TabCtrl', [
             SettingsService.set_settings($scope.settings)
             $scope.reload();
         }
+
 
         $scope.reload = function() {
             $scope.settings.loaded = false;
@@ -125,11 +140,11 @@ angular.module($APP.name).controller('TabCtrl', [
                         }
                     }]
                 }).then(function(res) {
-                  console.log($rootScope);
+                    console.log($rootScope);
                     if (res !== 'close') {
                         console.log('Tapped!', res);
-                        SubcontractorsService.invite(res).then(function(result){
-                          console.log(result);
+                        SubcontractorsService.invite(res).then(function(result) {
+                            console.log(result);
                         })
                     }
                 }, function(err) {

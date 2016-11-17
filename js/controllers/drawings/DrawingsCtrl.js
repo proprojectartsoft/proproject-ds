@@ -16,6 +16,7 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         SettingsService.put_settings('tabActive', 'drawings');
         localStorage.setObject('ds.defect.back', {id:$stateParams.id, state:'app.drawings'})
         localStorage.setObject('ds.fullscreen.back', {id:$stateParams.id, state:'app.drawings'})
+        localStorage.removeItem('ds.reloadevent');
 
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;
@@ -94,9 +95,9 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             DrawingsService.update($scope.local.data).then(function(result) {
-                console.log(result);
                 localStorage.setObject('dsdrwact', $scope.local.data)
                 localStorage.removeItem('ds.drawing.backup')
+                localStorage.setObject('ds.reloadevent', {value: true});
             })
         }
 
