@@ -12,6 +12,8 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
+        $scope.settings.project = localStorage.getObject('dsproject');
+        console.log($scope.settings.project);
         $scope.settings.state = 'details';
         $scope.local = {};
         $scope.local.search = '';
@@ -35,13 +37,13 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
             $scope.modal.show();
         };
         $scope.addAssignee = function(item) {
-                $scope.local.data.assignee_name = item.first_name + ' ' + item.last_name;
-                $scope.local.data.assignee_id = item.id;
-                $scope.modal.hide();
-            }
-            // ProjectService.users(localStorage.dsproject).then(function(result) {
-            //     $scope.local.poplist = result;
-            // })
+            $scope.local.data.assignee_name = item.first_name + ' ' + item.last_name;
+            $scope.local.data.assignee_id = item.id;
+            $scope.modal.hide();
+        }
+        ProjectService.users($scope.settings.project.id).then(function(result) {
+            $scope.local.poplist = result;
+        })
         if ($stateParams.id === '0') {
             $scope.settings.subHeader = 'New defect'
             $scope.local.data = localStorage.getObject('ds.defect.new.data')
@@ -79,7 +81,7 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
         $scope.$watch('local.data.status_obj', function(value) {
 
             var drawing = localStorage.getObject('ds.defect.drawing')
-            if (drawing.markers && drawing.markers.length) {
+            if (drawing && drawing.markers && drawing.markers.length) {
                 var img = '';
                 switch (value.name) {
                     case 'Incomplete':
