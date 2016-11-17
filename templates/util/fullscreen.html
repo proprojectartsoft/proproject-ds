@@ -3,7 +3,7 @@
         <button class="button ion-ios-arrow-left"></button>
         <h1 class="title">Drawing&nbsp;-&nbsp;{{local.data.title}}</h1>
     </ion-header-bar>
-    <ion-content class="has-header ds-page ds-fullscreen">
+    <ion-content class="has-header ds-page ds-fullscreen" direction="xy" scroll="true">
         <div class="ds-actions">
             <img src="img/use/marker.png" ng-click="triggerMarker()" ng-if="!local.disableAddMarker">
             <i class="ion-android-add" ng-if="!disableZoomIn" ng-click="zoomIn()"></i>
@@ -11,7 +11,7 @@
         </div>
         <div class="ds-pdf">
             <div style="position:relative" class="ds-container">
-                <ion-scroll overflow-scroll="true" zooming="false" direction="xy" style="width:{{width}}px;height:600px;z-index:1" id="dspdfcontainer">
+                <div  style="width:{{width}}px;height:auto;z-index:1" id="dspdfcontainer">
                     <img
                         class="ds-marker"
                         ng-repeat="marker in local.markers"
