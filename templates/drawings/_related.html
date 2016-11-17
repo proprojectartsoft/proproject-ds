@@ -1,25 +1,33 @@
 <ion-view hide-back-button="true" cache-view="false">
-  <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
-    <button class="button ion-ios-arrow-left"></button>
-    <h1 class="title">{{settings.subHeader}}</h1>
-  </ion-header-bar>
-  <ion-content class="has-header ds-blackscroll ds-page ds-tabslist ds-related">
-    <ion-item ng-repeat="item in local.list track by $index" ng-click="goItem(item.id)">
-      <span class="ds-tile" ng-class="{'ds-incomplete':item.status_name === 'Incomplete', 'ds-delayed': item.status_name === 'Delayed','ds-contested': item.status_name === 'Contested', 'ds-completed':item.status_name === 'Completed', 'ds-partiallycompleted':item.status_name === 'Partially Completed', 'ds-closedout':item.status_name === 'Closed Out'}">
-        {{getInitials(item.assignee_name)}}
-      </span>
-      <h3>
-        <div>{{item.title}}</div>
-        <div class="ds-description">
-          <i>Priority&nbsp;:&nbsp;</i><span>{{item.priority_name}}</span>
-          <i>Severity&nbsp;:&nbsp;</i><span>{{item.severity_name}}</span>
-          <span class="ds-date" ng-if="item.due_date"><img src="img/use/due_date.png">{{item.due_date|date}}</span>
-          <span class="ds-date" ng-if="!item.due_date"><img src="img/use/due_date.png">No date</span>
-        </div>
-      </h3>
-    </ion-item>
-    <div ng-if="local.loaded && !local.list.length" class="ds-nodata">
-      <span>No related tasks</span>
-    </div>
-  </ion-content>
+    <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+        <button class="button ion-ios-arrow-left"></button>
+        <h1 class="title">{{settings.subHeader}}</h1>
+    </ion-header-bar>
+    <ion-content class="has-header ds-blackscroll ds-page ds-tabslist ds-related">
+        <ion-list>
+            <ion-item
+                ng-repeat="item in local.list track by $index"
+                ng-click="goItem(item.id)"
+                class="ds-tileandborder"
+                ng-class="{'ds-incomplete':item.status_name === 'Incomplete', 'ds-delayed': item.status_name === 'Delayed','ds-contested': item.status_name === 'Contested', 'ds-completed':item.status_name === 'Completed', 'ds-partiallycompleted':item.status_name === 'Partially Completed', 'ds-closedout':item.status_name === 'Closed Out'}">
+                <span class="ds-tile">
+                    {{getInitials(item.assignee_name)}}
+                </span>
+                <h3>
+                    <div>{{item.title}}</div>
+                    <div class="ds-description">
+                        <i>Priority&nbsp;:&nbsp;</i>
+                        <span>{{item.priority_name}}</span>
+                        <i>Severity&nbsp;:&nbsp;</i>
+                        <span>{{item.severity_name}}</span>
+                        <span class="ds-date" ng-if="item.due_date"><img src="img/use/due_date.png">{{item.due_date| date }}</span>
+                        <span class="ds-date" ng-if="!item.due_date"><img src="img/use/due_date.png">No date</span>
+                    </div>
+                </h3>
+            </ion-item>
+            <div ng-if="local.loaded && !local.list.length" class="ds-nodata">
+                <span>No related tasks</span>
+            </div>
+        </ion-list>
+    </ion-content>
 </ion-view>

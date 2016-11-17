@@ -8,7 +8,21 @@ Created on : Sep 28, 2016, 9:25:45 PM
 Author     : buchi
 */
 .ds-tabslist {
-    ion-item {
+    &.ds-related .list {
+        padding: 5px;
+    }
+
+    .list {
+        padding: 10px 5px 5px;
+    }
+
+    .item {
+        padding: 5px 10px 5px 5px;
+        margin-bottom: 5px;
+        border-radius: 3px;
+        border-left: 4px solid #35bdee;
+        color: #333;
+
         img {
             height: 35px;
             vertical-align: middle;
@@ -76,6 +90,19 @@ Author     : buchi
         border: none;
         padding: 5px;
         clear: both;
+
+        .ion-arrow-expand {
+            position: absolute;
+            right: 11px;
+            font-size: 24px !important;
+            padding: 5px 8px;
+            background-color: #333;
+            color: #fff;
+            z-index: 99;
+            top: 10px;
+            z-index: 1;
+            transform: translateZ(0);
+        }
 
         .ds-container {
             padding: 5px;
@@ -240,6 +267,9 @@ Author     : buchi
     .item {
         border-color: #fff;
         padding: 7px 10px;
+        margin:0px;
+        border-radius: 0;
+        border-bottom:1px solid #efefef
     }
 
     .ds-tile {
@@ -363,4 +393,8 @@ Author     : buchi
 
 .ds-spacingtop {
     margin-top: 5px;
+}
+
+.ds-marker {
+    transform: translateZ(0);
 }

@@ -15,6 +15,7 @@ angular.module($APP.name).controller('LoginCtrl', [
     $scope.login = function () {
       if($scope.user.username && $scope.user.password){
         AuthService.login($scope.user).then(function(result){
+          localStorage.setObject('ds.user', {role:result.roles[1], name: result.username});
           if($scope.user.remember){
             localStorage.setObject('dsremember', $scope.user);
           }

@@ -12,7 +12,7 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.projectId = localStorage.getObject('dsproject');
+        $scope.settings.project = localStorage.getObject('dsproject');
         $scope.settings.state = 'related';
 
         $scope.local = {};
@@ -36,7 +36,7 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
         }
 
 
-        DefectsService.list_small($scope.settings.projectId).then(function(result) {
+        DefectsService.list_small($scope.settings.project.id).then(function(result) {
             $scope.local.poplist = result;
         })
 

@@ -41,15 +41,19 @@
                     </div>
                     <input class="ds-input" ng-model="local.data.assignee_name" ng-click="assignee()" ng-disabled="disableedit">
                 </label>
-                <label>
+                <div class="ds-label">
                     <div class="ds-content">
                         <span class="ds-title">Due date</span>
                     </div>
-                    <input ng-if="local.date.due_date" ng-model="local.data.due_date">
-                    <div ng-if="!local.date.due_date" class="ds-input">
-                        No data
+                    <div ion-datetime-picker date ng-model="local.data.due_date" month-step="1" hour-step="1" minute-step="1" second-step="1" class="ds-date" ng-if="!disableedit">
+                        <div ng-if="local.data.due_date">{{local.data.due_date | date}}</div>
+                        <div ng-if="!local.data.due_date">Tap here to select a date.</div>
                     </div>
-                </label>
+                    <div class="ds-date" ng-if="disableedit">
+                        <div ng-if="local.data.due_date">{{local.data.due_date | date}}</div>
+                        <div ng-if="!local.data.due_date">Tap here to select a date.</div>
+                    </div>
+                </div>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Location</span>

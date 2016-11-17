@@ -113,7 +113,8 @@ input[type=checkbox]:checked.blue-ck + label {
               background-color: #fff; }
 
 #menu .bar-header {
-  background-color: #2f4759; }
+  background-color: #2f4759;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.19), 0 1px 1px black; }
   #menu .bar-header .title-right {
     font-weight: 400;
     color: #fff;
@@ -132,9 +133,6 @@ input[type=checkbox]:checked.blue-ck + label {
     font-weight: 400;
     left: 25px !important;
     font-size: 18px; }
-
-#projects {
-  background-color: #e6e7e6; }
 
 .ds-actionbtn {
   position: fixed;
@@ -234,21 +232,21 @@ input[type=checkbox]:checked.blue-ck + label {
   .scroll-content.ds-blackscroll {
     background-color: #2f4759; }
 
-label .ds-date {
+label .ds-date, .ds-label .ds-date {
   height: 34px;
   padding: 8px 12px !important;
   font-weight: 100; }
-label .ds-content {
+label .ds-content, .ds-label .ds-content {
   background-color: #e6e7e6;
   padding: 7px 15px 4px;
   position: relative; }
-  label .ds-content .ds-title {
+  label .ds-content .ds-title, .ds-label .ds-content .ds-title {
     display: block; }
-  label .ds-content .ds-description {
+  label .ds-content .ds-description, .ds-label .ds-content .ds-description {
     display: block;
     margin-top: -5px;
     font-weight: 100; }
-  label .ds-content:after {
+  label .ds-content:after, .ds-label .ds-content:after {
     content: '';
     z-index: 9;
     position: absolute;
@@ -259,7 +257,7 @@ label .ds-content {
     border-style: solid;
     border-width: 11px 7px 0 7px;
     border-color: #e6e7e6 transparent transparent transparent; }
-label input {
+label input, .ds-label input {
   display: block;
   width: 100%;
   height: 40px;
@@ -302,23 +300,41 @@ label input {
       height: 20px;
       margin-right: 10px; }
 
-.ds-incomplete {
+.ds-incomplete.ds-tileandborder .ds-tile {
   background-color: #3598db !important; }
+.ds-incomplete.ds-tileandborder.item {
+  background-color: #fff;
+  border-left-color: #3598db !important; }
 
-.ds-delayed {
+.ds-delayed.ds-tileandborder .ds-tile {
   background-color: #607d8b !important; }
+.ds-delayed.ds-tileandborder.item {
+  background-color: #fff;
+  border-left-color: #607d8b !important; }
 
-.ds-contested {
+.ds-contested.ds-tileandborder .ds-tile {
   background-color: #ef5450 !important; }
+.ds-contested.ds-tileandborder.item {
+  background-color: #fff;
+  border-left-color: #ef5450 !important; }
 
-.ds-completed {
+.ds-completed.ds-tileandborder .ds-tile {
   background-color: #9b58b5 !important; }
+.ds-completed.ds-tileandborder.item {
+  background-color: #fff;
+  border-left-color: #9b58b5 !important; }
 
-.ds-partiallycompleted {
+.ds-partiallycompleted.ds-tileandborder .ds-tile {
   background-color: #f39c11 !important; }
+.ds-partiallycompleted.ds-tileandborder.item {
+  background-color: #fff;
+  border-left-color: #f39c11 !important; }
 
-.ds-closedout {
+.ds-closedout.ds-tileandborder .ds-tile {
   background-color: #1bbc9b !important; }
+.ds-closedout.ds-tileandborder.item {
+  background-color: #fff;
+  border-left-color: #1bbc9b !important; }
 
 .ds-incomplete-brd {
   border-left: 4px solid #3598db !important; }
@@ -339,6 +355,7 @@ label input {
   border-left: 4px solid #1bbc9b !important; }
 
 .tabs {
+  height: 50px;
   background-color: #35bdee !important; }
 
 .ds-nodata {
@@ -369,8 +386,7 @@ label input {
   text-decoration: underline; }
 
 .title img {
-  float: right;
-  margin-left: 10px; }
+  float: right; }
 
 .pp-formbtn {
   background-color: #ffffff;
@@ -382,5 +398,31 @@ label input {
   .pp-formbtn.activated {
     background-color: #243440;
     color: #fff; }
+
+#projects {
+  background-color: #e6e7e6; }
+  #projects .list {
+    padding: 5px; }
+    #projects .list .item {
+      padding: 5px 10px;
+      margin-bottom: 5px;
+      border-radius: 3px;
+      border-left: 4px solid #35bdee;
+      color: #333; }
+      #projects .list .item div {
+        font-size: 18px !important;
+        margin-bottom: 2px;
+        font-weight: 400;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis; }
+      #projects .list .item .ds-tag {
+        font-size: 14px !important;
+        font-weight: 400; }
+      #projects .list .item.ds-active {
+        border-color: #35bdee;
+        border-left: 4px solid #ffffff;
+        background: #35bdee url("../img/use/check.png") no-repeat center right 10px;
+        color: #fff; }
 
 /*# sourceMappingURL=main.css.map */

@@ -1,6 +1,7 @@
 
 var $APP = $APP || {}; // App namespace
-$APP.server = 'http://app.preprod.proproject.io/';
+$APP.server = 'http://artvm23.vmnet.ro/';
+//$APP.server = 'http://proproject.artsoft-consult.ro/';
 $APP.name = 'proproject';
 
 $APP.settings = {
@@ -18,7 +19,8 @@ Storage.prototype.getObject = function(key) {
 }
 
 angular.module($APP.name, [
-  'ionic'
+  'ionic',
+  'ion-datetime-picker',
 ]);
 angular.module($APP.name).run(function ($rootScope) {
 });

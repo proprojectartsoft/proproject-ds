@@ -8,24 +8,25 @@ angular.module($APP.name).controller('TabCtrl', [
     'DefectsService',
     'DrawingsService',
     'SubcontractorsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, DefectsService, DrawingsService, SubcontractorsService) {
+    '$timeout',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, DefectsService, DrawingsService, SubcontractorsService, $timeout) {
         $scope.settings = {};
         $scope.settings.tabs = SettingsService.get_settings('tabs');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.local = {};
+        $scope.local.inviteemail = '';
         localStorage.removeItem('ds.defect.back');
 
         $scope.$watch(function() {
-            return localStorage.getObject('dsproject')
+            return localStorage.getItem('dsproject')
         }, function(value) {
-            $scope.settings.projectId = value;
+            $scope.settings.project = localStorage.getObject('dsproject');
             if (!$scope.settings.tabActive) {
                 $scope.tabSelect('drawings');
             } else {
                 $scope.tabSelect($scope.settings.tabActive)
-                $scope.reload();
             }
         })
         $scope.tabSelect = function(predicate) {
@@ -43,8 +44,8 @@ angular.module($APP.name).controller('TabCtrl', [
             $scope.list = [];
             switch ($scope.settings.tabActive) {
                 case 'drawings':
-                    DrawingsService.list($scope.settings.projectId).then(function(result) {
-                      $scope.list = [];
+                    DrawingsService.list($scope.settings.project.id).then(function(result) {
+                        $scope.list = [];
                         angular.forEach(result, function(value) {
                             $scope.list.push({
                                 id: value.id,
@@ -56,9 +57,8 @@ angular.module($APP.name).controller('TabCtrl', [
                     })
                     break;
                 case 'subcontractors':
-                    console.log($scope.list);
-                    SubcontractorsService.list($scope.settings.projectId).then(function(result) {
-                      $scope.list = [];
+                    SubcontractorsService.list($scope.settings.project.id).then(function(result) {
+                        $scope.list = [];
                         angular.forEach(result, function(value) {
                             $scope.list.push({
                                 id: value.id,
@@ -72,8 +72,8 @@ angular.module($APP.name).controller('TabCtrl', [
                     })
                     break;
                 case 'defects':
-                    DefectsService.list_small($scope.settings.projectId).then(function(result) {
-                      $scope.list = [];
+                    DefectsService.list_small($scope.settings.project.id).then(function(result) {
+                        $scope.list = [];
                         angular.forEach(result, function(value) {
                             value.icon = $scope.getInitials(value.assignee_name);
                             $scope.list.push(value)
@@ -85,7 +85,6 @@ angular.module($APP.name).controller('TabCtrl', [
         }
 
         $scope.goItem = function(item) {
-            console.log('this is the item:', item);
             $scope.settings.subHeader = item.name;
             SettingsService.set_settings($scope.settings)
             $state.go('app.' + $scope.settings.tabActive, {
@@ -113,16 +112,26 @@ angular.module($APP.name).controller('TabCtrl', [
                     buttons: [{
                         text: 'Cancel',
                         onTap: function(e) {
-                            return 'awesome';
+                            return 'close';
                         }
                     }, {
                         text: 'Create',
                         onTap: function(e) {
-                            return $scope.project;
+                            if ($scope.local.inviteemail) {
+                                return $scope.local.inviteemail;
+                            } else {
+                                e.preventDefault();
+                            }
                         }
                     }]
                 }).then(function(res) {
-                    console.log('Tapped!', res);
+                  console.log($rootScope);
+                    if (res !== 'close') {
+                        console.log('Tapped!', res);
+                        SubcontractorsService.invite(res).then(function(result){
+                          console.log(result);
+                        })
+                    }
                 }, function(err) {
                     console.log('Err:', err);
                 }, function(msg) {

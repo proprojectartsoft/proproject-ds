@@ -55,6 +55,7 @@ angular.module($APP.name).factory('AuthService', [
             },
             logout: function () {
                 return $http.post($APP.server + '/pub/logout', {withCredentials: true}).then(function (result) {
+                  localStorage.removeItem('ds.user')
                     return result;
                 });
             }

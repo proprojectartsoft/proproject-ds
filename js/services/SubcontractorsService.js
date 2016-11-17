@@ -36,7 +36,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                     method: 'POST',
                     url: $APP.server + '/api/subcontractor',
                     data: dataIn,
-                    params: {projectId: $rootScope.project.id}
+                    params: {projectId: localStorage.getObject('dsproject').id}
                 }).then(
                         function (payload) {
                             return payload.data;
@@ -54,7 +54,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                 }
                 return $http({
                     method: 'POST',
-                    url: $APP.server + 'api/invite/subcontractor?email=' + dataIn + '&projectId=' + $rootScope.project.id
+                    url: $APP.server + 'api/invite/subcontractor?email=' + dataIn + '&projectId=' + localStorage.getObject('dsproject').id
                 }).then(
                         function (payload) {
                             return payload.data;
@@ -75,8 +75,8 @@ angular.module($APP.name).factory('SubcontractorsService', [
             delete: function (subcontractorId) {
                 return $http({
                     method: 'DELETE',
-                    url: $APP.server + 'api/subcontractor?subcontractorId=' + subcontractorId + '&projectId=' + $rootScope.project.id
-                    
+                    url: $APP.server + 'api/subcontractor?subcontractorId=' + subcontractorId + '&projectId=' + localStorage.getObject('dsproject').id
+
                 }).then(
                         function (payload) {
                             return payload.data;
@@ -89,7 +89,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                     method: 'POST',
                     url: $APP.server + '/api/subcontractor/comments',
                     data: dataIn,
-                    params: {projectId: $rootScope.project.id}
+                    params: {projectId: localStorage.getObject('dsproject').id}
                 }).success(function (response) {
                 }).error(function (response) {
                 });

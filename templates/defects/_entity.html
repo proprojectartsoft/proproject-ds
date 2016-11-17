@@ -7,16 +7,16 @@
     </ion-header-bar>
     <ion-content class="has-header ds-blackscroll ds-page">
         <div class="title" ng-if="local.entityId !== '0'">{{local.data.title}}<img src="img/use/edit.png" ng-click="toggleEdit()" ng-if="disableedit"/></div>
-        <ion-item class="ds-pdf" ng-if="local.entityId !== '0'">
+        <ion-item class="ds-pdf" ng-if="local.entityId">
+            <i class="ion-arrow-expand" ng-click="getFullscreen()" ng-if="local.drawing"></i>
             <div style="position:relative" class="ds-container">
-                <div ng-if="marker">
-                    <img src="img/incomplete.png" ng-if="marker.status == undefined" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px">
-                    <img src="img/completed.png" ng-if="marker.status == 'Completed'" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px">
-                    <img src="img/incomplete.png" ng-if="marker.status == 'Incomplete'" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px">
-                    <img src="img/contested.png" ng-if="marker.status == 'Contested'" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px">
-                    <img src="img/delayed.png" ng-if="marker.status == 'Delayed'" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px">
-                    <img src="img/closed_out.png" ng-if="marker.status == 'Closed Out'" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px">
-                    <img src="img/partially_completed.png" ng-if="marker.status == 'Partially Completed'" style="height:17px;width:17px;position: absolute; margin-left: {{marker.x}}px; margin-top: {{marker.y}}px">
+                <div class="ds-marker">
+                    <img class="ds-marker" src="img/completed.png" ng-if="local.marker.status == 'Completed'" style="height:17px;width:17px;position: absolute; margin-left: {{local.marker.x}}px; margin-top: {{local.marker.y}}px">
+                    <img class="ds-marker" src="img/incomplete.png" ng-if="local.marker.status == 'Incomplete'" style="height:17px;width:17px;position: absolute; margin-left: {{local.marker.x}}px; margin-top: {{local.marker.y}}px">
+                    <img class="ds-marker" src="img/contested.png" ng-if="local.marker.status == 'Contested'" style="height:17px;width:17px;position: absolute; margin-left: {{local.marker.x}}px; margin-top: {{local.marker.y}}px">
+                    <img class="ds-marker" src="img/delayed.png" ng-if="local.marker.status == 'Delayed'" style="height:17px;width:17px;position: absolute; margin-left: {{local.marker.x}}px; margin-top: {{local.marker.y}}px">
+                    <img class="ds-marker" src="img/closed_out.png" ng-if="local.marker.status == 'Closed Out'" style="height:17px;width:17px;position: absolute; margin-left: {{local.marker.x}}px; margin-top: {{local.marker.y}}px">
+                    <img class="ds-marker" src="img/partially_completed.png" ng-if="local.marker.status == 'Partially Completed'" style="height:17px;width:17px;position: absolute; margin-left: {{local.marker.x}}px; margin-top: {{local.marker.y}}px">
                 </div>
                 <canvas id="defectPreviewCanvas"></canvas>
             </div>
@@ -37,8 +37,8 @@
             <h3>Comments<i class="ion ion-ios-folder-outline"></i>
             </h3>
         </ion-item>
-        <div class="button button-bar pp-formbtn" ng-if="!disableedit && thiscreate" ng-click="saveCreate()">Save changes</div>
-        <div class="button button-bar pp-formbtn" ng-if="!disableedit && !thiscreate" ng-click="saveEdit()">Create defect</div>
+        <div class="button button-bar pp-formbtn" ng-if="!disableedit && !thiscreate" ng-click="saveEdit()">Save changes</div>
+        <div class="button button-bar pp-formbtn" ng-if="!disableedit && thiscreate" ng-click="saveCreate()">Create defect</div>
         <div class="button button-bar pp-formbtn" ng-if="!disableedit && !thiscreate" ng-click="cancelEdit()">Cancel</div>
     </ion-content>
 </ion-view>

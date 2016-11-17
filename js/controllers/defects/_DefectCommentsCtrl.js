@@ -31,7 +31,7 @@ angular.module($APP.name).controller('_DefectCommentsCtrl', [
         DefectsService.create_comment(request).then(function(result){
           $scope.local.comment = '';
           DefectsService.list_comments($stateParams.id).then(function(result){
-            $scope.local.data = result
+            $scope.local.list = result
           })
         })
       }

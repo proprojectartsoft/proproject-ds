@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="io.proproject.ds" 
-        version="1.0.1" 
+<widget id="io.proproject.app" 
+        version="2.0.35" 
         xmlns="http://www.w3.org/ns/widgets" 
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:cdv="http://cordova.apache.org/ns/1.0" 
         xmlns:gap="http://phonegap.com/ns/1.0">
    
-    <name>Pro Project DS</name>
+    <name>proproject preprod</name>
   
     <description></description>
     
     <author email="anthony.hanna@proproject.io" href="http://proproject.io/"></author>
-   	
+  
+    <gap:config-file platform="android" parent="/manifest/application" >
+        <application android:debuggable="true" />
+    </gap:config-file>
+  	
     <content src="index.html"/>
     
     <gap:config-file platform="android" parent="/manifest">
@@ -20,8 +24,9 @@
     
     <gap:plugin name="org.apache.cordova.splashscreen" />
     <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0" />
-<!--     <plugin name="com.synconset.imagepicker" spec="1.0.4" source="pgb" />
-    <gap:plugin name="org.apache.cordova.camera" source="npm" /> -->
+    <plugin name="com.synconset.imagepicker" spec="1.0.4" source="pgb" />
+    <gap:plugin name="org.apache.cordova.camera" source="npm" />
+    <gap:plugin name="cordova-plugin-contacts" source="npm" />
     
     <access origin="*"/>
     <allow-navigation href="*" />  
@@ -31,8 +36,7 @@
     <preference name="webviewbounce" value="false"/>
     <preference name="UIWebViewBounce" value="false"/>
     <preference name="DisallowOverscroll" value="true"/>
-    <preference name="android-minSdkVersion" value="14"/>
-    <preference name="android-targetSdkVersion" value="14" />
+    <preference name="android-minSdkVersion" value="16"/>
     <preference name="BackupWebStorage" value="none"/>
     <preference name="SplashScreen" value="screen"/>
     <preference name="orientation" value="portrait"/>

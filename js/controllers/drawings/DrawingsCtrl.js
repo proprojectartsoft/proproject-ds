@@ -14,7 +14,8 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         $scope.settings.entityId = $stateParams.id;
         $scope.local = {};
         SettingsService.put_settings('tabActive', 'drawings');
-        localStorage.setObject('ds.defect.back', {id:$stateParams.id, state:'app.drawingrelated'})
+        localStorage.setObject('ds.defect.back', {id:$stateParams.id, state:'app.drawings'})
+        localStorage.setObject('ds.fullscreen.back', {id:$stateParams.id, state:'app.drawings'})
 
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;
@@ -27,7 +28,6 @@ angular.module($APP.name).controller('DrawingsCtrl', [
             var url = $APP.server + '/pub/drawings/' + base64String;
             PDFJS.getDocument(url).then(function(pdf) {
                 pdf.getPage(1).then(function(page) {
-                    console.log(page)
                     var widthToBe = 480;
                     var viewport = page.getViewport(1);
                     var scale = widthToBe / viewport.width;

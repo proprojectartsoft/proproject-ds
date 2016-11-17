@@ -14,19 +14,19 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.projectId = parseInt(localStorage.getObject('dsproject'));
+        $scope.settings.project = localStorage.getObject('dsproject');
         $scope.settings.state = 'related';
         $scope.local = {};
         $scope.local.data = localStorage.getObject('dsscact');
         $scope.local.entityId = $stateParams.id;
         $scope.local.loaded = false;
         $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
-
-        SubcontractorsService.list_defects($scope.settings.projectId, $scope.local.data.id).then(function(result) {
+        console.log($scope.settings.project);
+        SubcontractorsService.list_defects($scope.settings.project.id, $scope.local.data.id).then(function(result) {
             $scope.local.list = result;
             $scope.local.loaded = true;
 
-            DefectsService.list_small($scope.settings.projectId).then(function(defects) {
+            DefectsService.list_small($scope.settings.project.id).then(function(defects) {
                 $scope.local.poplist = [];
                 for (var i = 0; i < defects.length; i++) {
                     var sw = true;
@@ -81,7 +81,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
             DefectsService.get(related.id).then(function(defect) {
                 defect.assignee_id = $stateParams.id;
                 DefectsService.update(defect).then(function(result) {
-                    SubcontractorsService.list_defects($scope.settings.projectId, $scope.local.data.id).then(function(result) {
+                    SubcontractorsService.list_defects($scope.settings.project.id, $scope.local.data.id).then(function(result) {
                         $scope.local.list = result;
                         var defects = angular.copy($scope.local.poplist)
 

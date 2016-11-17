@@ -13,7 +13,7 @@
 </div>
 <ion-content class="has-subheader ds-tabslist">
   <ion-list ng-if="settings.tabActive==='drawings'">
-    <ion-item ng-repeat="item in list track by $index" ng-click="goItem(item)">
+    <ion-item ng-repeat="item in list track by $index" ng-click="goItem(item)" class="ds-tileandborder ds-delayed">
       <img src="img/pdf.png">
       <h3>
         <div>{{item.name}}</div>
@@ -22,8 +22,8 @@
     </ion-item>
   </ion-list>
   <ion-list ng-if="settings.tabActive==='subcontractors'">
-    <ion-item ng-repeat="item in list track by $index" ng-click="goItem(item)">
-      <span class="ds-tile ds-delayed">
+    <ion-item ng-repeat="item in list track by $index" ng-click="goItem(item)" class="ds-tileandborder ds-delayed">
+      <span class="ds-tile">
         {{item.icon}}
       </span>
       <h3>
@@ -33,8 +33,8 @@
     </ion-item>
   </ion-list>
   <ion-list ng-if="settings.tabActive==='defects'">
-    <ion-item ng-repeat="item in list | orderBy: date" ng-click="goItem(item)">
-      <span class="ds-tile" ng-class="{'ds-incomplete':item.status_name === 'Incomplete', 'ds-delayed': item.status_name === 'Delayed','ds-contested': item.status_name === 'Contested', 'ds-completed':item.status_name === 'Completed', 'ds-partiallycompleted':item.status_name === 'Partially Completed', 'ds-closedout':item.status_name === 'Closed Out'}">
+    <ion-item ng-repeat="item in list | orderBy: '-date'" class="ds-tileandborder" ng-click="goItem(item)" ng-class="{'ds-incomplete':item.status_name === 'Incomplete', 'ds-delayed': item.status_name === 'Delayed','ds-contested': item.status_name === 'Contested', 'ds-completed':item.status_name === 'Completed', 'ds-partiallycompleted':item.status_name === 'Partially Completed', 'ds-closedout':item.status_name === 'Closed Out'}">
+      <span class="ds-tile">
         {{item.icon}}
       </span>
       <h3>

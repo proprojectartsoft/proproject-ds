@@ -156,6 +156,7 @@ input[type=checkbox]:checked.blue-ck + label {
 #menu {
     .bar-header {
         background-color: #2f4759;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.19), 0 1px 1px rgba(0, 0, 0, 1.33);
 
         .title-right {
             font-weight: 400;
@@ -185,10 +186,6 @@ input[type=checkbox]:checked.blue-ck + label {
             font-size: 18px;
         }
     }
-}
-
-#projects {
-    background-color: #e6e7e6;
 }
 
 .ds-actionbtn {
@@ -331,7 +328,7 @@ input[type=checkbox]:checked.blue-ck + label {
     }
 }
 
-label {
+label, .ds-label {
     .ds-date {
         height: 34px;
         padding: 8px 12px !important;
@@ -423,27 +420,81 @@ label {
 }
 
 .ds-incomplete {
-    background-color: #3598db !important;
+    &.ds-tileandborder {
+        .ds-tile {
+            background-color: #3598db !important;
+        }
+
+        &.item {
+            background-color: #fff;
+            border-left-color: #3598db !important;
+        }
+    }
 }
 
 .ds-delayed {
-    background-color: #607d8b !important;
+    &.ds-tileandborder {
+        .ds-tile {
+            background-color: #607d8b !important;
+        }
+
+        &.item {
+            background-color: #fff;
+            border-left-color: #607d8b !important;
+        }
+    }
 }
 
 .ds-contested {
-    background-color: #ef5450 !important;
+    &.ds-tileandborder {
+        .ds-tile {
+            background-color: #ef5450 !important;
+        }
+
+        &.item {
+            background-color: #fff;
+            border-left-color: #ef5450 !important;
+        }
+    }
 }
 
 .ds-completed {
-    background-color: #9b58b5 !important;
+    &.ds-tileandborder {
+        .ds-tile {
+            background-color: #9b58b5 !important;
+        }
+
+        &.item {
+            background-color: #fff;
+            border-left-color: #9b58b5 !important;
+        }
+    }
 }
 
 .ds-partiallycompleted {
-    background-color: #f39c11 !important;
+    &.ds-tileandborder {
+        .ds-tile {
+            background-color: #f39c11 !important;
+        }
+
+        &.item {
+            background-color: #fff;
+            border-left-color: #f39c11 !important;
+        }
+    }
 }
 
 .ds-closedout {
-    background-color: #1bbc9b !important;
+    &.ds-tileandborder {
+        .ds-tile {
+            background-color: #1bbc9b !important;
+        }
+
+        &.item {
+            background-color: #fff;
+            border-left-color: #1bbc9b !important;
+        }
+    }
 }
 
 .ds-incomplete-brd {
@@ -471,6 +522,7 @@ label {
 }
 
 .tabs {
+    height: 50px;
     background-color: #35bdee !important;
 }
 
@@ -509,7 +561,6 @@ label {
 
 .title img {
     float: right;
-    margin-left: 10px;
 }
 
 .pp-formbtn {
@@ -525,6 +576,40 @@ label {
         color: #fff;
     }
 }
-// .ds-marker > img {
-//     z-index: 1000;
-// }
+
+#projects {
+    background-color: #e6e7e6;
+
+    .list {
+        padding: 5px;
+
+        .item {
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            border-left: 4px solid #35bdee;
+            color: #333;
+
+            div {
+                font-size: 18px !important;
+                margin-bottom: 2px;
+                font-weight: 400;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            .ds-tag {
+                font-size: 14px !important;
+                font-weight: 400;
+            }
+
+            &.ds-active {
+                border-color: #35bdee;
+                border-left: 4px solid #ffffff;
+                background: #35bdee url('../img/use/check.png') no-repeat center right 10px;
+                color: #fff;
+            }
+        }
+    }
+}
