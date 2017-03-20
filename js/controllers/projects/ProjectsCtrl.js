@@ -6,26 +6,30 @@ angular.module($APP.name).controller('ProjectsCtrl', [
     '$timeout',
     '$ionicPopup',
     '$ionicModal',
+    '$indexedDB',
+    '$filter',
     'ProjectService',
-    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, $ionicModal, ProjectService) {
+    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, $ionicModal, $indexedDB, $filter, ProjectService) {
         $rootScope.navTitle = 'Projects';
+        $rootScope.projects = [];
         localStorage.setObject('dsnavTitle', 'Choose a project');
         $scope.local = {};
         $scope.local.createProject = {}
         $scope.local.user = localStorage.getObject('ds.user')
 
-        ProjectService.list().then(function(result) {
-            $rootScope.projects = result;
-            var aux = localStorage.getObject('dsproject')
-            if (aux) {
-                angular.forEach(result, function(value, key) {
-                    if (value.id == aux.id){
-                      $scope.local.activeProject = value;
-                    }
-                });
-            }
+        $indexedDB.openStore('projects', function(store) {
+            store.getAll().then(function(res) {
+                angular.forEach(res, function(proj) {
+                    $rootScope.projects.push(proj);
+                })
+                var aux = localStorage.getObject('dsproject')
+                if (aux) {
+                    $scope.local.activeProject = $filter('filter')($rootScope.projects, {
+                        id: aux.id
+                    })[0];
+                }
+            })
         })
-
 
         $scope.go = function(item) {
             localStorage.setObject('dsproject', item);
@@ -33,13 +37,11 @@ angular.module($APP.name).controller('ProjectsCtrl', [
             $state.go('app.tab', {
                 page: 'drawings'
             });
-
         }
         $scope.doShow = function() {
             $scope.picModal.hide();
             $scope.picModal.remove();
         };
-
         $scope.showPopup = function() {
             $ionicPopup.show({
                 template: '',
@@ -63,6 +65,10 @@ angular.module($APP.name).controller('ProjectsCtrl', [
                 }]
             }).then(function(res) {
                 if (res.name) {
+                    res.drawings = [];
+                    res.subcontractors = [];
+                    res.defects = [];
+                    res.isNew = true;
                     ProjectService.create(res).then(function(result) {
                         delete $scope.local.createProject;
                     })
@@ -71,7 +77,5 @@ angular.module($APP.name).controller('ProjectsCtrl', [
                 }
             }, function(err) {}, function(msg) {});
         };
-
-
     }
 ]);

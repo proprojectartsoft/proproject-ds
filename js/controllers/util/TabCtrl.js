@@ -5,11 +5,10 @@ angular.module($APP.name).controller('TabCtrl', [
     '$state',
     'SettingsService',
     '$ionicPopup',
-    'DefectsService',
-    'DrawingsService',
+    '$indexedDB',
     'SubcontractorsService',
     '$timeout',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, DefectsService, DrawingsService, SubcontractorsService, $timeout) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, $indexedDB, SubcontractorsService, $timeout) {
         $scope.settings = {};
         $scope.settings.tabs = SettingsService.get_settings('tabs');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
@@ -18,6 +17,13 @@ angular.module($APP.name).controller('TabCtrl', [
         $scope.local = {};
         $scope.local.inviteemail = '';
         localStorage.removeItem('ds.defect.back');
+
+        $rootScope.$on('$stateChangeStart',
+            function(event, toState, toParams, fromState, fromParams) {
+                if (toState.name == 'app.tab') {
+                    $scope.reload();
+                }
+            })
 
         $scope.$watch(function() {
             return localStorage.getItem('dsproject')
@@ -34,7 +40,6 @@ angular.module($APP.name).controller('TabCtrl', [
             return localStorage.getItem('ds.reloadevent')
         }, function(value) {
             if (value) {
-                console.log(value);
                 if (!$scope.settings.tabActive) {
                     $scope.tabSelect('drawings');
                 } else {
@@ -53,46 +58,55 @@ angular.module($APP.name).controller('TabCtrl', [
             $scope.reload();
         }
 
-
         $scope.reload = function() {
             $scope.settings.loaded = false;
             $scope.list = [];
             switch ($scope.settings.tabActive) {
                 case 'drawings':
-                    DrawingsService.list($scope.settings.project.id).then(function(result) {
-                        $scope.list = [];
-                        angular.forEach(result, function(value) {
-                            $scope.list.push({
-                                id: value.id,
-                                name: value.title,
-                                tasks: value.nr_of_defects
-                            })
-                        });
+                    $timeout(function() {
+
+                    }, 10);
+                    $indexedDB.openStore('projects', function(store) {
+                        store.find($scope.settings.project.id).then(function(res) {
+                            $scope.list = [];
+                            angular.forEach(res.drawings, function(draw) {
+                                $scope.list.push({
+                                    id: draw.id,
+                                    name: draw.title,
+                                    tasks: draw.nr_of_defects
+                                })
+                            });
+                        })
                         $scope.settings.loaded = true;
                     })
                     break;
                 case 'subcontractors':
-                    SubcontractorsService.list($scope.settings.project.id).then(function(result) {
-                        $scope.list = [];
-                        angular.forEach(result, function(value) {
-                            $scope.list.push({
-                                id: value.id,
-                                name: value.last_name + " " + value.first_name,
-                                description: value.company,
-                                icon: $scope.getInitials(value.last_name + " " + value.first_name),
-                                tasks: value.completed_tasks + value.contested_tasks + value.delayed_tasks + value.incomplete_tasks + value.partially_completed_tasks + value.closed_out_tasks
-                            })
-                        });
+                    $indexedDB.openStore('projects', function(store) {
+                        store.find($scope.settings.project.id).then(function(res) {
+                            $scope.list = [];
+                            angular.forEach(res.subcontractors, function(subcontr) {
+                                $scope.list.push({
+                                    id: subcontr.id,
+                                    name: subcontr.last_name + " " + subcontr.first_name,
+                                    description: subcontr.company,
+                                    icon: $scope.getInitials(subcontr.last_name + " " + subcontr.first_name),
+                                    tasks: subcontr.completed_tasks + subcontr.contested_tasks + subcontr.delayed_tasks + subcontr.incomplete_tasks + subcontr.partially_completed_tasks + subcontr.closed_out_tasks
+                                })
+                            });
+                        })
                         $scope.settings.loaded = true;
                     })
                     break;
                 case 'defects':
-                    DefectsService.list_small($scope.settings.project.id).then(function(result) {
-                        $scope.list = [];
-                        angular.forEach(result, function(value) {
-                            value.icon = $scope.getInitials(value.assignee_name);
-                            $scope.list.push(value)
-                        });
+                    console.log("get defects from indexedDB - reload");
+                    $indexedDB.openStore('projects', function(store) {
+                        store.find($scope.settings.project.id).then(function(res) {
+                            $scope.list = [];
+                            angular.forEach(res.defects, function(defect) {
+                                defect.icon = $scope.getInitials(defect.assignee_name);
+                                $scope.list.push(defect)
+                            });
+                        })
                         $scope.settings.loaded = true;
                     })
                     break;
@@ -140,12 +154,8 @@ angular.module($APP.name).controller('TabCtrl', [
                         }
                     }]
                 }).then(function(res) {
-                    console.log($rootScope);
                     if (res !== 'close') {
-                        console.log('Tapped!', res);
-                        SubcontractorsService.invite(res).then(function(result) {
-                            console.log(result);
-                        })
+                        SubcontractorsService.invite(res).then(function(result) {})
                     }
                 }, function(err) {
                     console.log('Err:', err);

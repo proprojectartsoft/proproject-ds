@@ -5,9 +5,11 @@ angular.module($APP.name).controller('FullscreenCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
+    '$indexedDB',
+    '$filter',
     'DrawingsService',
     '$ionicScrollDelegate',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, DrawingsService, $ionicScrollDelegate) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DrawingsService, $ionicScrollDelegate) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -110,9 +112,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             }
         }
         var perc = $scope.width / 12;
-        var setPdf = function(base64String) {
+        var setPdf = function(url) {
             $timeout(function() {
-                var url = $APP.server + '/pub/drawings/' + base64String;
                 PDFJS.getDocument(url).then(function(pdf) {
                     pdf.getPage(1).then(function(page) {
                         var widthToBe = 1200;
@@ -151,7 +152,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     } else {
                                         var aux = {
                                             id: $scope.local.data.id,
-                                            path: $scope.local.data.base64String,
+                                            path: $scope.local.data.pdfPath,
                                             base64String: $scope.local.data.base64String,
                                             markers: [newMarker]
                                         }
@@ -180,7 +181,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     } else {
                                         var aux = {
                                             id: $scope.local.data.id,
-                                            path: $scope.local.data.base64String,
+                                            path: $scope.local.data.pdfPath,
                                             base64String: $scope.local.data.base64String,
                                             markers: [newMarker]
                                         }
@@ -190,11 +191,9 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                         })
                                     }
                                     renderPoints(index);
-
                                 }
                             }
                         }
-
                         var renderContext = {
                             canvasContext: context,
                             viewport: usedViewport
@@ -255,22 +254,26 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             if ($scope.local.data.markers && $scope.local.data.markers.length && $scope.local.data.markers[0].id) {
                 $scope.local.disableAddMarker = true;
             }
-            setPdf($scope.local.data.path)
+            setPdf($scope.local.data.path);
         } else {
             $scope.local.singleMarker = false;
             if (!localStorage.getObject('dsdrwact') || localStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
-                DrawingsService.get_original($stateParams.id).then(function(result) {
-                    localStorage.setObject('dsdrwact', result)
-                    $scope.local.data = result;
-                    $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                    setPdf($scope.local.data.base64String)
+                $indexedDB.openStore('projects', function(store) {
+                    store.find(localStorage.getObject('dsproject').id).then(function(res) {
+                        var drawing = $filter('filter')(res.drawings, {
+                            id: $stateParams.id
+                        })[0];
+                        localStorage.setObject('dsdrwact', drawing)
+                        $scope.local.data = drawing;
+                        $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
+                        setPdf($scope.local.data.pdfPath)
+                    })
                 })
             } else {
                 $scope.local.data = localStorage.getObject('dsdrwact');
                 $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                setPdf($scope.local.data.base64String)
+                setPdf($scope.local.data.pdfPath)
             }
-
         }
 
         $scope.back = function() {

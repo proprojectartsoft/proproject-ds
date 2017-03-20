@@ -5,11 +5,11 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    'SubcontractorsService',
     '$ionicModal',
-    'DefectsService',
-    'SubcontractorsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, SubcontractorsService, $ionicModal, DefectsService, SubcontractorsService) {
+    '$indexedDB',
+    '$filter',
+    'ConvertersService',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB, $filter, ConvertersService) {
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -21,27 +21,28 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
         $scope.local.entityId = $stateParams.id;
         $scope.local.loaded = false;
         $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
-        console.log($scope.settings.project);
-        SubcontractorsService.list_defects($scope.settings.project.id, $scope.local.data.id).then(function(result) {
-            $scope.local.list = result;
-            $scope.local.loaded = true;
-
-            DefectsService.list_small($scope.settings.project.id).then(function(defects) {
+        $indexedDB.openStore('projects', function(store) {
+            store.find(localStorage.getObject('dsproject').id).then(function(res) {
+                var subcontr = $filter('filter')(res.subcontractors, {
+                    id: $scope.local.data.id
+                })[0];
+                $scope.local.list = subcontr.related;
+                $scope.local.loaded = true;
                 $scope.local.poplist = [];
-                for (var i = 0; i < defects.length; i++) {
+
+                for (var i = 0; i < res.defects.length; i++) {
                     var sw = true;
-                    for (var j = 0; j < result.length; j++) {
-                        if (defects[i].id === result[j].id) {
+                    for (var j = 0; j < subcontr.related.length; j++) {
+                        if (res.defects[i].id === subcontr.related[j].id) {
                             sw = false;
                         }
                     }
                     if (sw) {
-                        $scope.local.poplist.push(defects[i]);
+                        $scope.local.poplist.push(res.defects[i]);
                     }
                 }
             })
-
-        });
+        })
 
         $scope.goItem = function(item) {
             $scope.settings.subHeader = item.name;
@@ -59,9 +60,6 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
                 id: $stateParams.id
             })
         }
-
-
-
         $ionicModal.fromTemplateUrl('templates/defects/_popover.html', {
             scope: $scope
         }).then(function(modal) {
@@ -78,28 +76,77 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
 
         $scope.addRelated = function(related) {
             $scope.modal.hide();
-            DefectsService.get(related.id).then(function(defect) {
-                defect.assignee_id = $stateParams.id;
-                DefectsService.update(defect).then(function(result) {
-                    SubcontractorsService.list_defects($scope.settings.project.id, $scope.local.data.id).then(function(result) {
-                        $scope.local.list = result;
-                        var defects = angular.copy($scope.local.poplist)
-
-                        $scope.local.poplist = [];
-                        for (var i = 0; i < defects.length; i++) {
-                            var sw = true;
-                            for (var j = 0; j < result.length; j++) {
-                                if (defects[i].id === result[j].id) {
-                                    sw = false;
-                                }
-                            }
-                            if (sw) {
-                                $scope.local.poplist.push(defects[i]);
+            $indexedDB.openStore('projects', function(store) {
+                store.find($scope.settings.project.id).then(function(project) {
+                    for (var i = 0; i < project.subcontractors.length; i++) {
+                        if ($filter('filter')(project.subcontractors[i].related, {
+                                id: related.id
+                            }).length != 0) {
+                            project.subcontractors[i].related = $filter('filter')(project.subcontractors[i].related, {
+                                id: ('!' + related.id)
+                            });
+                            ConvertersService.decrease_nr_tasks(project.subcontractors[i], related.status_name);
+                            i = project.subcontractors.length;
+                        }
+                    }
+                    var subcontr = $filter('filter')(project.subcontractors, {
+                        id: $scope.local.data.id
+                    })[0];
+                    var defect = $filter('filter')(project.defects, {
+                        id: related.id
+                    })[0];
+                    defect.assignee_id = $stateParams.id;
+                    var sub = $filter('filter')(project.subcontractors, {
+                        id: $stateParams.id
+                    })[0];
+                    defect.assignee_name = sub.first_name + " " + sub.last_name;
+                    defect.completeInfo.assignee_name = sub.first_name + " " + sub.last_name;
+                    defect.completeInfo.assignee_id = $stateParams.id;
+                    if (typeof defect.isNew == 'undefined')
+                        defect.isModified = true;
+                    project.isModified = true;
+                    subcontr.related.push(defect);
+                    ConvertersService.increase_nr_tasks(subcontr, defect.status_name);
+                    saveChanges(project);
+                    $scope.local.list = subcontr.related;
+                    var defects = angular.copy($scope.local.poplist);
+                    $scope.local.poplist = [];
+                    for (var i = 0; i < defects.length; i++) {
+                        var sw = true;
+                        for (var j = 0; j < subcontr.length; j++) {
+                            if (defects[i].id === result[j].id) {
+                                sw = false;
                             }
                         }
-                        $scope.local.loaded = true;
-                    });
+                        if (sw) {
+                            $scope.local.poplist.push(defects[i]);
+                        }
+                    }
+                    $scope.local.loaded = true;
                 })
+            })
+        }
+
+        function saveChanges(project) {
+            $indexedDB.openStore('projects', function(store) {
+                store.upsert(project).then(
+                    function(e) {
+                        store.find(localStorage.getObject('dsproject').id).then(function(project) {})
+                    },
+                    function(e) {
+                        var offlinePopup = $ionicPopup.alert({
+                            title: "Unexpected error",
+                            template: "<center>An unexpected error occurred while trying to add a defect</center>",
+                            content: "",
+                            buttons: [{
+                                text: 'Ok',
+                                type: 'button-positive',
+                                onTap: function(e) {
+                                    offlinePopup.close();
+                                }
+                            }]
+                        });
+                    })
             })
         }
     }

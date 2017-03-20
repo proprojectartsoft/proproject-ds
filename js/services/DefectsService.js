@@ -58,7 +58,6 @@ angular.module($APP.name).factory('DefectsService', [
         );
       },
       create: function (dataIn) {
-        console.log(dataIn)
         return $http({
           method: 'POST',
           url: $APP.server + '/api/defect',
@@ -81,7 +80,6 @@ angular.module($APP.name).factory('DefectsService', [
         );
       },
       delete_photos: function (dataIn) {
-        console.log(dataIn)
         return $http({
           method: 'POST',
           url: $APP.server + 'api/defectphoto',
@@ -104,10 +102,9 @@ angular.module($APP.name).factory('DefectsService', [
             return payload.data;
           }
         );
-        
+
       },
       create_comment: function (dataIn) {
-        console.log(dataIn)
         return $http({
           method: 'POST',
           url: $APP.server + '/api/defectcomment',
@@ -126,7 +123,6 @@ angular.module($APP.name).factory('DefectsService', [
         );
       },
       create_photos: function (dataIn) {
-        console.log(dataIn, 'tigan banana')
         return $http({
           method: 'POST',
           url: $APP.server + 'api/defectphoto/uploadfiles',

@@ -5,8 +5,10 @@ angular.module($APP.name).controller('DrawingsCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
+    '$indexedDB',
+    '$filter',
     'DrawingsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, DrawingsService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DrawingsService) {
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -14,8 +16,14 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         $scope.settings.entityId = $stateParams.id;
         $scope.local = {};
         SettingsService.put_settings('tabActive', 'drawings');
-        localStorage.setObject('ds.defect.back', {id:$stateParams.id, state:'app.drawings'})
-        localStorage.setObject('ds.fullscreen.back', {id:$stateParams.id, state:'app.drawings'})
+        localStorage.setObject('ds.defect.back', {
+            id: $stateParams.id,
+            state: 'app.drawings'
+        })
+        localStorage.setObject('ds.fullscreen.back', {
+            id: $stateParams.id,
+            state: 'app.drawings'
+        })
         localStorage.removeItem('ds.reloadevent');
 
         if ($rootScope.disableedit === undefined) {
@@ -24,9 +32,7 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         var width = $("#canvasCointainer").width();
         var perc = width / 12;
 
-
-        var setPdf = function(base64String) {
-            var url = $APP.server + '/pub/drawings/' + base64String;
+        var setPdf = function(url) {
             PDFJS.getDocument(url).then(function(pdf) {
                 pdf.getPage(1).then(function(page) {
                     var widthToBe = 480;
@@ -66,22 +72,26 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         }
 
         if (!localStorage.getObject('dsdrwact') || localStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
-            DrawingsService.get_original($stateParams.id).then(function(result) {
-                localStorage.setObject('dsdrwact', result)
-                $scope.local.data = result;
-                $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                setPdf($scope.local.data.base64String)
+            $indexedDB.openStore('projects', function(store) {
+                store.find(localStorage.getObject('dsproject').id).then(function(res) {
+                    var drawing = $filter('filter')(res.drawings, {
+                        id: $stateParams.id
+                    })[0];
+                    localStorage.setObject('dsdrwact', drawing)
+                    $scope.local.data = drawing;
+                    $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
+                    setPdf($scope.local.data.pdfPath)
+                })
             })
         } else {
             $scope.local.data = localStorage.getObject('dsdrwact');
             $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-            setPdf($scope.local.data.base64String)
+            setPdf($scope.local.data.pdfPath)
         }
+
         $scope.getFullscreen = function() {
             $scope.go('fullscreen', $stateParams.id);
         }
-
-
         $scope.toggleEdit = function() {
             $rootScope.disableedit = false;
             localStorage.setObject('ds.drawing.backup', $scope.local.data)
@@ -94,10 +104,47 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         }
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
-            DrawingsService.update($scope.local.data).then(function(result) {
-                localStorage.setObject('dsdrwact', $scope.local.data)
-                localStorage.removeItem('ds.drawing.backup')
-                localStorage.setObject('ds.reloadevent', {value: true});
+            $indexedDB.openStore('projects', function(store) {
+                store.find(localStorage.getObject('dsproject').id).then(function(proj) {
+                    var draw = $filter('filter')(proj.drawings, {
+                        id: $scope.local.data.id
+                    })[0];
+                    draw.title = $scope.local.data.title;
+                    draw.code = $scope.local.data.code;
+                    draw.revision = $scope.local.data.revision;
+                    draw.drawing_date = new Date($scope.local.data.drawing_date).getTime();
+                    proj.isModified = true;
+                    draw.isModified = true;
+                    localStorage.setObject('dsdrwact', $scope.local.data)
+                    localStorage.removeItem('ds.drawing.backup')
+                    localStorage.setObject('ds.reloadevent', {
+                        value: true
+                    });
+                    saveChanges(proj);
+                })
+            })
+        }
+
+        function saveChanges(project) {
+            $indexedDB.openStore('projects', function(store) {
+                store.upsert(project).then(
+                    function(e) {
+                        store.find(localStorage.getObject('dsproject').id).then(function(project) {})
+                    },
+                    function(e) {
+                        var offlinePopup = $ionicPopup.alert({
+                            title: "Unexpected error",
+                            template: "<center>An unexpected error has occurred.</center>",
+                            content: "",
+                            buttons: [{
+                                text: 'Ok',
+                                type: 'button-positive',
+                                onTap: function(e) {
+                                    offlinePopup.close();
+                                }
+                            }]
+                        });
+                    })
             })
         }
 
@@ -109,7 +156,6 @@ angular.module($APP.name).controller('DrawingsCtrl', [
             $state.go('app.tab')
         }
         $scope.go = function(predicate, item) {
-            console.log(predicate, item);
             $state.go('app.' + predicate, {
                 id: item
             });

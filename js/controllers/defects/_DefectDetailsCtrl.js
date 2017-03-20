@@ -5,15 +5,15 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
+    '$indexedDB',
     '$ionicModal',
     'ProjectService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, ProjectService) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $ionicModal, ProjectService) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
         $scope.settings.project = localStorage.getObject('dsproject');
-        console.log($scope.settings.project);
         $scope.settings.state = 'details';
         $scope.local = {};
         $scope.local.search = '';
@@ -41,9 +41,13 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
             $scope.local.data.assignee_id = item.id;
             $scope.modal.hide();
         }
-        ProjectService.users($scope.settings.project.id).then(function(result) {
-            $scope.local.poplist = result;
+
+        $indexedDB.openStore('projects', function(store) {
+            store.find($scope.settings.project.id).then(function(res) {
+                $scope.local.poplist = res.users;
+            })
         })
+
         if ($stateParams.id === '0') {
             $scope.settings.subHeader = 'New defect'
             $scope.local.data = localStorage.getObject('ds.defect.new.data')
@@ -52,7 +56,6 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
             $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
         }
         $scope.objtofields = function() {
-          console.log($scope.local.data);
             $scope.local.data.status_id = $scope.local.data.status_obj.id;
             $scope.local.data.status_name = $scope.local.data.status_obj.name;
             $scope.local.data.priority_id = $scope.local.data.priority_obj.id;
@@ -70,7 +73,6 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
                 localStorage.setObject('ds.defect.new.data', $scope.local.data)
             } else {
                 if (!$rootScope.disableedit) {
-                    console.log('----', $scope.local.data);
                     localStorage.setObject('ds.defect.active.data', $scope.local.data)
                 }
             }

@@ -6,8 +6,8 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
     'SettingsService',
     '$timeout',
     '$ionicModal',
-    'DefectsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, DefectsService) {
+    '$indexedDB',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB) {
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -35,15 +35,16 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
             return (aux[0][0] + aux[1][0]).toUpperCase();
         }
 
-
-        DefectsService.list_small($scope.settings.project.id).then(function(result) {
-            $scope.local.poplist = result;
+        $indexedDB.openStore('projects', function(store) {
+            store.find($scope.settings.project.id).then(function(result) {
+                $scope.local.poplist = result.defects;
+            })
         })
 
         $ionicModal.fromTemplateUrl('templates/defects/_popover.html', {
-          scope: $scope
+            scope: $scope
         }).then(function(modal) {
-          $scope.modal = modal;
+            $scope.modal = modal;
         });
         // Triggered in the login modal to close it
         $scope.closePopup = function() {
