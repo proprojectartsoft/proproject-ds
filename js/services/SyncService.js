@@ -94,6 +94,7 @@ angular.module($APP.name).factory('SyncService', [
                         function addComments(comments, defect_id, defer, doDefer) {
                             if (comments.length == 0 && doDefer) {
                                 localStorage.setObject('defectsToAdd', []);
+                                defer.resolve();
                             }
                             angular.forEach(comments, function(comment) {
                                 // update defect id for new comments
@@ -197,10 +198,6 @@ angular.module($APP.name).factory('SyncService', [
                         }
 
                         function syncData() {
-                            localStorage.setObject('commentsToAdd', []);
-                            localStorage.setObject('defectsToAdd', []);
-                            localStorage.setObject('defectsToUpd', []);
-
                             var def = $q.defer();
                             $indexedDB.openStore('projects', function(store) {
                                 store.getAll().then(function(projects) {
@@ -215,9 +212,9 @@ angular.module($APP.name).factory('SyncService', [
                                         })
 
                                         syncComments(localStorage.getObject('commentsToAdd'));
-                                        updateDrawings(localStorage.getObject('drawingsToUpd'));
                                         syncDefects(localStorage.getObject('defectsToAdd')).then(function(res) {
                                             updateDefects(localStorage.getObject('defectsToUpd'));
+                                            updateDrawings(localStorage.getObject('drawingsToUpd'));
                                             def.resolve();
                                         })
                                     } else {
