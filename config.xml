@@ -22,7 +22,7 @@
     <plugin name="cordova-plugin-imagepicker" source="npm"/>
     <plugin name="cordova-plugin-file" source="npm"/>
     <plugin name="cordova-plugin-file-transfer" source="npm"/>
-    <gap:plugin name="cordova-plugin-camera" source="npm"/>
+    <!-- <gap:plugin name="cordova-plugin-camera" source="npm"/> -->
     <gap:plugin name="cordova-plugin-contacts" source="npm"/>
       <gap:plugin name="cordova-plugin-network-information" source="npm"/>
 
