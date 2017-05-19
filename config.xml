@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="io.proproject.dspreprod" version="1.0.9" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="io.proproject.dspreprod" version="1.0.10" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
 
     <name>DS preprod</name>
 
     <description></description>
 
     <author email="anthony.hanna@proproject.io" href="http://proproject.io/"></author>
+
+    <gap:config-file platform="ios" parent="NSPhotoLibraryUsageDescription" overwrite="true">
+        <string>We are using the Photo Library</string>
+    </gap:config-file>
 
     <gap:config-file platform="android" parent="/manifest/application">
         <application android:debuggable="true"/>
