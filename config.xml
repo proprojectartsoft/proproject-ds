@@ -23,8 +23,10 @@
     <plugin name="cordova-plugin-file" source="npm"/>
     <plugin name="cordova-plugin-file-transfer" source="npm"/>
     <!-- <gap:plugin name="cordova-plugin-camera" source="npm"/> -->
+    <gap:plugin name="cordova-plugin-camera" source="npm"/>
     <gap:plugin name="cordova-plugin-contacts" source="npm"/>
-      <gap:plugin name="cordova-plugin-network-information" source="npm"/>
+    <gap:plugin name="cordova-plugin-network-information" source="npm"/>
+    <plugin name="cordova-plugin-keyboard" source="npm"/>
 
     <access origin="*"/>
     <allow-navigation href="*"/>
@@ -36,7 +38,6 @@
     <preference name="DisallowOverscroll" value="true"/>
     <preference name="android-minSdkVersion" value="16"/>
     <preference name="BackupWebStorage" value="none"/>
-    <preference name="SplashScreen" value="screen"/>
     <preference name="orientation" value="portrait"/>
     <preference name="fullscreen" value="false"/>
 
