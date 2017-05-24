@@ -53,11 +53,7 @@ angular.module($APP.name).factory('AuthService', [
                         return 'login.user.name=' + user.username + '&login.user.password=' + user.password + '&user=true';
                     },
                     data: user
-                }).then(function(data) {
-                    return data.data.data;
-                }, function errorCallback(response) {
-                    return response;
-                });
+                }).success(function(data) {}).error(function errorCallback(response, status) {})
             },
             logout: function() {
                 return $http.post($APP.server + '/pub/logout', {
