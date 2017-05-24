@@ -771,3 +771,21 @@ label {
         }
     }
 }
+
+.popup-head {
+    background-color: #1EBDF4;
+    h3 {
+      color: #000;
+    }
+}
+
+.popup-buttons .button-positive {
+    border-color: #1EBDF4;
+    background-color: #1EBDF4;
+    color: #000;
+}
+
+.popup-buttons .ion-person-add {
+    color: #444;
+    font-size: 22px;
+}
