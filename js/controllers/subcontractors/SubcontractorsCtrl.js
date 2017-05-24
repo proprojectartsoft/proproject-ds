@@ -5,10 +5,11 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
     '$state',
     '$indexedDB',
     '$filter',
+    '$ionicPopup',
     'SettingsService',
     'SubcontractorsService',
     'ConvertersService',
-    function($rootScope, $scope, $stateParams, $state, $indexedDB, $filter, SettingsService, SubcontractorsService, ConvertersService) {
+    function($rootScope, $scope, $stateParams, $state, $indexedDB, $filter, $ionicPopup, SettingsService, SubcontractorsService, ConvertersService) {
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.tabActive = 'subcontractors'

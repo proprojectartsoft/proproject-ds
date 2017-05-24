@@ -7,8 +7,9 @@ angular.module($APP.name).controller('DrawingsCtrl', [
     '$timeout',
     '$indexedDB',
     '$filter',
+    '$ionicPopup',
     'DrawingsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DrawingsService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, $ionicPopup, DrawingsService) {
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');

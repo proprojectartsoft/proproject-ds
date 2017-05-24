@@ -438,31 +438,16 @@ input[type=checkbox]:checked.blue-ck + label {
 
 .popup-head {
     background-color: #11c1f3;
-    padding: 10px;
-
-    h3 {
-        font-size: 18px;
-        font-weight: 400;
-    }
 }
 
-.popup-container .popup {
-    width: 80%;
+.popup-buttons .button .button-positive {
+    border-color: #1EBDF4;
+    background-color: #1EBDF4;
 }
 
-.popup-buttons {
-    padding: 0;
-    min-height: 40px;
-
-    .button {
-        margin-right: 0;
-        height: 40px;
-        min-height: 40px;
-
-        &:first-child {
-            border-right: none;
-        }
-    }
+.popup-buttons .ion-person-add {
+    color: #444;
+    font-size: 22px;
 }
 
 .ds-tabs .bar-subheader .button-bar .button {

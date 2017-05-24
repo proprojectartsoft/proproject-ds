@@ -8,8 +8,9 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
     '$ionicModal',
     '$indexedDB',
     '$filter',
+    '$ionicPopup',
     'ConvertersService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB, $filter, ConvertersService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB, $filter, $ionicPopup, ConvertersService) {
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
