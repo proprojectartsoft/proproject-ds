@@ -829,6 +829,11 @@ input[type=checkbox]:checked.blue-ck+label {
     float: right;
 }
 
+.login-form input[type='text'], .login-form input[type='number'], .login-form input[type='email'] {
+    padding: 15px !important;
+    height: auto !important;
+}
+
 .login-container:-ms-input-placeholder {
     /* IE 10+ */
     color: #fff;
