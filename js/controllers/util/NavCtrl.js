@@ -45,7 +45,6 @@ angular.module($APP.name).controller('NavCtrl', [
                 $indexedDB.openStore('projects', function(store) {
                     store.clear();
                 }).then(function(e) {})
-                localStorage.setObject('dsremember', null);
                 $state.go('login');
             })
         }
