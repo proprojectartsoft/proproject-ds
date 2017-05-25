@@ -41,12 +41,19 @@ angular.module($APP.name).controller('NavCtrl', [
             $scope.editMode = !$scope.editMode;
         }
         $scope.logout = function() {
-            AuthService.logout().then(function(result) {
-                $indexedDB.openStore('projects', function(store) {
-                    store.clear();
-                }).then(function(e) {})
-                $state.go('login');
-            })
+            if (navigator.onLine) {
+                AuthService.logout().then(function(result) {
+                    $indexedDB.openStore('projects', function(store) {
+                        store.clear();
+                    }).then(function(e) {})
+                    $state.go('login');
+                })
+            } else {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Error',
+                    template: "<center>Can't log out now. You are offline.</center>",
+                });
+            }
         }
         $scope.sync = function() {
             SyncService.sync();
