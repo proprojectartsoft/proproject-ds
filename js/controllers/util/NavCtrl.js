@@ -6,10 +6,11 @@ angular.module($APP.name).controller('NavCtrl', [
     '$timeout',
     '$http',
     '$indexedDB',
+    '$ionicPopup',
     'SettingsService',
     'AuthService',
     'SyncService',
-    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $http, $indexedDB, SettingsService, AuthService, SyncService) {
+    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $http, $indexedDB, $ionicPopup, SettingsService, AuthService, SyncService) {
         $scope.disconnectDesignValue = true;
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
@@ -21,13 +22,13 @@ angular.module($APP.name).controller('NavCtrl', [
         SettingsService.my_account().then(function(result) {
             var aux = localStorage.getObject('ds.user')
             switch (aux.role) {
-                case '1':
+                case 1:
                     aux.role_title = 'Site Manager'
                     break;
-                case '2':
+                case 2:
                     aux.role_title = 'Company Admin'
                     break;
-                case '3':
+                case 3:
                     aux.role_title = 'Super Admin'
                     break;
             }
