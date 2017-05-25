@@ -812,6 +812,16 @@ input[type=checkbox]:checked.blue-ck+label {
     color: #fff;
 }
 
+@media all and (min-width: 480px) and (max-width: 769px) {
+    .login-form {
+        width: 60%!important;
+        float: right;
+    }
+    .login-container, .keyboard-open .login-container {
+        padding-top: 250px!important;
+    }
+}
+
 .login-container::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */
     color: #fff;
@@ -822,11 +832,6 @@ input[type=checkbox]:checked.blue-ck+label {
     /* Firefox 19+ */
     color: #fff;
     font-weight: 300;
-}
-
-.login-form {
-    width: 60%!important;
-    float: right;
 }
 
 .login-form input[type='text'], .login-form input[type='number'], .login-form input[type='email'] {
@@ -855,7 +860,7 @@ input[type=checkbox]:checked.blue-ck+label {
     background-size: cover;
     background-repeat: no-repeat;
     background-position-x: 0;
-    padding: 250px 12px 12px;
+    padding: 140px 12px 12px 12px
 }
 
 .login-container .app-name {
