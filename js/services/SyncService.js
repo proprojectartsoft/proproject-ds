@@ -21,7 +21,8 @@ angular.module($APP.name).factory('SyncService', [
                     var deferred = $q.defer();
                     var failed = false;
 
-                    if (typeof navigator.connection == 'undefined' || (navigator.connection.type != Connection.NONE && navigator.connection.type != Connection.UNKNOWN)) {
+                    // if (typeof navigator.connection == 'undefined' || (navigator.connection.type != Connection.NONE && navigator.connection.type != Connection.UNKNOWN)) {
+                    if (navigator.onLine) {
                         var syncPopup = $ionicPopup.alert({
                             title: "Syncing",
                             template: "<center><ion-spinner icon='android'></ion-spinner></center>",
