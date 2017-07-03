@@ -151,10 +151,12 @@ angular.module($APP.name).controller('DefectsCtrl', [
                 $indexedDB.openStore('projects', function(store) {
                     store.find(localStorage.getObject('dsproject').id).then(function(project) {
                         var user = $filter('filter')(project.users, {
-                            login_name: localStorage.getObject('ds.user').name
+                            login_name: localStorage.getObject('ds.user') && localStorage.getObject('ds.user').name
                         })[0];
-                        $scope.local.data.assignee_name = user.first_name + " " + user.last_name;
-                        $scope.local.data.assignee_id = user.id;
+                        if(user) {
+                          $scope.local.data.assignee_name = user.first_name + " " + user.last_name;
+                          $scope.local.data.assignee_id = user.id;
+                        }
                         localStorage.setObject('ds.defect.new.data', $scope.local.data);
                     })
                 })
@@ -260,6 +262,11 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         if (newSubcontr) {
                             newSubcontr.related.push(defect.completeInfo);
                             ConvertersService.increase_nr_tasks(newSubcontr, defect.status_name);
+                        } else {
+                            var assignee = $filter('filter')(project.users, {
+                                id: defect.completeInfo.assignee_id
+                            })[0];
+                            defect.assignee_name = assignee.first_name + " " + assignee.last_name;
                         }
                     } else {
                         var subcontr = $filter('filter')(project.subcontractors, {
@@ -271,6 +278,23 @@ angular.module($APP.name).controller('DefectsCtrl', [
                             });
                             subcontr.related.push(defect.completeInfo);
                         }
+                    }
+                    var drawForDefect = $filter('filter')(project.drawings, {
+                        id: defect.completeInfo.drawing.id
+                    })[0];
+                    if (drawForDefect) {
+                        var relDefect = $filter('filter')(drawForDefect.relatedDefects, {
+                            id: defect.id
+                        })[0];
+                        relDefect.assignee_name = defect.assignee_name;
+                        relDefect.date = defect.date;
+                        relDefect.due_date = defect.due_date;
+                        relDefect.number_of_comments = defect.number_of_comments;
+                        relDefect.number_of_photos = defect.number_of_photos;
+                        relDefect.priority_name = defect.priority_name;
+                        relDefect.severity_name = defect.severity_name;
+                        relDefect.status_name = defect.status_name;
+                        relDefect.title = defect.title;
                     }
                     saveChanges(project);
                     localStorage.setObject('dsdrwact', draw);
@@ -313,7 +337,6 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         localStorredDef.status_name = newDef.status_name;
                         localStorredDef.title = newDef.title;
                         localStorredDef.completeInfo = newDef;
-
                         var subcontr = $filter('filter')(project.subcontractors, {
                             id: newDef.assignee_id
                         })[0];
@@ -337,10 +360,27 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         localStorredDef.draw = drawing;
                         localStorredDef.completeInfo.drawing = ConvertersService.save_local(drawing);
                         localStorredDef.completeInfo.drawing.markers.push(aux);
+                        //add defect in the related defects list of the corresponding drawing
+                        var drawForDefect = $filter('filter')(project.drawings, {
+                            id: localStorredDef.draw.id
+                        })[0];
+                        if (drawForDefect) {
+                            var relDefect = {};
+                            relDefect.id = localStorredDef.id;
+                            relDefect.assignee_name = localStorredDef.assignee_name;
+                            relDefect.date = localStorredDef.date; //
+                            relDefect.due_date = localStorredDef.due_date;
+                            relDefect.number_of_comments = 0;
+                            relDefect.number_of_photos = 0;
+                            relDefect.priority_name = localStorredDef.priority_name;
+                            relDefect.severity_name = localStorredDef.severity_name;
+                            relDefect.status_name = localStorredDef.status_name;
+                            relDefect.title = localStorredDef.title;
+                            drawForDefect.relatedDefects.push(relDefect);
+                        }
                         project.defects.push(localStorredDef);
                         project.isModified = true;
                         saveChanges(project);
-
                         localStorage.removeItem('dsdrwact');
                         localStorage.setObject('ds.reloadevent', {
                             value: true

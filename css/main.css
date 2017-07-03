@@ -839,6 +839,11 @@ input[type=checkbox]:checked.blue-ck+label {
     height: auto !important;
 }
 
+.login-form {
+    width: 80%;
+    float: right;
+}
+
 .login-container:-ms-input-placeholder {
     /* IE 10+ */
     color: #fff;
@@ -1023,6 +1028,5 @@ input[type=checkbox].css-checkbox {
     bottom: 20px;
     right: 20px;
 }
-
 
 /*# sourceMappingURL=main.css.map */
