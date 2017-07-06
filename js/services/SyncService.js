@@ -171,11 +171,11 @@ angular.module($APP.name).factory('SyncService', [
                         function updateDefects(defects) {
                             updateRelatedDefectsId(defects);
                             angular.forEach(defects, function(defect) {
-                                DefectsService.update(defect).then(function(res) {
+                                DefectsService.update(defect).success(function(res) {
                                     if (defects[defects.length - 1].id === defect.id) {
                                         localStorage.setObject('defectsToUpd', []);
                                     }
-                                }, function(err) {
+                                }).error(function(err) {
                                     if (defects[defects.length - 1].id === defect.id) {
                                         localStorage.setObject('defectsToUpd', []);
                                     }
