@@ -141,8 +141,9 @@ angular.module($APP.name).factory('SyncService', [
                                         old: defect.id,
                                         new: res
                                     })
-                                    if (defects[defects.length - 1].id == defect.id)
+                                    if (defects[defects.length - 1].id == defect.id) {
                                         localStorage.setObject('changedDefects', changed);
+                                    }
                                 }, function(err) {
                                     if (defects[defects.length - 1].id == defect.id) {
                                         localStorage.setObject('defectsToAdd', []);
@@ -200,25 +201,32 @@ angular.module($APP.name).factory('SyncService', [
                             localStorage.setObject('changedDefects', []);
                         }
 
+                        function syncProject(projects, index, def) {
+                            project = projects[index];
+                            if (project.isModified) {
+                                storeUpdatedDrawings(project);
+                                storeNewDefects(project);
+                                syncSubcontractors(project);
+                                delete project.isModified;
+                            }
+                            syncComments(localStorage.getObject('commentsToAdd'));
+                            syncDefects(localStorage.getObject('defectsToAdd')).then(function(res) {
+                                updateDefects(localStorage.getObject('defectsToUpd'));
+                                updateDrawings(localStorage.getObject('drawingsToUpd'));
+                                if (projects[projects.length - 1] == project) {
+                                    def.resolve();
+                                } else {
+                                    syncProject(projects, index + 1, def);
+                                }
+                            })
+                        }
+
                         function syncData() {
                             var def = $q.defer();
                             $indexedDB.openStore('projects', function(store) {
                                 store.getAll().then(function(projects) {
                                     if (projects.length != 0) {
-                                        angular.forEach(projects, function(project) {
-                                            if (project.isModified) {
-                                                storeUpdatedDrawings(project);
-                                                storeNewDefects(project);
-                                                syncSubcontractors(project);
-                                                delete project.isModified;
-                                            }
-                                            syncComments(localStorage.getObject('commentsToAdd'));
-                                            syncDefects(localStorage.getObject('defectsToAdd')).then(function(res) {
-                                                updateDefects(localStorage.getObject('defectsToUpd'));
-                                                updateDrawings(localStorage.getObject('drawingsToUpd'));
-                                                def.resolve();
-                                            })
-                                        })
+                                        syncProject(projects, 0, def);
                                     } else {
                                         def.resolve();
                                     }
