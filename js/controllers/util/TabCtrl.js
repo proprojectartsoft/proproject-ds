@@ -98,7 +98,6 @@ angular.module($APP.name).controller('TabCtrl', [
                     })
                     break;
                 case 'defects':
-                    console.log("get defects from indexedDB - reload");
                     $indexedDB.openStore('projects', function(store) {
                         store.find($scope.settings.project.id).then(function(res) {
                             $scope.list = [];
