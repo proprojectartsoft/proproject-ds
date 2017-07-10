@@ -232,6 +232,8 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     defect.status_name = defect.completeInfo.status_name;
                     defect.priority_name = defect.completeInfo.priority_name;
                     defect.severity_name = defect.completeInfo.severity_name;
+                    defect.number_of_photos = defect.completeInfo.number_of_photos;
+                    defect.number_of_comments = defect.completeInfo.number_of_comments;
                     defect.title = defect.completeInfo.title;
                     defect.completeInfo.due_date = new Date(defect.completeInfo.due_date).getTime();
                     defect.due_date = defect.completeInfo.due_date;
@@ -335,6 +337,8 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         localStorredDef.attachements = [];
                         localStorredDef.comments = [];
                         localStorredDef.id = newDef.id;
+                        localStorredDef.number_of_comments = 0;
+                        localStorredDef.number_of_photos = 0;
                         newDef.due_date = new Date(newDef.due_date).getTime();
                         localStorredDef.due_date = newDef.due_date;
                         localStorredDef.priority_name = newDef.priority_name;
