@@ -285,21 +285,25 @@ angular.module($APP.name).controller('DefectsCtrl', [
                             id: defect.completeInfo.drawing.id
                         })[0];
                         if (drawForDefect) {
-                            $filter('filter')(drawForDefect.markers, {
-                                defect_id: defect.id
-                            })[0].status = defect.completeInfo.drawing.markers[0].status;
-                            var relDefect = $filter('filter')(drawForDefect.relatedDefects, {
-                                id: defect.id
-                            })[0];
-                            relDefect.assignee_name = defect.assignee_name;
-                            relDefect.date = defect.date;
-                            relDefect.due_date = defect.due_date;
-                            relDefect.number_of_comments = defect.number_of_comments;
-                            relDefect.number_of_photos = defect.number_of_photos;
-                            relDefect.priority_name = defect.priority_name;
-                            relDefect.severity_name = defect.severity_name;
-                            relDefect.status_name = defect.status_name;
-                            relDefect.title = defect.title;
+                            if (drawForDefect.markers && drawForDefect.markers.length != 0) {
+                                $filter('filter')(drawForDefect.markers, {
+                                    defect_id: defect.id
+                                })[0].status = defect.completeInfo.drawing.markers[0].status;
+                            }
+                            if (drawForDefect.relatedDefects && drawForDefect.relatedDefects.length != 0) {
+                                var relDefect = $filter('filter')(drawForDefect.relatedDefects, {
+                                    id: defect.id
+                                })[0];
+                                relDefect.assignee_name = defect.assignee_name;
+                                relDefect.date = defect.date;
+                                relDefect.due_date = defect.due_date;
+                                relDefect.number_of_comments = defect.number_of_comments;
+                                relDefect.number_of_photos = defect.number_of_photos;
+                                relDefect.priority_name = defect.priority_name;
+                                relDefect.severity_name = defect.severity_name;
+                                relDefect.status_name = defect.status_name;
+                                relDefect.title = defect.title;
+                            }
                         }
                         localStorage.setObject('dsdrwact', drawForDefect);
                     }
@@ -361,16 +365,22 @@ angular.module($APP.name).controller('DefectsCtrl', [
                                 id: $scope.local.drawing.id
                             })[0];
                             drawing.nr_of_defects++;
-                            var aux = angular.copy($scope.local.drawing.markers[0])
-                            aux.defect_id = nextId + 1;
-                            aux.drawing_id = $scope.local.drawing.id;
-                            aux.position_x = aux.xInit;
-                            aux.position_y = aux.yInit;
-                            drawing.markers.push(aux);
-                            aux.status = localStorredDef.status_name;
+                            var aux = {};
+                            if ($scope.local.drawing.markers && $scope.local.drawing.markers.length) {
+                                aux = angular.copy($scope.local.drawing.markers[0])
+                                aux.defect_id = nextId + 1;
+                                aux.drawing_id = $scope.local.drawing.id;
+                                aux.position_x = aux.xInit;
+                                aux.position_y = aux.yInit;
+                                drawing.markers.push(aux);
+                                aux.status = localStorredDef.status_name;
+                            }
+
                             localStorredDef.draw = drawing;
                             localStorredDef.completeInfo.drawing = ConvertersService.save_local(drawing);
-                            localStorredDef.completeInfo.drawing.markers.push(aux);
+                            if ($scope.local.drawing.markers) {
+                                localStorredDef.completeInfo.drawing.markers.push(aux);
+                            }
                             //add defect in the related defects list of the corresponding drawing
                             var drawForDefect = $filter('filter')(project.drawings, {
                                 id: localStorredDef.draw.id
@@ -379,7 +389,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
                                 var relDefect = {};
                                 relDefect.id = localStorredDef.id;
                                 relDefect.assignee_name = localStorredDef.assignee_name;
-                                relDefect.date = localStorredDef.date; //
+                                relDefect.date = localStorredDef.date;
                                 relDefect.due_date = localStorredDef.due_date;
                                 relDefect.number_of_comments = 0;
                                 relDefect.number_of_photos = 0;
