@@ -356,21 +356,25 @@ angular.module($APP.name).factory('SyncService', [
 
                         function createData(doDownload, path, def) {
                             ProjectService.list().then(function(projects) {
-                                getAllDrawings(projects, doDownload, path).then(function() {
-                                    angular.forEach(projects, function(project) {
-                                        createLightDrawings(project);
-                                        createSubcontractors(project);
-                                        createDefects(project);
-                                        ProjectService.users(project.id).then(function(result) {
-                                            project.users = result;
+                                if (projects.length) {
+                                    getAllDrawings(projects, doDownload, path).then(function() {
+                                        angular.forEach(projects, function(project) {
+                                            createLightDrawings(project);
+                                            createSubcontractors(project);
+                                            createDefects(project);
+                                            ProjectService.users(project.id).then(function(result) {
+                                                project.users = result;
+                                            })
+                                            if ((projects[projects.length - 1] === project)) {
+                                                $timeout(function() {
+                                                    def.resolve(projects)
+                                                }, 5000);
+                                            }
                                         })
-                                        if ((projects[projects.length - 1] === project)) {
-                                            $timeout(function() {
-                                                def.resolve(projects)
-                                            }, 5000);
-                                        }
                                     })
-                                })
+                                } else {
+                                    def.resolve(projects)
+                                }
                             })
                         }
 
@@ -399,6 +403,11 @@ angular.module($APP.name).factory('SyncService', [
                             $indexedDB.openStore('projects', function(store) {
                                 store.clear();
                             }).then(function(e) {
+                                if (!projects.length) {
+                                    syncPopup.close();
+                                    deferred.resolve('sync_done');
+                                    $state.go('app.projects');
+                                }
                                 angular.forEach(projects, function(project) {
                                     $indexedDB.openStore('projects', function(store) {
                                         project.op = 0;
