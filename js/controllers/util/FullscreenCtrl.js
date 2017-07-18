@@ -122,8 +122,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                         var usedViewport = page.getViewport(scale);
                         var canvas = document.getElementById('fullPreviewCanvas');
                         var context = canvas.getContext('2d');
-                        // canvas.height = usedViewport.height;
-                        // canvas.width = usedViewport.width;
+                        canvas.height = usedViewport.height;
+                        canvas.width = usedViewport.width;
                         canvas.onclick = function(event) {
                             if ($scope.addingMarker) {
                                 $scope.addingMarker = false;
@@ -134,8 +134,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     generateDefectImg(newstatus);
                                 }
                                 if (index !== 2) {
-                                    // var x = (Math.floor(event.offsetX) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
-                                    // var y = (Math.floor(event.offsetY) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
+                                    var x = (Math.floor(event.offsetX) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
+                                    var y = (Math.floor(event.offsetY) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
                                     var newMarker = {
                                         id: 0,
                                         xInit: x,
@@ -163,8 +163,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     }
                                     renderPoints(index);
                                 } else {
-                                    // var x = Math.floor(event.offsetX) - 6;
-                                    // var y = Math.floor(event.offsetY) - 6;
+                                    var x = Math.floor(event.offsetX) - 6;
+                                    var y = Math.floor(event.offsetY) - 6;
                                     var newMarker = {
                                         id: 0,
                                         xInit: x,
