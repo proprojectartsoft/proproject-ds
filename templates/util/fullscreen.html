@@ -9,16 +9,11 @@
         <i class="ion-android-remove" ng-if="!disableZoomOut" ng-click="zoomOut()"></i>
     </div>
     <ion-content class="has-header ds-page ds-fullscreen" direction="xy" scroll="true">
-        <div class="ds-pdf" ng-pinch-zoom max-scale="4">
+        <div class="ds-pdf">
             <div style="position:relative" class="ds-container">
                 <div id="dspdfcontainer">
                     <img class="ds-marker" ng-repeat="marker in local.markers" ng-src="{{marker.img}}" ng-style="{{local.troll}}" ng-click="go('defects', marker.defect_id)" style="height:17px;width:17px;position: absolute; left: {{marker.x}}px; top: {{marker.y}}px;z-index:{{marker.z}}">
-                    <canvas style="width:{{index}}px;position:relative" id="fullPreviewCanvas" ng-pinch-zoom max-scale="4"></canvas>
-
-
-                    <img ng-src="img/attachment.jpg" ng-pinch-zoom max-scale="4" style="height:200px;width:200px;">
-
-
+                    <canvas style="width:{{index}}px;position:relative" id="fullPreviewCanvas" ng-pinch-zoom max-scale="2"></canvas>
                     </ion-scroll>
                 </div>
             </div>
