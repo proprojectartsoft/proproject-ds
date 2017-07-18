@@ -122,8 +122,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                         var usedViewport = page.getViewport(scale);
                         var canvas = document.getElementById('fullPreviewCanvas');
                         var context = canvas.getContext('2d');
-                        canvas.height = usedViewport.height;
-                        canvas.width = usedViewport.width;
+                        // canvas.height = usedViewport.height;
+                        // canvas.width = usedViewport.width;
                         canvas.onclick = function(event) {
                             if ($scope.addingMarker) {
                                 $scope.addingMarker = false;
