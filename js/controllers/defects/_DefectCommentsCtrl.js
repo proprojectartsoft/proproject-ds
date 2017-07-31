@@ -100,8 +100,11 @@ angular.module($APP.name).controller('_DefectCommentsCtrl', [
             }
         }
         $scope.getInitials = function(str) {
-            var aux = str.split(" ");
-            return (aux[0][0] + aux[1][0]).toUpperCase();
+            if (str) {
+                var aux = str.split(" ");
+                return (aux[0][0] + aux[1][0]).toUpperCase();
+            }
+            return "";
         }
         $scope.back = function() {
             $state.go('app.defects', {

@@ -156,8 +156,6 @@ angular.module($APP.name).factory('SyncService', [
                                 if (defects[defects.length - 1].id == defect.id) {
                                     localStorage.setObject('changedDefects', changed);
                                 } else {
-                                    console.log(defects);
-                                    console.log(index);
                                     addDefects(defects, index + 1, defer);
                                 }
                             }, function(err) {
@@ -411,6 +409,7 @@ angular.module($APP.name).factory('SyncService', [
                                     deferred.resolve('sync_done');
                                     $state.go('app.projects');
                                 }
+                                console.log(projects);
                                 angular.forEach(projects, function(project) {
                                     $indexedDB.openStore('projects', function(store) {
                                         project.op = 0;
