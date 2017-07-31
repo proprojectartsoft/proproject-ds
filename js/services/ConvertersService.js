@@ -15,18 +15,20 @@ function ConvertersService($http) {
     return service;
 
     function init_defect(data) {
-        data.status_obj = {
-            id: data.status_id,
-            name: data.status_name
-        };
-        data.severity_obj = {
-            id: data.severity_id,
-            name: data.severity_name
-        };
-        data.priority_obj = {
-            id: data.priority_id,
-            name: data.priority_name
-        };
+        if (data) {
+            data.status_obj = {
+                id: data.status_id,
+                name: data.status_name
+            };
+            data.severity_obj = {
+                id: data.severity_id,
+                name: data.severity_name
+            };
+            data.priority_obj = {
+                id: data.priority_id,
+                name: data.priority_name
+            };
+        }
         return data;
     }
 

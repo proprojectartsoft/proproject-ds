@@ -156,13 +156,16 @@ angular.module($APP.name).factory('SyncService', [
                                 if (defects[defects.length - 1].id == defect.id) {
                                     localStorage.setObject('changedDefects', changed);
                                 } else {
+                                    console.log(defects);
+                                    console.log(index);
                                     addDefects(defects, index + 1, defer);
                                 }
                             }, function(err) {
-                                addDefects(defects, index + 1, defer);
                                 if (defects[defects.length - 1].id == defect.id) {
                                     localStorage.setObject('changedDefects', changed);
                                     defer.resolve();
+                                } else {
+                                    addDefects(defects, index + 1, defer);
                                 }
                             })
                         }

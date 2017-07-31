@@ -69,8 +69,16 @@ angular.module($APP.name).controller('LoginCtrl', [
             if (localStorage.getObject('automLogin'))
                 AuthService.login($scope.user).success(function(result) {
                     SyncService.sync();
+                    localStorage.setObject('ds.user', {
+                        role: result.data.role.id,
+                        name: result.data.username
+                    });
                 }).error(function(response, status) {
                     if (status === 0 || status === -1) {
+                        localStorage.setObject('ds.user', {
+                            role: 0,
+                            name: $scope.user.username
+                        });
                         $state.go('app.projects');
                     }
                     if (status === 502) {

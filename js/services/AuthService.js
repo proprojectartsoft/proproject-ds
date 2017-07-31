@@ -64,7 +64,6 @@ angular.module($APP.name).factory('AuthService', [
                     return result;
                 });
             }
-
         };
     }
 ]);

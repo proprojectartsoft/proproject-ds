@@ -33,17 +33,28 @@ angular.module($APP.name).controller('_DefectCommentsCtrl', [
             if ($scope.local.comment) {
                 $indexedDB.openStore('projects', function(store) {
                     store.find(localStorage.getObject('dsproject').id).then(function(project) {
-                        var user = $filter('filter')(project.users, {
+                        var userInfo = $filter('filter')(project.users, {
                             login_name: (localStorage.getObject('ds.user').name)
-                        })[0];
-                        request = {
-                            "id": 0,
-                            "text": $scope.local.comment,
-                            "user_id": user.id,
-                            "user_name": user.first_name + " " + user.last_name,
-                            "defect_id": $stateParams.id,
-                            "date": Date.now()
-                        };
+                        });
+                        if (userInfo && userInfo.length) {
+                            request = {
+                                "id": 0,
+                                "text": $scope.local.comment,
+                                "user_id": userInfo[0].id,
+                                "user_name": userInfo[0].first_name + " " + userInfo[0].last_name,
+                                "defect_id": $stateParams.id,
+                                "date": Date.now()
+                            };
+                        } else {
+                            request = {
+                                "id": 0,
+                                "text": $scope.local.comment,
+                                "user_id": 0,
+                                "user_name": "Super Admin",
+                                "defect_id": $stateParams.id,
+                                "date": Date.now()
+                            };
+                        }
                         var defect = $filter('filter')(project.defects, {
                             id: $stateParams.id
                         })[0];
