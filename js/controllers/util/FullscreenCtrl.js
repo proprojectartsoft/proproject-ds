@@ -100,12 +100,12 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             console.log("landscape");
             screen.orientation.lock('landscape');
         }, 100)
-        screen.orientation.unlock();
-        $timeout(function() {
-            console.log("portrait");
-            screen.orientation.lock('portrait');
-        }, 100)
-        screen.orientation.unlock();
+        // screen.orientation.unlock();
+        // $timeout(function() {
+        //     console.log("portrait");
+        //     screen.orientation.lock('portrait');
+        // }, 100)
+        // screen.orientation.unlock();
 
         //pinch zoom for fullscreen image
         // $("#imageToPinch").on('gesturechange', function(e) {
