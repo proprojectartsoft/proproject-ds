@@ -87,7 +87,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
 
         //pinch zoom for fullscreen image
         //#canvasCointainer
-        var image = document.getElementById('fullPreviewCanvas');
+        var image = document.getElementById('imageId');
         image.addEventListener('gesturechange', function(e) {
 
             if (e.scale > 1) {
