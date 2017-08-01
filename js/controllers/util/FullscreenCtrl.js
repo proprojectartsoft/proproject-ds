@@ -84,11 +84,28 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             $scope.index = $scope.widthMap[index].value;
             renderPoints(index);
         };
+
+
         //rotate screen
         window.addEventListener("orientationchange", function() {
             console.log(screen.orientation.type);
         });
 
+
+        screen.orientation.addEventListener('change', function() {
+            console.log(screen.orientation.type); // e.g. portrait
+        });
+
+        $timeout(function() {
+            console.log("landscape");
+            screen.orientation.lock('landscape');
+        }, 10000)
+        screen.orientation.unlock();
+        $timeout(function() {
+            console.log(portrait);
+            screen.orientation.lock('portrait');
+        }, 10000)
+        screen.orientation.unlock();
 
         //pinch zoom for fullscreen image
         // $("#imageToPinch").on('gesturechange', function(e) {
