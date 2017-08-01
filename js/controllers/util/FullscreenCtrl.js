@@ -102,7 +102,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 console.log("zoomOut");
             }
         })
-        $("#imageToPinch").on('gesturestart', function(e) {
+        $("#fullPreviewCanvas").on('gesturestart', function(e) {
             console.log("PINCH");
             if (e.scale > 1) {
                 //zoom in
