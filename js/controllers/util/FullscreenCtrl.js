@@ -99,12 +99,12 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         $timeout(function() {
             console.log("landscape");
             screen.orientation.lock('landscape');
-        }, 10000)
+        }, 100)
         screen.orientation.unlock();
         $timeout(function() {
-            console.log(portrait);
+            console.log("portrait");
             screen.orientation.lock('portrait');
-        }, 10000)
+        }, 100)
         screen.orientation.unlock();
 
         //pinch zoom for fullscreen image
