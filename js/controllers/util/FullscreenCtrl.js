@@ -97,10 +97,10 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         });
 
         $timeout(function() {
-            console.log("landscape");
+            console.log("portrait");
             screen.orientation.lock('landscape');
         }, 100)
-        // screen.orientation.unlock();
+        screen.orientation.unlock();
         // $timeout(function() {
         //     console.log("portrait");
         //     screen.orientation.lock('portrait');
