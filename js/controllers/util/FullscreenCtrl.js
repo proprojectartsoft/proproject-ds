@@ -85,21 +85,54 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             renderPoints(index);
         };
 
-        //pinch zoom for fullscreen image
-        //#canvasCointainer
-        var image = document.getElementById('imageId');
-        image.addEventListener('gesturechange', function(e) {
 
+
+        //pinch zoom for fullscreen image
+        $("#imageToPinch").on('gesturechange', function(e) {
+            console.log("PINCH");
             if (e.scale > 1) {
                 //zoom in
                 //increase the size of image according to the e.scale
-                $scope.zoomIn();
+                // $scope.zoomIn();
+                console.log("zoomIn");
             } else if (e.scale < 1) {
                 //zoom out
                 //decrease the size of image according to the e.scale
-                $scope.zoomOut();
+                // $scope.zoomOut();
+                console.log("zoomOut");
             }
-        });
+        })
+        $("#imageToPinch").on('gesturestart', function(e) {
+            console.log("PINCH");
+            if (e.scale > 1) {
+                //zoom in
+                //increase the size of image according to the e.scale
+                // $scope.zoomIn();
+                console.log("zoomIn");
+            } else if (e.scale < 1) {
+                //zoom out
+                //decrease the size of image according to the e.scale
+                // $scope.zoomOut();
+                console.log("zoomOut");
+            }
+        })
+        $("#imageToPinch").on('gestureend', function(e) {
+            console.log("PINCH");
+            if (e.scale > 1) {
+                //zoom in
+                //increase the size of image according to the e.scale
+                // $scope.zoomIn();
+                console.log("zoomIn");
+            } else if (e.scale < 1) {
+                //zoom out
+                //decrease the size of image according to the e.scale
+                // $scope.zoomOut();
+                console.log("zoomOut");
+            }
+        })
+
+
+
 
 
 

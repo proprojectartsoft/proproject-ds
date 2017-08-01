@@ -72,29 +72,6 @@ angular.module($APP.name).controller('DrawingsCtrl', [
             });
         }
 
-
-
-
-        //pinch test
-        $("#imageToPinch").on('gesturechange', function(e) {
-            console.log("PINCH");
-            if (e.scale > 1) {
-                //zoom in
-                //increase the size of image according to the e.scale
-                // $scope.zoomIn();
-                console.log("zoomIn");
-            } else if (e.scale < 1) {
-                //zoom out
-                //decrease the size of image according to the e.scale
-                // $scope.zoomOut();
-                console.log("zoomOut");
-            }
-        })
-
-
-
-
-
         if (!localStorage.getObject('dsdrwact') || localStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
             $indexedDB.openStore('projects', function(store) {
                 store.find(localStorage.getObject('dsproject').id).then(function(res) {
