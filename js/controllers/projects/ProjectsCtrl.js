@@ -31,25 +31,6 @@ angular.module($APP.name).controller('ProjectsCtrl', [
                 }
             })
         })
-
-        //pinch test
-        $("#imageToPinch").on('gesturechange', function(e) {
-                  console.log("PINCH");
-                  if (e.scale > 1) {
-                      //zoom in
-                      //increase the size of image according to the e.scale
-                      // $scope.zoomIn();
-                      console.log("zoomIn");
-                  } else if (e.scale < 1) {
-                      //zoom out
-                      //decrease the size of image according to the e.scale
-                      // $scope.zoomOut();
-                      console.log("zoomOut");
-                  }
-              })
-
-
-
         $scope.go = function(item) {
             localStorage.setObject('dsproject', item);
             localStorage.setObject('dsnavTitle', item.name);
