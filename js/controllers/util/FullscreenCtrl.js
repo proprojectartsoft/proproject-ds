@@ -85,6 +85,24 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             renderPoints(index);
         };
 
+        //pinch zoom for fullscreen image
+        //#canvasCointainer
+        var image = document.getElementById('fullPreviewCanvas');
+        image.addEventListener('gesturechange', function(e) {
+
+            if (e.scale > 1) {
+                //zoom in
+                //increase the size of image according to the e.scale
+                $scope.zoomIn();
+            } else if (e.scale < 1) {
+                //zoom out
+                //decrease the size of image according to the e.scale
+                $scope.zoomOut();
+            }
+        });
+
+
+
         $scope.triggerMarker = function() {
             $scope.addingMarker = !$scope.addingMarker;
         }
