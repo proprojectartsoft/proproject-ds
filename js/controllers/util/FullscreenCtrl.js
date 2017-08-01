@@ -84,16 +84,11 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             $scope.index = $scope.widthMap[index].value;
             renderPoints(index);
         };
-
-
         //rotate screen
         window.addEventListener("orientationchange", function() {
             console.log(screen.orientation.type);
         });
-        $timeout(function() {
-            screen.orientation.lock('landscape');
-        }, 10000)
-        screen.orientation.unlock();
+
 
         //pinch zoom for fullscreen image
         // $("#imageToPinch").on('gesturechange', function(e) {
