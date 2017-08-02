@@ -804,6 +804,11 @@ input[type=checkbox]:checked.blue-ck+label {
     padding-top: 10px;
 }
 
+.keyboard-open .login-container {
+    padding-top: 60px;
+    height: 100%;
+}
+
 .keyboard-open #login .scroll {
     height: calc(100% + 200px);
 }
