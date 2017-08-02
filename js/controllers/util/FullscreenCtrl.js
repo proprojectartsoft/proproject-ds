@@ -85,27 +85,26 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             renderPoints(index);
         };
 
-
         //rotate screen
-        window.addEventListener("orientationchange", function() {
-            console.log(screen.orientation.type);
-        });
-
-
         screen.orientation.addEventListener('change', function() {
-            console.log(screen.orientation.type); // e.g. portrait
+            console.log(screen.orientation.type);
         });
 
         $timeout(function() {
             console.log("landscape");
             screen.orientation.lock('landscape');
-        }, 500)
+        }, 10000)
         screen.orientation.unlock();
         $timeout(function() {
-            console.log("portrait");
+            console.log(portrait);
             screen.orientation.lock('portrait');
-        }, 500)
+        }, 10000)
         screen.orientation.unlock();
+        
+        // screen.orientation.addEventListener('change', function() {
+        //     console.log(screen.orientation.type); // e.g. portrait
+        // });
+
 
         //pinch zoom for fullscreen image
         // $("#imageToPinch").on('gesturechange', function(e) {
@@ -122,13 +121,13 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         //         console.log("zoomOut");
         //     }
         // })
-
-        $scope.reportEvent = function(event) {
-            console.log('Reporting : ' + event.type);
-            $timeout(function() {
-                //  $scope.data[event.type]++;
-            })
-        }
+        //
+        // $scope.reportEvent = function(event) {
+        //     console.log('Reporting : ' + event.type);
+        //     $timeout(function() {
+        //         //  $scope.data[event.type]++;
+        //     })
+        // }
 
 
 
