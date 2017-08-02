@@ -28,7 +28,7 @@ angular.module($APP.name).controller('_DefectCommentsCtrl', [
                 $scope.local.list = defect.comments;
             })
         })
-
+        screen.orientation.lock('portrait');
         $scope.addComment = function() {
             if ($scope.local.comment) {
                 $indexedDB.openStore('projects', function(store) {

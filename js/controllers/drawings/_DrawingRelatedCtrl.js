@@ -17,7 +17,7 @@ angular.module($APP.name).controller('_DrawingRelatedCtrl', [
             id: $stateParams.id,
             state: 'app.drawingrelated'
         })
-
+        screen.orientation.lock('portrait');
         $scope.local = {};
         $scope.local.loaded = false;
         $scope.local.data = localStorage.getObject('dsdrwact');

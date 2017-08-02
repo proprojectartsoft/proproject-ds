@@ -17,7 +17,7 @@ angular.module($APP.name).controller('ProjectsCtrl', [
         $scope.local = {};
         $scope.local.createProject = {}
         $scope.local.user = localStorage.getObject('ds.user')
-
+        screen.orientation.lock('portrait');
         $indexedDB.openStore('projects', function(store) {
             store.getAll().then(function(res) {
                 angular.forEach(res, function(proj) {

@@ -17,7 +17,7 @@ angular.module($APP.name).controller('TabCtrl', [
         $scope.local = {};
         $scope.local.inviteemail = '';
         localStorage.removeItem('ds.defect.back');
-
+        screen.orientation.lock('portrait');
         $rootScope.$on('$stateChangeStart',
             function(event, toState, toParams, fromState, fromParams) {
                 if (toState.name == 'app.tab') {

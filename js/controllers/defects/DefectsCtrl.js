@@ -25,7 +25,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
             state: 'app.defects'
         })
         localStorage.removeItem('ds.reloadevent');
-
+        screen.orientation.lock('portrait');
         $ionicModal.fromTemplateUrl('templates/defects/_drawings.html', {
             scope: $scope
         }).then(function(modal) {

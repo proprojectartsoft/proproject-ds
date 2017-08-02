@@ -15,9 +15,9 @@ angular.module($APP.name).controller('NavCtrl', [
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.editMode = false;
+        screen.orientation.lock('portrait');  
         $scope.toggleLeft = function($event) {
             $ionicSideMenuDelegate.toggleLeft();
-
         };
         SettingsService.my_account().then(function(result) {
             var aux = localStorage.getObject('ds.user')

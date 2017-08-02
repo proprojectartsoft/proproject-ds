@@ -23,7 +23,7 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
             $scope.local.data = localStorage.getObject('ds.defect.active.data')
             $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
         }
-
+        screen.orientation.lock('portrait');
         $scope.back = function() {
             $state.go('app.defects', {
                 id: $stateParams.id

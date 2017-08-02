@@ -7,7 +7,7 @@ angular.module($APP.name).controller('LoginCtrl', [
     'SyncService',
     function($rootScope, $scope, $state, $ionicPopup, AuthService, SyncService) {
         $scope.user = {};
-
+        screen.orientation.lock('portrait');  
         $scope.login = function() {
             if ($scope.user.username && $scope.user.password) {
                 AuthService.login($scope.user).success(function(result) {
