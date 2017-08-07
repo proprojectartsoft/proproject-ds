@@ -8,24 +8,24 @@
         <i class="ion-android-add" ng-if="!disableZoomIn" ng-click="zoomIn()"></i>
         <i class="ion-android-remove" ng-if="!disableZoomOut" ng-click="zoomOut()"></i>
     </div>
-    <ion-content class="has-header ds-page ds-fullscreen" direction="xy" scroll="true">
-        <div class="ds-pdf">
+    <ion-content class="has-header ds-page ds-fullscreen" direction="xy" scroll="false">
+        <!-- <div class="ds-pdf">
             <div style="position:relative" class="ds-container">
                 <div id="dspdfcontainer">
                     <img class="ds-marker" ng-repeat="marker in local.markers" ng-src="{{marker.img}}" ng-style="{{local.troll}}" ng-click="go('defects', marker.defect_id)" style="height:17px;width:17px;position: absolute; left: {{marker.x}}px; top: {{marker.y}}px;z-index:{{marker.z}}">
                     <canvas style="width:{{index}}px;position:relative" id="fullPreviewCanvas"></canvas>
                     </ion-scroll>
                 </div>
-            </div>
+            </div> -->
 
 
 
-            <div detect-gestures gesture-type="pinch" height="100">
+            <div detect-gestures gesture-type="pinch" height="500px">
                 <p>
                     Pinch Me!
                 </p>
             </div>
-            <div detect-gestures gesture-type="swiperight" height="100">
+            <div detect-gestures gesture-type="swiperight" height="500px">
                 <p>
                     Swipe me right!
                 </p>
