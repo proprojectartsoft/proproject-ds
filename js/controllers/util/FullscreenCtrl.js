@@ -55,9 +55,9 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 });
             }, 100);
         }
-        $(window).load(function() {
-          loaded();
-        });
+
+        loaded();
+
 
 
 
