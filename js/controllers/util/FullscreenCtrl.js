@@ -47,21 +47,6 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             value: 2400
         }];
 
-
-        function loaded() {
-            setTimeout(function() {
-                myScroll = new iScroll('wrapper', {
-                    zoom: true
-                });
-            }, 100);
-        }
-
-        loaded();
-
-
-
-
-
         $scope.zoomIn = function() {
             if (index === 4) {
                 index++;
@@ -89,21 +74,15 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             renderPoints(index);
         };
 
+        //pinch zoom for fullscreen image
+        setTimeout(function() {
+            myScroll = new iScroll('wrapper', {
+                zoom: true
+            });
+        }, 100);
         //rotate screen
         screen.orientation.addEventListener('change', function() {});
         screen.orientation.unlock();
-
-
-        //pinch zoom for fullscreen image
-        $scope.reportEvent = function(event) {
-            console.log('Reporting : ' + event.type);
-            $timeout(function() {
-                console.log("Here");
-            })
-        }
-
-
-
 
         $scope.triggerMarker = function() {
             $scope.addingMarker = !$scope.addingMarker;
