@@ -46,17 +46,20 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             zoom: 200,
             value: 2400
         }];
-        var renderPoints = function(index) {
-            $timeout(function() {
-                $scope.$apply(function() {
-                    angular.forEach($scope.local.markers, function(point) {
-                        point.x = ($scope.widthMap[index].zoom / 100) * point.xInit;
-                        point.y = ($scope.widthMap[index].zoom / 100) * point.yInit;
-                        point.z = 5
-                    });
+
+
+        function loaded() {
+            setTimeout(function() {
+                myScroll = new iScroll('wrapper', {
+                    zoom: true
                 });
-            });
-        };
+            }, 100);
+        }
+        window.addEventListener('load', loaded, false);
+
+
+
+
 
         $scope.zoomIn = function() {
             if (index === 4) {
