@@ -91,27 +91,12 @@ angular.module($APP.name).controller('FullscreenCtrl', [
 
 
         //pinch zoom for fullscreen image
-        // $("#imageToPinch").on('gesturechange', function(e) {
-        //     console.log("PINCH");
-        //     if (e.scale > 1) {
-        //         //zoom in
-        //         //increase the size of image according to the e.scale
-        //         // $scope.zoomIn();
-        //         console.log("zoomIn");
-        //     } else if (e.scale < 1) {
-        //         //zoom out
-        //         //decrease the size of image according to the e.scale
-        //         // $scope.zoomOut();
-        //         console.log("zoomOut");
-        //     }
-        // })
-        //
-        // $scope.reportEvent = function(event) {
-        //     console.log('Reporting : ' + event.type);
-        //     $timeout(function() {
-        //         //  $scope.data[event.type]++;
-        //     })
-        // }
+        $scope.reportEvent = function(event) {
+            console.log('Reporting : ' + event.type);
+            $timeout(function() {
+                console.log("Here");
+            })
+        }
 
 
 
