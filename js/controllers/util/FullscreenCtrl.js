@@ -55,8 +55,9 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 });
             }, 100);
         }
-        window.addEventListener('load', loaded, false);
-
+        $(window).load(function() {
+          loaded();
+        });
 
 
 
