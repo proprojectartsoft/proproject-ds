@@ -47,6 +47,18 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             value: 2400
         }];
 
+        var renderPoints = function(index) {
+            $timeout(function() {
+                $scope.$apply(function() {
+                    angular.forEach($scope.local.markers, function(point) {
+                        point.x = ($scope.widthMap[index].zoom / 100) * point.xInit;
+                        point.y = ($scope.widthMap[index].zoom / 100) * point.yInit;
+                        point.z = 5
+                    });
+
+                })
+            })
+        };
         $scope.zoomIn = function() {
             if (index === 4) {
                 index++;
@@ -75,11 +87,24 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         };
 
         //pinch zoom for fullscreen image
-        setTimeout(function() {
-            myScroll = new iScroll('wrapper', {
-                zoom: true
-            });
-        }, 100);
+        $(document).ready(function() {
+            if (typeof(myScroll) !== "undefined" && myScroll !== null) {
+                setTimeout(function() {
+                    myScroll.destroy();
+                    loaded();
+                }, 0);
+            }
+        })
+        function loaded() {
+            setTimeout(function() {
+                var height = $('ion-content').height();
+                $('#wrapper').height(height - 20);
+                myScroll = new iScroll('wrapper', {
+                    zoom: true
+                });
+            }, 100);
+        }
+
         //rotate screen
         screen.orientation.addEventListener('change', function() {});
         screen.orientation.unlock();
