@@ -93,7 +93,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             renderPoints(index, false);
         };
 
-        var zoom = 60;
+        var zoom = $scope.widthMap[index].zoom;
         //zoom in on pinch gesture
         function pinchOut() {
             //zoom in if less than max allowed value
@@ -126,20 +126,16 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             }
             renderPoints(zoom, true);
         }
-
+        //pinch event handling
         $scope.reportEvent = function(event) {
-            // console.log('Reporting : ' + event.type);
             switch (event.type) {
                 case 'pinchin':
                     pinchIn();
-                    console.log("pinchin");
                     break;
                 case 'pinchout':
                     pinchOut();
-                    console.log("pinchout");
                     break;
                 default:
-
             }
         }
 
