@@ -100,12 +100,20 @@ angular.module($APP.name).controller('FullscreenCtrl', [
 
         $scope.reportEvent = function(event) {
             // console.log('Reporting : ' + event.type);
-            console.log("here");
+            switch (event.type) {
+                case 'pinch':
+                    $scope.zoomIn();
+                    console.log("pinch");
 
-            $timeout(function() {
-                // $scope.data[event.type]++;
-                console.log("pinched");
-            })
+                    break;
+                case 'pan':
+                    $scope.zoomOut();
+                    console.log("pan");
+
+                    break;
+                default:
+
+            }
         }
 
         //rotate screen

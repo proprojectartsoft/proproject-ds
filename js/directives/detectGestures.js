@@ -9,6 +9,9 @@ angular.module($APP.name).directive('detectGestures', function($ionicGesture) {
                 case 'pinch':
                     $ionicGesture.on('pinch', scope.reportEvent, elem);
                     break;
+                case 'pan':
+                    $ionicGesture.on('pan', scope.reportEvent, elem);
+                    break;
                 case 'swiperight':
                     $ionicGesture.on('swiperight', scope.reportEvent, elem);
                     break;
