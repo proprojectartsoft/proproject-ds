@@ -22,7 +22,11 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;
         }
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $ionicModal.fromTemplateUrl('templates/defects/_popover.html', {
             scope: $scope
         }).then(function(modal) {

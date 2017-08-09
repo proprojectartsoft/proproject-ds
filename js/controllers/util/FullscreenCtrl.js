@@ -88,22 +88,16 @@ angular.module($APP.name).controller('FullscreenCtrl', [
 
         //pinch zoom for fullscreen image
         $(document).ready(function() {
-            if (typeof(myScroll) !== "undefined" && myScroll !== null) {
-                setTimeout(function() {
-                    myScroll.destroy();
-                    loaded();
-                }, 0);
-            } else {
-                loaded();
-            }
+            loaded();
         })
 
         function loaded() {
+            var height = $('ion-content').height();
+            $('#wrapper').height(height - 20);
             setTimeout(function() {
-                var height = $('ion-content').height();
-                $('#wrapper').height(height - 20);
                 myScroll = new iScroll('wrapper', {
-                    zoom: true
+                    zoom: true,
+                    vScrollbar: true
                 });
             }, 100);
         }

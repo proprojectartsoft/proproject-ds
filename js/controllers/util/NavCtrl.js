@@ -15,7 +15,11 @@ angular.module($APP.name).controller('NavCtrl', [
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.editMode = false;
-        screen.orientation.lock('portrait');  
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $scope.toggleLeft = function($event) {
             $ionicSideMenuDelegate.toggleLeft();
         };

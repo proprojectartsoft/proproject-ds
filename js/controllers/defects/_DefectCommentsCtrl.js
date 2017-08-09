@@ -28,7 +28,11 @@ angular.module($APP.name).controller('_DefectCommentsCtrl', [
                 $scope.local.list = defect.comments;
             })
         })
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $scope.addComment = function() {
             if ($scope.local.comment) {
                 $indexedDB.openStore('projects', function(store) {

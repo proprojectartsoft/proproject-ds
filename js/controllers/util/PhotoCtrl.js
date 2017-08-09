@@ -9,7 +9,11 @@ angular.module($APP.name).controller('PhotoCtrl', [
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $scope.local = {};
         $scope.local.data = localStorage.getObject('dsphotoact');
         $scope.local.data.url_original = $APP.server + 'pub/defectPhotos/' + $scope.local.data.base_64_string.replace("resized", "original");

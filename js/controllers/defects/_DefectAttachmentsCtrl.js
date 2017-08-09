@@ -23,7 +23,11 @@ angular.module($APP.name).controller('_DefectAttachmentsCtrl', [
         } else {
             $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
         }
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $indexedDB.openStore('projects', function(store) {
             store.find(localStorage.getObject('dsproject').id).then(function(res) {
                 var defect = $filter('filter')(res.defects, {

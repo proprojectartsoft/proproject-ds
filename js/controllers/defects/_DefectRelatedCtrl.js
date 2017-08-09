@@ -23,7 +23,11 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
             $scope.local.data = localStorage.getObject('ds.defect.active.data')
             $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
         }
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $scope.back = function() {
             $state.go('app.defects', {
                 id: $stateParams.id

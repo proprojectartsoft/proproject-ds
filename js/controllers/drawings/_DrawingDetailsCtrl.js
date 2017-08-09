@@ -16,7 +16,11 @@ angular.module($APP.name).controller('_DrawingDetailsCtrl', [
         $scope.local = {};
         $scope.local.data = localStorage.getObject('dsdrwact')
         $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $scope.back = function() {
             if (!$rootScope.disableedit) {
                 localStorage.setObject('dsdrwact', $scope.local.data)

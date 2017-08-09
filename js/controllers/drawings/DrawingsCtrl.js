@@ -16,7 +16,11 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         $scope.settings.tabActive = 'drawings';
         $scope.settings.entityId = $stateParams.id;
         $scope.local = {};
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         SettingsService.put_settings('tabActive', 'drawings');
         localStorage.setObject('ds.defect.back', {
             id: $stateParams.id,

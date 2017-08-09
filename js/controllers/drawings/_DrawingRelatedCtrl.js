@@ -17,7 +17,11 @@ angular.module($APP.name).controller('_DrawingRelatedCtrl', [
             id: $stateParams.id,
             state: 'app.drawingrelated'
         })
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $scope.local = {};
         $scope.local.loaded = false;
         $scope.local.data = localStorage.getObject('dsdrwact');

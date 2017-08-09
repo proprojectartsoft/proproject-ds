@@ -17,7 +17,11 @@ angular.module($APP.name).controller('ProjectsCtrl', [
         $scope.local = {};
         $scope.local.createProject = {}
         $scope.local.user = localStorage.getObject('ds.user')
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $indexedDB.openStore('projects', function(store) {
             store.getAll().then(function(res) {
                 angular.forEach(res, function(proj) {

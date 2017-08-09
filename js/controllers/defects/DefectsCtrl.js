@@ -25,7 +25,11 @@ angular.module($APP.name).controller('DefectsCtrl', [
             state: 'app.defects'
         })
         localStorage.removeItem('ds.reloadevent');
-        screen.orientation.lock('portrait');
+        if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
+            setTimeout(function() {
+                screen.orientation.lock('portrait')
+            }, 200);
+        }
         $ionicModal.fromTemplateUrl('templates/defects/_drawings.html', {
             scope: $scope
         }).then(function(modal) {
