@@ -93,8 +93,11 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                     myScroll.destroy();
                     loaded();
                 }, 0);
+            } else {
+                loaded();
             }
         })
+
         function loaded() {
             setTimeout(function() {
                 var height = $('ion-content').height();
