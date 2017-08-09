@@ -55,9 +55,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                         point.y = ($scope.widthMap[index].zoom / 100) * point.yInit;
                         point.z = 5
                     });
-
                 })
-                loaded();
             })
         };
         $scope.zoomIn = function() {
@@ -131,6 +129,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         }
         var perc = $scope.width / 12;
         var setPdf = function(url) {
+            loaded();
             $timeout(function() {
                 PDFJS.getDocument(url).then(function(pdf) {
                     pdf.getPage(1).then(function(page) {
@@ -260,6 +259,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     }
                                 });
                                 renderPoints(index);
+                                // loaded();
                             });
                         })
                     });
