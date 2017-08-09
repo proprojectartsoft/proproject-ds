@@ -95,11 +95,11 @@ angular.module($APP.name).controller('FullscreenCtrl', [
 
         //zoom in on pinch gesture
         function pinchOut() {
+            var zoom = $scope.widthMap[index].zoom;
             //zoom in if less than max allowed value
             if ($scope.index < $scope.widthMap[5].value) {
                 $scope.index += 30;
                 //set the correct index for points to be rendered
-                var zoom = $scope.widthMap[index].zoom;
                 zoom += 2.5;
                 //keep consistency between zoom on pinch and on button click
                 for (var i = 0; i < $scope.widthMap.length - 1; i++) {
@@ -112,11 +112,11 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         }
         //zoom out on pinch gesture
         function pinchIn() {
+            var zoom = $scope.widthMap[index].zoom;
             //zoom out if more than min allowed value
             if ($scope.index > $scope.widthMap[0].value) {
                 $scope.index -= 30;
                 //set the correct index for points to be rendered
-                var zoom = $scope.widthMap[index].zoom;
                 zoom -= 2.5;
                 //keep consistency between zoom on pinch and on button click
                 for (var i = $scope.widthMap.length - 1; i >= 0; i--) {
