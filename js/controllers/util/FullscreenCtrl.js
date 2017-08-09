@@ -85,6 +85,11 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             renderPoints(index);
         };
 
+        function pinchZoom() {
+          $scope.index = $scope.widthMap[index].value;
+          renderPoints(index);
+        }
+
         //pinch zoom for fullscreen image
         function loaded() {
             var height = $('ion-content').height();
@@ -102,9 +107,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             // console.log('Reporting : ' + event.type);
             switch (event.type) {
                 case 'pinch':
-                    $scope.zoomIn();
+                    pinchZoom();
                     console.log("pinch");
-
                     break;
                 case 'pan':
                     $scope.zoomOut();
