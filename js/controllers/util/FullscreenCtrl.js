@@ -97,6 +97,17 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             }, 100);
         }
 
+
+        $scope.reportEvent = function(event) {
+            // console.log('Reporting : ' + event.type);
+            console.log("here");
+
+            $timeout(function() {
+                // $scope.data[event.type]++;
+                console.log("pinched");
+            })
+        }
+
         //rotate screen
         screen.orientation.addEventListener('change', function() {});
         screen.orientation.unlock();
@@ -129,7 +140,6 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         }
         var perc = $scope.width / 12;
         var setPdf = function(url) {
-            loaded();
             $timeout(function() {
                 PDFJS.getDocument(url).then(function(pdf) {
                     pdf.getPage(1).then(function(page) {
