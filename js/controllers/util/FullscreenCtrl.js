@@ -89,17 +89,17 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         var minZoom = 720;
         var maxZoom = 2400;
         var zoomed = 720;
-        //zoom out on pinch gesture
-        function pinchIn() {
+        //zoom in on pinch gesture
+        function pinchOut() {
             if (zoomed < maxZoom)
                 zoomed += 50;
             $scope.index = zoomed;
             renderPoints(index);
         }
-        //zoom in on pinch gesture
-        function pinchOut() {
+        //zoom out on pinch gesture
+        function pinchIn() {
             if (zoomed > minZoom)
-                zoomed += 50;
+                zoomed -= 50;
             $scope.index = zoomed;
             renderPoints(index);
         }
