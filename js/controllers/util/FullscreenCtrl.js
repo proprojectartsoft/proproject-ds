@@ -119,8 +119,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 var zoom = $scope.widthMap[index].zoom;
                 zoom -= 2.5;
                 //keep consistency between zoom on pinch and on button click
-                for (var i = 0; i < $scope.widthMap.length - 1; i++) {
-                    if ($scope.index <= $scope.widthMap[$scope.widthMap.length - 1 - i].value) {
+                for (var i = $scope.widthMap.length - 1; i >= 0; i--) {
+                    if ($scope.index <= $scope.widthMap[i].value) {
                         index = i;
                     }
                 }
