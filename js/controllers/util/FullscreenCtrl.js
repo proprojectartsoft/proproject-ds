@@ -86,8 +86,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         };
 
         function pinchZoom() {
-          $scope.index = $scope.widthMap[index].value;
-          renderPoints(index);
+            $scope.index = $scope.widthMap[index].value;
+            renderPoints(index);
         }
 
         //pinch zoom for fullscreen image
@@ -114,6 +114,14 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                     $scope.zoomOut();
                     console.log("pan");
 
+                    break;
+                case 'pinchin':
+                    pinchZoom();
+                    console.log("pinchin");
+                    break;
+                case 'pinchout':
+                    pinchZoom();
+                    console.log("pinchout");
                     break;
                 default:
 
