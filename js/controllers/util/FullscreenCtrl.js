@@ -47,14 +47,22 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             value: 2400
         }];
 
-        var renderPoints = function(index) {
+        var renderPoints = function(index, pinched) {
             $timeout(function() {
                 $scope.$apply(function() {
-                    angular.forEach($scope.local.markers, function(point) {
-                        point.x = ($scope.widthMap[index].zoom / 100) * point.xInit;
-                        point.y = ($scope.widthMap[index].zoom / 100) * point.yInit;
-                        point.z = 5
-                    });
+                    if (pinched) {
+                        angular.forEach($scope.local.markers, function(point) {
+                            point.x = index / 100 * point.xInit;
+                            point.y = index / 100 * point.yInit;
+                            point.z = 5
+                        });
+                    } else {
+                        angular.forEach($scope.local.markers, function(point) {
+                            point.x = ($scope.widthMap[index].zoom / 100) * point.xInit;
+                            point.y = ($scope.widthMap[index].zoom / 100) * point.yInit;
+                            point.z = 5
+                        });
+                    }
                 })
             })
         };
@@ -69,7 +77,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 $scope.disableZoomOut = false;
             }
             $scope.index = $scope.widthMap[index].value;
-            renderPoints(index);
+            renderPoints(index, false);
         };
         $scope.zoomOut = function() {
             if (index === 1 && !$scope.disableZoomOut) {
@@ -82,30 +90,29 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 $scope.disableZoomIn = false;
             }
             $scope.index = $scope.widthMap[index].value;
-            renderPoints(index);
+            renderPoints(index, false);
         };
 
-        var minZoom = 720;
-        var maxZoom = 2400;
+        var zoom = 0;
         //zoom in on pinch gesture
         function pinchOut() {
-            //zoom in if less than maxZoom
-            if ($scope.index < maxZoom) {
-                $scope.index += 10;
+            //zoom in if less than max allowed value
+            if ($scope.index < $scope.widthMap[5].value) {
+                $scope.index += 30;
                 //set the correct index for points to be rendered
-                index += 0.83;
+                index += 2.5;
             }
-            renderPoints(index);
+            renderPoints(index, true);
         }
         //zoom out on pinch gesture
         function pinchIn() {
-            //zoom out if more than minZoom
-            if ($scope.index > minZoom) {
-                $scope.index -= 10;
+            //zoom out if more than min allowed value
+            if ($scope.index > $scope.widthMap[0].value) {
+                $scope.index -= 30;
                 //set the correct index for points to be rendered
-                index -= 0.83;
+                index -= 2.5;
             }
-            renderPoints(index);
+            renderPoints(index, true);
         }
 
         //pinch zoom for fullscreen image
@@ -216,7 +223,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                             id: 0
                                         })
                                     }
-                                    renderPoints(index);
+                                    renderPoints(index, false);
                                 } else {
                                     var x = Math.floor(event.offsetX) - 6;
                                     var y = Math.floor(event.offsetY) - 6;
@@ -245,7 +252,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                             id: 0
                                         })
                                     }
-                                    renderPoints(index);
+                                    renderPoints(index, false);
                                 }
                             }
                         }
@@ -296,7 +303,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                         $scope.local.markers.push(auxPoint);
                                     }
                                 });
-                                renderPoints(index);
+                                renderPoints(index, false);
                                 // loaded();
                             });
                         })
