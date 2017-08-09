@@ -85,22 +85,26 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             renderPoints(index);
         };
 
-
         var minZoom = 720;
         var maxZoom = 2400;
-        var zoomed = 720;
         //zoom in on pinch gesture
         function pinchOut() {
-            if (zoomed < maxZoom)
-                zoomed += 50;
-            $scope.index = zoomed;
+            //zoom in if less than maxZoom
+            if ($scope.index < maxZoom) {
+                $scope.index += 10;
+                //set the correct index for points to be rendered
+                index += 0.83;
+            }
             renderPoints(index);
         }
         //zoom out on pinch gesture
         function pinchIn() {
-            if (zoomed > minZoom)
-                zoomed -= 50;
-            $scope.index = zoomed;
+            //zoom out if more than minZoom
+            if ($scope.index > minZoom) {
+                $scope.index -= 10;
+                //set the correct index for points to be rendered
+                index -= 0.83;
+            }
             renderPoints(index);
         }
 
@@ -115,7 +119,6 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 });
             }, 100);
         }
-
 
         $scope.reportEvent = function(event) {
             // console.log('Reporting : ' + event.type);
