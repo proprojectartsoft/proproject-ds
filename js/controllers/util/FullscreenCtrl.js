@@ -101,6 +101,12 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 $scope.index += 30;
                 //set the correct index for points to be rendered
                 zoom += 2.5;
+                //keep consistency between zoom on pinch and on button click
+                for (var i = 0; i < $scope.widthMap.length - 1; i++) {
+                    if ($scope.index >= $scope.widthMap[i].value) {
+                        index = i;
+                    }
+                }
             }
             renderPoints(zoom, true);
         }
@@ -111,20 +117,14 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 $scope.index -= 30;
                 //set the correct index for points to be rendered
                 zoom -= 2.5;
+                //keep consistency between zoom on pinch and on button click
+                for (var i = 0; i < $scope.widthMap.length - 1; i++) {
+                    if ($scope.index <= $scope.widthMap[$scope.widthMap.length - 1 - i].value) {
+                        index = i;
+                    }
+                }
             }
             renderPoints(zoom, true);
-        }
-
-        //pinch zoom for fullscreen image
-        function loaded() {
-            var height = $('ion-content').height();
-            $('#wrapper').height(height - 20);
-            setTimeout(function() {
-                myScroll = new iScroll('wrapper', {
-                    zoom: true,
-                    vScrollbar: true
-                });
-            }, 100);
         }
 
         $scope.reportEvent = function(event) {
