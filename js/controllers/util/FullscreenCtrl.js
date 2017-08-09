@@ -87,10 +87,6 @@ angular.module($APP.name).controller('FullscreenCtrl', [
         };
 
         //pinch zoom for fullscreen image
-        $(document).ready(function() {
-            loaded();
-        })
-
         function loaded() {
             var height = $('ion-content').height();
             $('#wrapper').height(height - 20);
@@ -263,6 +259,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     }
                                 });
                                 renderPoints(index);
+                                loaded();
                             });
                         })
                     });
