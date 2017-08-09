@@ -57,6 +57,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                     });
 
                 })
+                loaded();
             })
         };
         $scope.zoomIn = function() {
@@ -259,7 +260,6 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                     }
                                 });
                                 renderPoints(index);
-                                loaded();
                             });
                         })
                     });
