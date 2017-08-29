@@ -7,7 +7,7 @@
         <div class="title" ng-if="local.entityId !== '0'">{{local.data.title}}</div>
         <ion-item class="ds-grh-cont active" ng-class="{'ds-spacingtop' : local.entityId === '0'}">
             <div class="ds-grh">
-                <h3>Drawing details<i class="ion ion-ios-arrow-down"></i>
+                <h3>Defect details<i class="ion ion-ios-arrow-down"></i>
                 </h3>
             </div>
             <div class="ds-container">
@@ -15,7 +15,7 @@
                     <div class="ds-content">
                         <span class="ds-title">Name</span>
                     </div>
-                    <input ng-model="local.data.title" ng-disabled="disableedit">
+                    <input ng-model="local.data.title" ng-readonly="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
@@ -39,7 +39,8 @@
                     <div class="ds-content">
                         <span class="ds-title">Assignee</span>
                     </div>
-                    <input class="ds-input" ng-model="local.data.assignee_name" ng-click="assignee()" ng-disabled="disableedit">
+                    <input class="ds-input" ng-model="local.data.assignee_name" ng-click="assignee()" ng-if="!disableedit">
+                    <span class="ds-input" ng-if="disableedit">{{local.data.assignee_name}}</span>
                 </label>
                 <div class="ds-label">
                     <div class="ds-content">
@@ -58,13 +59,13 @@
                     <div class="ds-content">
                         <span class="ds-title">Location</span>
                     </div>
-                    <input ng-model="local.data.location" ng-disabled="disableedit">
+                    <input ng-model="local.data.location" ng-readonly="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Cost</span>
                     </div>
-                    <input ng-model="local.data.cost" ng-disabled="disableedit">
+                    <input ng-model="local.data.cost" ng-readonly="disableedit">
                 </label>
             </div>
         </ion-item>
