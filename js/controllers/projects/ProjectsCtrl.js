@@ -30,13 +30,14 @@ angular.module($APP.name).controller('ProjectsCtrl', [
                 var aux = localStorage.getObject('dsproject')
                 if (aux) {
                     $scope.local.activeProject = $filter('filter')($rootScope.projects, {
-                        id: aux.id
+                        id: aux
                     })[0];
                 }
             })
         })
         $scope.go = function(item) {
-            localStorage.setObject('dsproject', item);
+            // localStorage.setObject('dsproject', item);
+            localStorage.setObject('dsproject', item.id);
             localStorage.setObject('dsnavTitle', item.name);
             $state.go('app.tab', {
                 page: 'drawings'

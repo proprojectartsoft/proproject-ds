@@ -25,7 +25,7 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
 
         if (!localStorage.getObject('dsscact') || localStorage.getObject('dsscact').id !== parseInt($stateParams.id)) {
             $indexedDB.openStore('projects', function(store) {
-                store.find(localStorage.getObject('dsproject').id).then(function(res) {
+                store.find(localStorage.getObject('dsproject')).then(function(res) {
                     var subcontractor = $filter('filter')(res.subcontractors, {
                         id: $stateParams.id
                     })[0];
@@ -51,7 +51,7 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             $indexedDB.openStore("projects", function(store) {
-                store.find(localStorage.getObject('dsproject').id).then(function(project) {
+                store.find(localStorage.getObject('dsproject')).then(function(project) {
                     var subcontr = $filter('filter')(project.subcontractors, {
                         id: $scope.local.data.id
                     })[0];
@@ -71,7 +71,7 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(localStorage.getObject('dsproject').id).then(function(project) {})
+                        store.find(localStorage.getObject('dsproject')).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({

@@ -71,7 +71,7 @@ angular.module($APP.name).controller('TabCtrl', [
 
                     }, 10);
                     $indexedDB.openStore('projects', function(store) {
-                        store.find($scope.settings.project.id).then(function(res) {
+                        store.find($scope.settings.project).then(function(res) {
                             $scope.list = [];
                             angular.forEach(res.drawings, function(draw) {
                                 $scope.list.push({
@@ -86,7 +86,7 @@ angular.module($APP.name).controller('TabCtrl', [
                     break;
                 case 'subcontractors':
                     $indexedDB.openStore('projects', function(store) {
-                        store.find($scope.settings.project.id).then(function(res) {
+                        store.find($scope.settings.project).then(function(res) {
                             $scope.list = [];
                             angular.forEach(res.subcontractors, function(subcontr) {
                                 $scope.list.push({
@@ -103,7 +103,7 @@ angular.module($APP.name).controller('TabCtrl', [
                     break;
                 case 'defects':
                     $indexedDB.openStore('projects', function(store) {
-                        store.find($scope.settings.project.id).then(function(res) {
+                        store.find($scope.settings.project).then(function(res) {
                             $scope.list = [];
                             angular.forEach(res.defects, function(defect) {
                                 defect.icon = $scope.getInitials(defect.assignee_name);

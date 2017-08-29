@@ -29,7 +29,7 @@ angular.module($APP.name).controller('_DefectAttachmentsCtrl', [
             }, 200);
         }
         $indexedDB.openStore('projects', function(store) {
-            store.find(localStorage.getObject('dsproject').id).then(function(res) {
+            store.find(localStorage.getObject('dsproject')).then(function(res) {
                 var defect = $filter('filter')(res.defects, {
                     id: $stateParams.id
                 })[0];

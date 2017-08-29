@@ -79,7 +79,7 @@ angular.module($APP.name).controller('DrawingsCtrl', [
 
         if (!localStorage.getObject('dsdrwact') || localStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
             $indexedDB.openStore('projects', function(store) {
-                store.find(localStorage.getObject('dsproject').id).then(function(res) {
+                store.find(localStorage.getObject('dsproject')).then(function(res) {
                     var drawing = $filter('filter')(res.drawings, {
                         id: $stateParams.id
                     })[0];
@@ -111,7 +111,7 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             $indexedDB.openStore('projects', function(store) {
-                store.find(localStorage.getObject('dsproject').id).then(function(proj) {
+                store.find(localStorage.getObject('dsproject')).then(function(proj) {
                     var draw = $filter('filter')(proj.drawings, {
                         id: $scope.local.data.id
                     })[0];
@@ -135,7 +135,7 @@ angular.module($APP.name).controller('DrawingsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(localStorage.getObject('dsproject').id).then(function(project) {})
+                        store.find(localStorage.getObject('dsproject')).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({

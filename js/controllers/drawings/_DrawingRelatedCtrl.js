@@ -28,7 +28,7 @@ angular.module($APP.name).controller('_DrawingRelatedCtrl', [
         $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
 
         $indexedDB.openStore('projects', function(store) {
-            store.find(localStorage.getObject('dsproject').id).then(function(res) {
+            store.find(localStorage.getObject('dsproject')).then(function(res) {
                 $scope.local.list = $filter('filter')(res.drawings, {
                     id: $stateParams.id
                 })[0].relatedDefects;

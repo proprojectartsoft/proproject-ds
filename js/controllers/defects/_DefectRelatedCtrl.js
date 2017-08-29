@@ -43,7 +43,7 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
         }
 
         $indexedDB.openStore('projects', function(store) {
-            store.find($scope.settings.project.id).then(function(result) {
+            store.find($scope.settings.project).then(function(result) {
                 $scope.local.poplist = result.defects;
             })
         })

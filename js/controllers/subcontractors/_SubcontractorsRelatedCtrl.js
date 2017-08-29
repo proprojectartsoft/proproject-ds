@@ -23,7 +23,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
         $scope.local.loaded = false;
         $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
         $indexedDB.openStore('projects', function(store) {
-            store.find(localStorage.getObject('dsproject').id).then(function(res) {
+            store.find(localStorage.getObject('dsproject')).then(function(res) {
                 var subcontr = $filter('filter')(res.subcontractors, {
                     id: $scope.local.data.id
                 })[0];
@@ -81,7 +81,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
         $scope.addRelated = function(related) {
             $scope.modal.hide();
             $indexedDB.openStore('projects', function(store) {
-                store.find($scope.settings.project.id).then(function(project) {
+                store.find($scope.settings.project).then(function(project) {
                     for (var i = 0; i < project.subcontractors.length; i++) {
                         if ($filter('filter')(project.subcontractors[i].related, {
                                 id: related.id
@@ -135,7 +135,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(localStorage.getObject('dsproject').id).then(function(project) {})
+                        store.find(localStorage.getObject('dsproject')).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({

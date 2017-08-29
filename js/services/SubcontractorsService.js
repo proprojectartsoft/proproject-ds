@@ -43,7 +43,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                     url: $APP.server + '/api/subcontractor',
                     data: dataIn,
                     params: {
-                        projectId: localStorage.getObject('dsproject').id
+                        projectId: localStorage.getObject('dsproject')
                     }
                 }).then(
                     function(payload) {
@@ -61,7 +61,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                 }
                 return $http({
                     method: 'POST',
-                    url: $APP.server + 'api/invite/subcontractor?email=' + dataIn + '&projectId=' + localStorage.getObject('dsproject').id
+                    url: $APP.server + 'api/invite/subcontractor?email=' + dataIn + '&projectId=' + localStorage.getObject('dsproject')
                 }).then(
                     function(payload) {
                         return payload.data;
@@ -82,7 +82,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
             delete: function(subcontractorId) {
                 return $http({
                     method: 'DELETE',
-                    url: $APP.server + 'api/subcontractor?subcontractorId=' + subcontractorId + '&projectId=' + localStorage.getObject('dsproject').id
+                    url: $APP.server + 'api/subcontractor?subcontractorId=' + subcontractorId + '&projectId=' + localStorage.getObject('dsproject')
 
                 }).then(
                     function(payload) {
@@ -96,7 +96,7 @@ angular.module($APP.name).factory('SubcontractorsService', [
                     url: $APP.server + '/api/subcontractor/comments',
                     data: dataIn,
                     params: {
-                        projectId: localStorage.getObject('dsproject').id
+                        projectId: localStorage.getObject('dsproject')
                     }
                 }).success(function(response) {}).error(function(response) {});
             },

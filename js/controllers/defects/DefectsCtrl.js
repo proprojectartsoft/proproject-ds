@@ -95,7 +95,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
         };
         var modalDrawing = function() {
             $indexedDB.openStore('projects', function(store) {
-                store.find($scope.settings.project.id).then(function(proj) {
+                store.find($scope.settings.project).then(function(proj) {
                     $scope.local.drawingsLight = proj.light_drawings;
                 })
             })
@@ -136,7 +136,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
                 $scope.local.data = {};
                 $scope.local.data.id = 0;
                 $scope.local.data.active = true;
-                $scope.local.data.project_id = $scope.settings.project.id;
+                $scope.local.data.project_id = $scope.settings.project;
                 $scope.local.data.defect_id = 0;
                 $scope.local.data.related_tasks = [];
                 $scope.local.data.due_date = 0;
@@ -153,7 +153,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     name: 'None'
                 };
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(localStorage.getObject('dsproject').id).then(function(project) {
+                    store.find(localStorage.getObject('dsproject')).then(function(project) {
                         var user = "";
                         if (project.users && project.users.length != 0) {
                             user = $filter('filter')(project.users, {
@@ -184,7 +184,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
             $rootScope.thiscreate = false;
             if (!localStorage.getObject('ds.defect.active.data') || localStorage.getObject('ds.defect.active.data').id !== parseInt($stateParams.id)) {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(localStorage.getObject('dsproject').id).then(function(res) {
+                    store.find(localStorage.getObject('dsproject')).then(function(res) {
                         $scope.local.data = ConvertersService.init_defect($filter('filter')(res.defects, {
                             id: $stateParams.id
                         })[0].completeInfo);
@@ -227,7 +227,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             $indexedDB.openStore("projects", function(store) {
-                store.find(localStorage.getObject('dsproject').id).then(function(project) {
+                store.find(localStorage.getObject('dsproject')).then(function(project) {
                     var defect = $filter('filter')(project.defects, {
                         id: $scope.local.data.id
                     })[0];
@@ -336,7 +336,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     })
                 })
                 $indexedDB.openStore("projects", function(store) {
-                    store.find(localStorage.getObject('dsproject').id).then(function(project) {
+                    store.find(localStorage.getObject('dsproject')).then(function(project) {
                         var newDef = ConvertersService.save_defect($scope.local.data);
                         newDef.id = nextId + 1;
                         var localStorredDef = {};
@@ -430,7 +430,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(localStorage.getObject('dsproject').id).then(function(project) {})
+                        store.find(localStorage.getObject('dsproject')).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({
