@@ -47,11 +47,14 @@ angular.module($APP.name).controller('NavCtrl', [
         }
         $scope.logout = function() {
             if (navigator.onLine) {
+                localStorage.removeItem('ds.user');
+                localStorage.removeItem('automLogin');
+                localStorage.removeItem('dsremember');
+                $state.go('login');
                 AuthService.logout().then(function(result) {
                     $indexedDB.openStore('projects', function(store) {
                         store.clear();
                     }).then(function(e) {})
-                    $state.go('login');
                 })
             } else {
                 var alertPopup = $ionicPopup.alert({

@@ -59,8 +59,6 @@ angular.module($APP.name).factory('AuthService', [
                 return $http.post($APP.server + '/pub/logout', {
                     withCredentials: true
                 }).then(function(result) {
-                    localStorage.removeItem('ds.user');
-                    localStorage.removeItem('automLogin');
                     return result;
                 });
             }
