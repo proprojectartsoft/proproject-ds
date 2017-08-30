@@ -50,12 +50,11 @@ angular.module($APP.name).controller('NavCtrl', [
                 localStorage.removeItem('ds.user');
                 localStorage.removeItem('automLogin');
                 localStorage.removeItem('dsremember');
-                $state.go('login');
-                AuthService.logout().then(function(result) {
-                    $indexedDB.openStore('projects', function(store) {
-                        store.clear();
-                    }).then(function(e) {})
+                $indexedDB.openStore('projects', function(store) {
+                    store.clear();
                 })
+                $state.go('login');
+                AuthService.logout().then(function(result) {})
             } else {
                 var alertPopup = $ionicPopup.alert({
                     title: 'Error',
