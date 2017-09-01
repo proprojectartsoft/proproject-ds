@@ -224,13 +224,19 @@ angular.module($APP.name).controller('DefectsCtrl', [
 
         $scope.toggleEdit = function() {
             $rootScope.disableedit = false;
-            sessionStorage.setObject('ds.defect.backup', $scope.local.data)
         }
         $scope.cancelEdit = function() {
-            $scope.local.data = sessionStorage.getObject('ds.defect.backup')
-            sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
-            sessionStorage.removeItem('ds.defect.backup')
-            $rootScope.disableedit = true;
+            $indexedDB.openStore("projects", function(store) {
+                store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+                    var defect = $filter('filter')(project.defects, {
+                        id: sessionStorage.getObject('ds.defect.active.data').id
+                    })[0];
+                    //restore the defect before changes
+                    $scope.local.data = defect.completeInfo;
+                    sessionStorage.setObject('ds.defect.active.data', $scope.local.data);
+                    $rootScope.disableedit = true;
+                })
+            })
         }
 
         $scope.saveEdit = function() {
@@ -322,7 +328,6 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     }
                     saveChanges(project);
                     sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
-                    sessionStorage.removeItem('ds.defect.backup')
                     sessionStorage.setObject('ds.reloadevent', {
                         value: true
                     });
@@ -330,7 +335,6 @@ angular.module($APP.name).controller('DefectsCtrl', [
             })
         }
         $scope.saveCreate = function() {
-            //$scope.local.drawing && $scope.local.drawing.markers && $scope.local.drawing.markers.length &&
             if ($scope.local.data.title) {
                 $rootScope.disableedit = true;
                 var nextId = 0;
@@ -371,7 +375,6 @@ angular.module($APP.name).controller('DefectsCtrl', [
                             ConvertersService.increase_nr_tasks(subcontr, newDef.status_name);
                         }
                         sessionStorage.setObject('ds.defect.active.data', ConvertersService.clear_id($scope.local.data));
-                        sessionStorage.removeItem('ds.defect.backup');
                         //drawing added for defect
                         if ($scope.local.drawing) {
                             var drawing = $filter('filter')(project.drawings, {

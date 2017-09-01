@@ -100,13 +100,19 @@ angular.module($APP.name).controller('DrawingsCtrl', [
         }
         $scope.toggleEdit = function() {
             $rootScope.disableedit = false;
-            sessionStorage.setObject('ds.drawing.backup', $scope.local.data)
         }
         $scope.cancelEdit = function() {
-            $scope.local.data = sessionStorage.getObject('ds.drawing.backup')
-            sessionStorage.setObject('dsdrwact', $scope.local.data)
-            sessionStorage.removeItem('ds.drawing.backup')
-            $rootScope.disableedit = true;
+            $indexedDB.openStore("projects", function(store) {
+                store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+                    var draw = $filter('filter')(project.drawings, {
+                        id: sessionStorage.getObject('dsdrwact').id
+                    })[0];
+                    //restore the drawing before changes
+                    $scope.local.data = draw;
+                    sessionStorage.setObject('dsdrwact', $scope.local.data)
+                    $rootScope.disableedit = true;
+                })
+            })
         }
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
@@ -122,7 +128,6 @@ angular.module($APP.name).controller('DrawingsCtrl', [
                     proj.isModified = true;
                     draw.isModified = true;
                     sessionStorage.setObject('dsdrwact', $scope.local.data)
-                    sessionStorage.removeItem('ds.drawing.backup')
                     sessionStorage.setObject('ds.reloadevent', {
                         value: true
                     });
@@ -156,7 +161,6 @@ angular.module($APP.name).controller('DrawingsCtrl', [
 
         $scope.back = function() {
             sessionStorage.removeItem('dsdrwact');
-            sessionStorage.removeItem('ds.drawing.backup');
             sessionStorage.removeItem('ds.defect.back');
             $rootScope.disableedit = true;
             $state.go('app.tab')
