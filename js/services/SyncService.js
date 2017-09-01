@@ -36,23 +36,20 @@ angular.module($APP.name).factory('SyncService', [
                             angular.forEach(project.defects, function(defect) {
                                 if (typeof defect.isNew != 'undefined') {
                                     delete defect.isNew;
-                                    defects.push(defect);
+                                    defectsToAdd.push(defect);
                                 }
                                 if (typeof defect.isModified != 'undefined') {
                                     angular.forEach(defect.comments, function(comment) {
                                         if (typeof comment.isNew != 'undefined') {
                                             delete comment.isNew;
-                                            comments.push(comment);
+                                            commentsToAdd.push(comment);
                                         }
                                     })
-                                    defectsToUpd.push(defect.completeInfo);
+                                    defectsToUpdate.push(defect.completeInfo);
                                 }
                                 delete defect.isNew;
                                 delete defect.isModified;
                             })
-                            sessionStorage.setObject('commentsToAdd', comments);
-                            sessionStorage.setObject('defectsToAdd', defects);
-                            sessionStorage.setObject('defectsToUpd', defectsToUpd);
                         }
 
                         function storeUpdatedDrawings(project) {
@@ -76,13 +73,12 @@ angular.module($APP.name).factory('SyncService', [
                             })
                         }
 
-                        function syncComments(comments) {
-                            sessionStorage.setObject('commentsToAdd', []);
-                            angular.forEach(comments, function(comment) {
+                        function syncComments() {
+                            angular.forEach(commentsToAdd, function(comment) {
                                 DefectsService.create_comment(comment).then(function(res) {}, function(err) {})
                             })
+                            commentsToAdd = [];
                         }
-
                         function addComments(comments, defect_id, defer, doDefer) {
                             if (comments.length == 0 && doDefer) {
                                 defer.resolve();
@@ -103,7 +99,7 @@ angular.module($APP.name).factory('SyncService', [
                         }
 
                         function addDefects(defects, index, defer) {
-                            sessionStorage.setObject('defectsToAdd', []);
+                            defectsToAdd = [];
                             var changed = sessionStorage.getObject('changedDefects') || [];
                             defect = defects[index];
                             var draw = defect.draw;
@@ -113,10 +109,8 @@ angular.module($APP.name).factory('SyncService', [
                                 var rel = defect.completeInfo.related_tasks;
                                 for (var i = 0; i < rel.length; i++) {
                                     if (rel[i].isNew) {
-                                        var defectsToUpd = sessionStorage.getObject('defectsToUpd') || [];
                                         defect.completeInfo.id = res;
-                                        defectsToUpd.push(defect.completeInfo);
-                                        sessionStorage.setObject('defectsToUpd', defectsToUpd);
+                                        defectsToUpdate.push(defect.completeInfo);
                                         i = defect.completeInfo.related_tasks.length;
                                     }
                                 }
@@ -168,14 +162,14 @@ angular.module($APP.name).factory('SyncService', [
                             })
                         }
 
-                        function syncDefects(defects) {
+                        function syncDefects() {
                             var defer = $q.defer();
-                            if (defects == null || defects.length == 0) {
+                            if (defectsToAdd == null || defectsToAdd.length == 0) {
                                 sessionStorage.setObject('changedDefects', []);
                                 defer.resolve();
                                 return defer.promise;
                             }
-                            addDefects(defects, 0, defer);
+                            addDefects(defectsToAdd, 0, defer);
                             return defer.promise;
                         }
 
@@ -187,9 +181,8 @@ angular.module($APP.name).factory('SyncService', [
                         }
 
                         function updateDefects(defects) {
-                            sessionStorage.setObject('defectsToUpd', []);
-                            updateRelatedDefectsId(defects);
-                            angular.forEach(defects, function(defect) {
+                            updateRelatedDefectsId(defectsToUpdate);
+                            angular.forEach(defectsToUpdate, function(defect) {
                                 if (!defect.reporter_id || !defect.reporter_name) {
                                     DefectsService.get(defect.id).then(function(defectToBeUpdated) {
                                         defect.reporter_id = defectToBeUpdated.reporter_id;
@@ -200,6 +193,7 @@ angular.module($APP.name).factory('SyncService', [
                                     DefectsService.update(defect).success(function(res) {}).error(function(err) {})
                                 }
                             })
+                            defectToBeUpdated = [];
                         }
 
                         function updateRelatedDefectsId(defects) {
@@ -226,6 +220,9 @@ angular.module($APP.name).factory('SyncService', [
                                 syncSubcontractors(project);
                                 delete project.isModified;
                             }
+                            syncComments();
+                            syncDefects().then(function(res) {
+                                updateDefects();
                                 updateDrawings(sessionStorage.getObject('drawingsToUpd'));
                                 if (projects[projects.length - 1] == project) {
                                     def.resolve();
