@@ -28,11 +28,11 @@ angular.module($APP.name).factory('SyncService', [
                             content: "",
                             buttons: []
                         });
+                        var commentsToAdd = [],
+                            defectsToAdd = [],
+                            defectsToUpdate = [];
 
                         function storeNewDefects(project) {
-                            var comments = sessionStorage.getObject('commentsToAdd') || [];
-                            var defects = sessionStorage.getObject('defectsToAdd') || [];
-                            var defectsToUpd = sessionStorage.getObject('defectsToUpd') || [];
                             angular.forEach(project.defects, function(defect) {
                                 if (typeof defect.isNew != 'undefined') {
                                     delete defect.isNew;
@@ -226,9 +226,6 @@ angular.module($APP.name).factory('SyncService', [
                                 syncSubcontractors(project);
                                 delete project.isModified;
                             }
-                            syncComments(sessionStorage.getObject('commentsToAdd'));
-                            syncDefects(sessionStorage.getObject('defectsToAdd')).then(function(res) {
-                                updateDefects(sessionStorage.getObject('defectsToUpd'));
                                 updateDrawings(sessionStorage.getObject('drawingsToUpd'));
                                 if (projects[projects.length - 1] == project) {
                                     def.resolve();

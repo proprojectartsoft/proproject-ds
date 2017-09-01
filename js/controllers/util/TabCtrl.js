@@ -41,18 +41,6 @@ angular.module($APP.name).controller('TabCtrl', [
             }
         })
 
-        $scope.$watch(function() {
-            return localStorage.getItem('ds.reloadevent')
-        }, function(value) {
-            if (value) {
-                if (!$scope.settings.tabActive) {
-                    $scope.tabSelect('drawings');
-                } else {
-                    $scope.tabSelect($scope.settings.tabActive)
-                }
-            }
-        })
-
         $scope.tabSelect = function(predicate) {
             angular.forEach($scope.settings.tabs, function(value, key) {
                 $scope.settings.tabs[key] = 'img/new/' + key + '.png';

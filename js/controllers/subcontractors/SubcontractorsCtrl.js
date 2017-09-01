@@ -21,8 +21,6 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
             id: $stateParams.id,
             state: 'app.subcontractorrelated'
         })
-        sessionStorage.removeItem('ds.reloadevent');
-
         if (!sessionStorage.getObject('dsscact') || sessionStorage.getObject('dsscact').id !== parseInt($stateParams.id)) {
             $indexedDB.openStore('projects', function(store) {
                 store.find(sessionStorage.getObject('dsproject')).then(function(res) {
@@ -60,9 +58,6 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
                     project.isModified = true;
                     saveChanges(project);
                     sessionStorage.setObject('dsscact', $scope.local.data)
-                    sessionStorage.setObject('ds.reloadevent', {
-                        value: true
-                    });
                 })
             })
         }

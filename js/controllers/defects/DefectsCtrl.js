@@ -24,7 +24,6 @@ angular.module($APP.name).controller('DefectsCtrl', [
             id: $stateParams.id,
             state: 'app.defects'
         })
-        sessionStorage.removeItem('ds.reloadevent');
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -340,9 +339,6 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     }
                     saveChanges(project);
                     sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
-                    sessionStorage.setObject('ds.reloadevent', {
-                        value: true
-                    });
                 })
             })
         }
@@ -432,9 +428,6 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         project.isModified = true;
                         saveChanges(project);
                         sessionStorage.removeItem('dsdrwact');
-                        sessionStorage.setObject('ds.reloadevent', {
-                            value: true
-                        });
                         $scope.back();
                     })
                 })

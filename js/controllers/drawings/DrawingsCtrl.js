@@ -30,8 +30,6 @@ angular.module($APP.name).controller('DrawingsCtrl', [
             id: $stateParams.id,
             state: 'app.drawings'
         })
-        sessionStorage.removeItem('ds.reloadevent');
-
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;
         }
@@ -128,9 +126,6 @@ angular.module($APP.name).controller('DrawingsCtrl', [
                     proj.isModified = true;
                     draw.isModified = true;
                     sessionStorage.setObject('dsdrwact', $scope.local.data)
-                    sessionStorage.setObject('ds.reloadevent', {
-                        value: true
-                    });
                     saveChanges(proj);
                 })
             })
