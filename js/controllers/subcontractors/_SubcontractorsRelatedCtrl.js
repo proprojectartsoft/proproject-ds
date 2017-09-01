@@ -132,7 +132,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
                         var colorsLength = Object.keys(colorList).length;
                         angular.forEach(subcontr.related, function(relTask) {
                             //assign the collor corresponding to user id and customer id
-                            var colorId = (parseInt(project.customer_id + "" + relTask.completeInfo.assignee_id)) % colorsLength;
+                            var colorId = (parseInt(project.customer_id + "" + relTask.assignee_id)) % colorsLength;
                             relTask.backgroundColor = colorList[colorId].backColor;
                             relTask.foregroundColor = colorList[colorId].foreColor;
                         })

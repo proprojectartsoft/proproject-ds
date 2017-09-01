@@ -85,6 +85,23 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
             } else {
                 localStorage.setObject('ds.defect.active.data', $scope.local.data);
             }
+            $indexedDB.openStore('projects', function(store) {
+                store.find($scope.settings.project).then(function(result) {
+                  ColorService.get_colors().then(function(colorList) {
+                      var colorsLength = Object.keys(colorList).length;
+                      angular.forEach($scope.local.data.related_tasks, function(relTask) {
+                          //get from defects list the current defect
+                          var def = $filter('filter')(result.defects, {
+                              id: relTask.id
+                          })[0];
+                          //assign the collor corresponding to user id and customer id
+                          var colorId = (parseInt(result.customer_id + "" + def.completeInfo.assignee_id)) % colorsLength;
+                          relTask.backgroundColor = colorList[colorId].backColor;
+                          relTask.foregroundColor = colorList[colorId].foreColor;
+                      })
+                  })
+                })
+            })
             $scope.modal.hide();
         }
 
