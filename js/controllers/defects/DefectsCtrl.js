@@ -233,6 +233,18 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     })[0];
                     //restore the defect before changes
                     $scope.local.data = defect.completeInfo;
+                    $scope.local.data.severity_obj = {
+                        id: $scope.local.data.severity_id,
+                        name: $scope.local.data.severity_name
+                    }
+                    $scope.local.data.priority_obj = {
+                        id: $scope.local.data.priority_id,
+                        name: $scope.local.data.priority_name
+                    }
+                    $scope.local.data.status_obj = {
+                        id: $scope.local.data.status_id,
+                        name: $scope.local.data.status_name
+                    }
                     sessionStorage.setObject('ds.defect.active.data', $scope.local.data);
                     $rootScope.disableedit = true;
                 })
