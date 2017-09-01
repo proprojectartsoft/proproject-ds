@@ -17,10 +17,10 @@ angular.module($APP.name).controller('_DefectCommentsCtrl', [
 
         $scope.local = {};
         $scope.local.loaded = false;
-        $scope.local.data = localStorage.getObject('ds.defect.active.data');
+        $scope.local.data = sessionStorage.getObject('ds.defect.active.data');
 
         $indexedDB.openStore('projects', function(store) {
-            store.find(localStorage.getObject('dsproject')).then(function(project) {
+            store.find(sessionStorage.getObject('dsproject')).then(function(project) {
                 var defect = $filter('filter')(project.defects, {
                     id: ($stateParams.id)
                 })[0];
@@ -36,7 +36,7 @@ angular.module($APP.name).controller('_DefectCommentsCtrl', [
         $scope.addComment = function() {
             if ($scope.local.comment) {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(localStorage.getObject('dsproject')).then(function(project) {
+                    store.find(sessionStorage.getObject('dsproject')).then(function(project) {
                         var userInfo = $filter('filter')(project.users, {
                             login_name: (localStorage.getObject('ds.user').name)
                         });
@@ -80,7 +80,7 @@ angular.module($APP.name).controller('_DefectCommentsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(localStorage.getObject('dsproject')).then(function(project) {})
+                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({

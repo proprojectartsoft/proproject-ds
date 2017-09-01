@@ -13,8 +13,8 @@ angular.module($APP.name).controller('_DrawingRelatedCtrl', [
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = parseInt(localStorage.getObject('dsproject'));
-        localStorage.setObject('ds.defect.back', {
+        $scope.settings.project = parseInt(sessionStorage.getObject('dsproject'));
+        sessionStorage.setObject('ds.defect.back', {
             id: $stateParams.id,
             state: 'app.drawingrelated'
         })
@@ -25,11 +25,11 @@ angular.module($APP.name).controller('_DrawingRelatedCtrl', [
         }
         $scope.local = {};
         $scope.local.loaded = false;
-        $scope.local.data = localStorage.getObject('dsdrwact');
+        $scope.local.data = sessionStorage.getObject('dsdrwact');
         $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
 
         $indexedDB.openStore('projects', function(store) {
-            store.find(localStorage.getObject('dsproject')).then(function(res) {
+            store.find(sessionStorage.getObject('dsproject')).then(function(res) {
                 $scope.local.list = $filter('filter')(res.drawings, {
                     id: $stateParams.id
                 })[0].relatedDefects;

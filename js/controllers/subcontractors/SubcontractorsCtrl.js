@@ -17,26 +17,26 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
         $scope.local.entityId = $stateParams.id;
         $rootScope.disableedit = true;
         SettingsService.put_settings('tabActive', 'subcontractors');
-        localStorage.setObject('ds.defect.back', {
+        sessionStorage.setObject('ds.defect.back', {
             id: $stateParams.id,
             state: 'app.subcontractorrelated'
         })
-        localStorage.removeItem('ds.reloadevent');
+        sessionStorage.removeItem('ds.reloadevent');
 
-        if (!localStorage.getObject('dsscact') || localStorage.getObject('dsscact').id !== parseInt($stateParams.id)) {
+        if (!sessionStorage.getObject('dsscact') || sessionStorage.getObject('dsscact').id !== parseInt($stateParams.id)) {
             $indexedDB.openStore('projects', function(store) {
-                store.find(localStorage.getObject('dsproject')).then(function(res) {
+                store.find(sessionStorage.getObject('dsproject')).then(function(res) {
                     var subcontractor = $filter('filter')(res.subcontractors, {
                         id: $stateParams.id
                     })[0];
                     delete subcontractor.company_logo;
-                    localStorage.setObject('dsscact', subcontractor)
+                    sessionStorage.setObject('dsscact', subcontractor)
                     $scope.local.data = subcontractor;
                     $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
                 })
             })
         } else {
-            $scope.local.data = localStorage.getObject('dsscact');
+            $scope.local.data = sessionStorage.getObject('dsscact');
             $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
         }
 
@@ -51,7 +51,7 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             $indexedDB.openStore("projects", function(store) {
-                store.find(localStorage.getObject('dsproject')).then(function(project) {
+                store.find(sessionStorage.getObject('dsproject')).then(function(project) {
                     var subcontr = $filter('filter')(project.subcontractors, {
                         id: $scope.local.data.id
                     })[0];
@@ -59,8 +59,8 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
                     subcontr.isModified = true;
                     project.isModified = true;
                     saveChanges(project);
-                    localStorage.setObject('dsscact', $scope.local.data)
-                    localStorage.setObject('ds.reloadevent', {
+                    sessionStorage.setObject('dsscact', $scope.local.data)
+                    sessionStorage.setObject('ds.reloadevent', {
                         value: true
                     });
                 })
@@ -71,7 +71,7 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(localStorage.getObject('dsproject')).then(function(project) {})
+                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({
@@ -96,7 +96,7 @@ angular.module($APP.name).controller('SubcontractorsCtrl', [
         }
         $scope.back = function() {
             $rootScope.disableedit = true;
-            localStorage.removeItem('ds.defect.back');
+            sessionStorage.removeItem('ds.defect.back');
             $state.go('app.tab')
         }
     }

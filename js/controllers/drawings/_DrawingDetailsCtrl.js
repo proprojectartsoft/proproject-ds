@@ -14,7 +14,7 @@ angular.module($APP.name).controller('_DrawingDetailsCtrl', [
         }
 
         $scope.local = {};
-        $scope.local.data = localStorage.getObject('dsdrwact')
+        $scope.local.data = sessionStorage.getObject('dsdrwact')
         $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
@@ -23,7 +23,7 @@ angular.module($APP.name).controller('_DrawingDetailsCtrl', [
         }
         $scope.back = function() {
             if (!$rootScope.disableedit) {
-                localStorage.setObject('dsdrwact', $scope.local.data)
+                sessionStorage.setObject('dsdrwact', $scope.local.data)
             }
             $state.go('app.drawings', {
                 id: $stateParams.id

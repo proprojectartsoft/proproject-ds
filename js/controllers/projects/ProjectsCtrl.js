@@ -13,7 +13,7 @@ angular.module($APP.name).controller('ProjectsCtrl', [
     function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, $ionicModal, $indexedDB, $filter, ProjectService, SubcontractorsService) {
         $rootScope.navTitle = 'Projects';
         $rootScope.projects = [];
-        localStorage.setObject('dsnavTitle', 'Choose a project');
+        sessionStorage.setObject('dsnavTitle', 'Choose a project');
         $scope.local = {};
         $scope.local.createProject = {}
         $scope.local.user = localStorage.getObject('ds.user')
@@ -27,7 +27,7 @@ angular.module($APP.name).controller('ProjectsCtrl', [
                 angular.forEach(res, function(proj) {
                     $rootScope.projects.push(proj);
                 })
-                var aux = localStorage.getObject('dsproject')
+                var aux = sessionStorage.getObject('dsproject')
                 if (aux) {
                     $scope.local.activeProject = $filter('filter')($rootScope.projects, {
                         id: aux
@@ -36,9 +36,9 @@ angular.module($APP.name).controller('ProjectsCtrl', [
             })
         })
         $scope.go = function(item) {
-            // localStorage.setObject('dsproject', item);
-            localStorage.setObject('dsproject', item.id);
-            localStorage.setObject('dsnavTitle', item.name);
+            // sessionStorage.setObject('dsproject', item);
+            sessionStorage.setObject('dsproject', item.id);
+            sessionStorage.setObject('dsnavTitle', item.name);
             $state.go('app.tab', {
                 page: 'drawings'
             });

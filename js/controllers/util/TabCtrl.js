@@ -17,7 +17,7 @@ angular.module($APP.name).controller('TabCtrl', [
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.local = {};
         $scope.local.inviteemail = '';
-        localStorage.removeItem('ds.defect.back');
+        sessionStorage.removeItem('ds.defect.back');
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -33,7 +33,7 @@ angular.module($APP.name).controller('TabCtrl', [
         $scope.$watch(function() {
             return localStorage.getItem('dsproject')
         }, function(value) {
-            $scope.settings.project = localStorage.getObject('dsproject');
+            $scope.settings.project = sessionStorage.getObject('dsproject');
             if (!$scope.settings.tabActive) {
                 $scope.tabSelect('drawings');
             } else {

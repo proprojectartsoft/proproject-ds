@@ -16,7 +16,7 @@ angular.module($APP.name).controller('_DefectAttachmentsCtrl', [
         $scope.settings.entityId = $stateParams.id;
         $scope.local = {};
         $scope.local.loaded = false;
-        $scope.local.data = localStorage.getObject('ds.defect.active.data');
+        $scope.local.data = sessionStorage.getObject('ds.defect.active.data');
 
         if ($stateParams.id === '0') {
             $scope.settings.subHeader = 'New defect'
@@ -29,7 +29,7 @@ angular.module($APP.name).controller('_DefectAttachmentsCtrl', [
             }, 200);
         }
         $indexedDB.openStore('projects', function(store) {
-            store.find(localStorage.getObject('dsproject')).then(function(res) {
+            store.find(sessionStorage.getObject('dsproject')).then(function(res) {
                 var defect = $filter('filter')(res.defects, {
                     id: $stateParams.id
                 })[0];

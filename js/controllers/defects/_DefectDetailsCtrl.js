@@ -13,7 +13,7 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = localStorage.getObject('dsproject');
+        $scope.settings.project = sessionStorage.getObject('dsproject');
         $scope.settings.state = 'details';
         $scope.local = {};
         $scope.local.search = '';
@@ -54,9 +54,9 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
 
         if ($stateParams.id === '0') {
             $scope.settings.subHeader = 'New defect'
-            $scope.local.data = localStorage.getObject('ds.defect.new.data')
+            $scope.local.data = sessionStorage.getObject('ds.defect.new.data')
         } else {
-            $scope.local.data = localStorage.getObject('ds.defect.active.data')
+            $scope.local.data = sessionStorage.getObject('ds.defect.active.data')
             $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
         }
         $scope.objtofields = function() {
@@ -74,10 +74,10 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
         $scope.back = function() {
             $scope.objtofields();
             if ($stateParams.id === '0') {
-                localStorage.setObject('ds.defect.new.data', $scope.local.data)
+                sessionStorage.setObject('ds.defect.new.data', $scope.local.data)
             } else {
                 if (!$rootScope.disableedit) {
-                    localStorage.setObject('ds.defect.active.data', $scope.local.data)
+                    sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
                 }
             }
             $state.go('app.defects', {
@@ -87,7 +87,7 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
 
         $scope.$watch('local.data.status_obj', function(value) {
 
-            var drawing = localStorage.getObject('ds.defect.drawing')
+            var drawing = sessionStorage.getObject('ds.defect.drawing')
             if (drawing && drawing.markers && drawing.markers.length) {
                 var img = '';
                 switch (value.name) {
@@ -112,7 +112,7 @@ angular.module($APP.name).controller('_DefectDetailsCtrl', [
                 }
                 drawing.markers[0].status = value.name;
                 drawing.markers[0].img = img;
-                localStorage.setObject('ds.defect.drawing', drawing)
+                sessionStorage.setObject('ds.defect.drawing', drawing)
             }
         })
 

@@ -17,14 +17,14 @@ angular.module($APP.name).controller('DefectsCtrl', [
         $scope.settings = {};
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = localStorage.getObject('dsproject');
+        $scope.settings.project = sessionStorage.getObject('dsproject');
         $scope.local = {};
         $scope.local.entityId = $stateParams.id;
-        localStorage.setObject('ds.fullscreen.back', {
+        sessionStorage.setObject('ds.fullscreen.back', {
             id: $stateParams.id,
             state: 'app.defects'
         })
-        localStorage.removeItem('ds.reloadevent');
+        sessionStorage.removeItem('ds.reloadevent');
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -106,7 +106,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
         };
         $scope.selectDrawing = function(data) {
             $scope.local.drawing = data;
-            localStorage.setObject('ds.defect.drawing', data);
+            sessionStorage.setObject('ds.defect.drawing', data);
             $scope.go('fullscreen', $scope.local.drawing.id);
             $scope.modal.hide();
         }
@@ -121,18 +121,18 @@ angular.module($APP.name).controller('DefectsCtrl', [
         function newDefect() {
             $rootScope.disableedit = false;
             $rootScope.thiscreate = true;
-            if (localStorage.getObject('ds.drawing.defect') && !localStorage.getObject('ds.defect.drawing')) {
-                $scope.local.drawing = localStorage.getObject('ds.drawing.defect')
-                localStorage.setObject('ds.defect.drawing', $scope.local.drawing)
+            if (sessionStorage.getObject('ds.drawing.defect') && !sessionStorage.getObject('ds.defect.drawing')) {
+                $scope.local.drawing = sessionStorage.getObject('ds.drawing.defect')
+                sessionStorage.setObject('ds.defect.drawing', $scope.local.drawing)
             } else {
-                $scope.local.drawing = localStorage.getObject('ds.defect.drawing');
+                $scope.local.drawing = sessionStorage.getObject('ds.defect.drawing');
             }
             if ($scope.local.drawing && $scope.local.drawing.path) {
                 setPdf($scope.local.drawing.path)
             } else {
                 addDrawing()
             }
-            if (!localStorage.getObject('ds.defect.new.data')) {
+            if (!sessionStorage.getObject('ds.defect.new.data')) {
                 $scope.local.data = {};
                 $scope.local.data.id = 0;
                 $scope.local.data.active = true;
@@ -153,7 +153,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     name: 'None'
                 };
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(localStorage.getObject('dsproject')).then(function(project) {
+                    store.find(sessionStorage.getObject('dsproject')).then(function(project) {
                         var user = "";
                         if (project.users && project.users.length != 0) {
                             user = $filter('filter')(project.users, {
@@ -167,14 +167,14 @@ angular.module($APP.name).controller('DefectsCtrl', [
                             $scope.local.data.assignee_name = "";
                             $scope.local.data.assignee_id = 0;
                         }
-                        localStorage.setObject('ds.defect.new.data', $scope.local.data);
+                        sessionStorage.setObject('ds.defect.new.data', $scope.local.data);
                     })
                 })
             } else {
-                $scope.local.data = localStorage.getObject('ds.defect.new.data');
+                $scope.local.data = sessionStorage.getObject('ds.defect.new.data');
             }
             $scope.settings.subHeader = 'New defect'
-            localStorage.removeItem('ds.defect.active.data')
+            sessionStorage.removeItem('ds.defect.active.data')
         }
 
         function existingDefect() {
@@ -182,18 +182,18 @@ angular.module($APP.name).controller('DefectsCtrl', [
                 $rootScope.disableedit = true;
             }
             $rootScope.thiscreate = false;
-            if (!localStorage.getObject('ds.defect.active.data') || localStorage.getObject('ds.defect.active.data').id !== parseInt($stateParams.id)) {
+            if (!sessionStorage.getObject('ds.defect.active.data') || sessionStorage.getObject('ds.defect.active.data').id !== parseInt($stateParams.id)) {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(localStorage.getObject('dsproject')).then(function(res) {
+                    store.find(sessionStorage.getObject('dsproject')).then(function(res) {
                         $scope.local.data = ConvertersService.init_defect($filter('filter')(res.defects, {
                             id: $stateParams.id
                         })[0].completeInfo);
-                        localStorage.setObject('ds.defect.active.data', $scope.local.data)
+                        sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
                         $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
                         if ($scope.local.data.drawing && $scope.local.data.drawing.pdfPath) {
                             $scope.local.data.drawing.path = $scope.local.data.drawing.pdfPath;
                             $scope.local.drawing = $scope.local.data.drawing;
-                            localStorage.setObject('ds.defect.drawing', $scope.local.data.drawing);
+                            sessionStorage.setObject('ds.defect.drawing', $scope.local.data.drawing);
                             setPdf($scope.local.data.drawing.pdfPath);
                         } else {
                             showEmpty()
@@ -202,8 +202,8 @@ angular.module($APP.name).controller('DefectsCtrl', [
                 })
             } else {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(localStorage.getObject('dsproject')).then(function(res) {
-                        $scope.local.data = ConvertersService.init_defect(localStorage.getObject('ds.defect.active.data'));
+                    store.find(sessionStorage.getObject('dsproject')).then(function(res) {
+                        $scope.local.data = ConvertersService.init_defect(sessionStorage.getObject('ds.defect.active.data'));
                         $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
                         crtDef = $filter('filter')(res.defects, {
                             id: $scope.local.data.id
@@ -212,7 +212,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         saveChanges(res);
                         if ($scope.local.data.drawing && $scope.local.data.drawing.pdfPath) {
                             $scope.local.data.drawing.path = $scope.local.data.drawing.pdfPath;
-                            $scope.local.drawing = localStorage.getObject('ds.defect.drawing');
+                            $scope.local.drawing = sessionStorage.getObject('ds.defect.drawing');
                             setPdf($scope.local.data.drawing.pdfPath);
                         } else {
                             showEmpty()
@@ -224,19 +224,19 @@ angular.module($APP.name).controller('DefectsCtrl', [
 
         $scope.toggleEdit = function() {
             $rootScope.disableedit = false;
-            localStorage.setObject('ds.defect.backup', $scope.local.data)
+            sessionStorage.setObject('ds.defect.backup', $scope.local.data)
         }
         $scope.cancelEdit = function() {
-            $scope.local.data = localStorage.getObject('ds.defect.backup')
-            localStorage.setObject('ds.defect.active.data', $scope.local.data)
-            localStorage.removeItem('ds.defect.backup')
+            $scope.local.data = sessionStorage.getObject('ds.defect.backup')
+            sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
+            sessionStorage.removeItem('ds.defect.backup')
             $rootScope.disableedit = true;
         }
 
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             $indexedDB.openStore("projects", function(store) {
-                store.find(localStorage.getObject('dsproject')).then(function(project) {
+                store.find(sessionStorage.getObject('dsproject')).then(function(project) {
                     var defect = $filter('filter')(project.defects, {
                         id: $scope.local.data.id
                     })[0];
@@ -318,12 +318,12 @@ angular.module($APP.name).controller('DefectsCtrl', [
                                 relDefect.title = defect.title;
                             }
                         }
-                        localStorage.setObject('dsdrwact', drawForDefect);
+                        sessionStorage.setObject('dsdrwact', drawForDefect);
                     }
                     saveChanges(project);
-                    localStorage.setObject('ds.defect.active.data', $scope.local.data)
-                    localStorage.removeItem('ds.defect.backup')
-                    localStorage.setObject('ds.reloadevent', {
+                    sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
+                    sessionStorage.removeItem('ds.defect.backup')
+                    sessionStorage.setObject('ds.reloadevent', {
                         value: true
                     });
                 })
@@ -345,7 +345,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     })
                 })
                 $indexedDB.openStore("projects", function(store) {
-                    store.find(localStorage.getObject('dsproject')).then(function(project) {
+                    store.find(sessionStorage.getObject('dsproject')).then(function(project) {
                         var newDef = ConvertersService.save_defect($scope.local.data);
                         newDef.id = nextId + 1;
                         var localStorredDef = {};
@@ -370,8 +370,8 @@ angular.module($APP.name).controller('DefectsCtrl', [
                             subcontr.related.push(newDef);
                             ConvertersService.increase_nr_tasks(subcontr, newDef.status_name);
                         }
-                        localStorage.setObject('ds.defect.active.data', ConvertersService.clear_id($scope.local.data));
-                        localStorage.removeItem('ds.defect.backup');
+                        sessionStorage.setObject('ds.defect.active.data', ConvertersService.clear_id($scope.local.data));
+                        sessionStorage.removeItem('ds.defect.backup');
                         //drawing added for defect
                         if ($scope.local.drawing) {
                             var drawing = $filter('filter')(project.drawings, {
@@ -416,8 +416,8 @@ angular.module($APP.name).controller('DefectsCtrl', [
                         project.defects.push(localStorredDef);
                         project.isModified = true;
                         saveChanges(project);
-                        localStorage.removeItem('dsdrwact');
-                        localStorage.setObject('ds.reloadevent', {
+                        sessionStorage.removeItem('dsdrwact');
+                        sessionStorage.setObject('ds.reloadevent', {
                             value: true
                         });
                         $scope.back();
@@ -439,7 +439,7 @@ angular.module($APP.name).controller('DefectsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(localStorage.getObject('dsproject')).then(function(project) {})
+                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({
@@ -465,14 +465,14 @@ angular.module($APP.name).controller('DefectsCtrl', [
         }
 
         $scope.back = function() {
-            var routeback = localStorage.getObject('ds.defect.back')
+            var routeback = sessionStorage.getObject('ds.defect.back')
             if ($stateParams.id === '0') {
-                localStorage.removeItem('ds.defect.new.data');
+                sessionStorage.removeItem('ds.defect.new.data');
             } else {
-                localStorage.removeItem('ds.defect.active.data');
+                sessionStorage.removeItem('ds.defect.active.data');
             }
-            localStorage.removeItem('ds.drawing.defect')
-            localStorage.removeItem('ds.defect.drawing');
+            sessionStorage.removeItem('ds.drawing.defect')
+            sessionStorage.removeItem('ds.defect.drawing');
             $rootScope.disableedit = true;
             $ionicViewSwitcher.nextDirection('back')
             if (routeback) {

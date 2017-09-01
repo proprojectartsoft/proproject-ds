@@ -14,14 +14,14 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = localStorage.getObject('dsproject');
+        $scope.settings.project = sessionStorage.getObject('dsproject');
         $scope.settings.state = 'related';
         $scope.local = {};
         if ($stateParams.id === '0') {
-            $scope.local.data = localStorage.getObject('ds.defect.new.data')
+            $scope.local.data = sessionStorage.getObject('ds.defect.new.data')
             $scope.settings.subHeader = 'New defect'
         } else {
-            $scope.local.data = localStorage.getObject('ds.defect.active.data')
+            $scope.local.data = sessionStorage.getObject('ds.defect.active.data')
             $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
         }
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
@@ -83,9 +83,9 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
         $scope.addRelated = function(item) {
             $scope.local.data.related_tasks.push(item);
             if ($stateParams.id === '0') {
-                localStorage.setObject('ds.defect.new.data', $scope.local.data);
+                sessionStorage.setObject('ds.defect.new.data', $scope.local.data);
             } else {
-                localStorage.setObject('ds.defect.active.data', $scope.local.data);
+                sessionStorage.setObject('ds.defect.active.data', $scope.local.data);
             }
             $indexedDB.openStore('projects', function(store) {
                 store.find($scope.settings.project).then(function(result) {

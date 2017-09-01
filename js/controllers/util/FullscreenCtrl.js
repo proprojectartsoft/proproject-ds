@@ -188,8 +188,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                 $scope.addingMarker = false;
                                 var newstatus = 'Incomplete';
                                 var img = 'img/incomplete.png';
-                                if (localStorage.getObject('ds.defect.new.data')) {
-                                    newstatus = localStorage.getObject('ds.defect.new.data').status_obj.name
+                                if (sessionStorage.getObject('ds.defect.new.data')) {
+                                    newstatus = sessionStorage.getObject('ds.defect.new.data').status_obj.name
                                     generateDefectImg(newstatus);
                                 }
                                 if (index !== 2) {
@@ -215,7 +215,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                             base64String: $scope.local.data.base64String,
                                             markers: [newMarker]
                                         }
-                                        localStorage.setObject('ds.drawing.defect', aux)
+                                        sessionStorage.setObject('ds.drawing.defect', aux)
                                         $state.go('app.defects', {
                                             id: 0
                                         })
@@ -244,7 +244,7 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                                             base64String: $scope.local.data.base64String,
                                             markers: [newMarker]
                                         }
-                                        localStorage.setObject('ds.drawing.defect', aux)
+                                        sessionStorage.setObject('ds.drawing.defect', aux)
                                         $state.go('app.defects', {
                                             id: 0
                                         })
@@ -308,8 +308,8 @@ angular.module($APP.name).controller('FullscreenCtrl', [
                 });
             });
         }
-        if (localStorage.getObject('ds.fullscreen.back').state === 'app.defects' && localStorage.getObject('ds.defect.drawing')) {
-            $scope.local.data = localStorage.getObject('ds.defect.drawing')
+        if (sessionStorage.getObject('ds.fullscreen.back').state === 'app.defects' && sessionStorage.getObject('ds.defect.drawing')) {
+            $scope.local.data = sessionStorage.getObject('ds.defect.drawing')
             $scope.local.singleMarker = true;
             if ($scope.local.data.markers && $scope.local.data.markers.length && $scope.local.data.markers[0].id) {
                 $scope.local.disableAddMarker = true;
@@ -317,31 +317,31 @@ angular.module($APP.name).controller('FullscreenCtrl', [
             setPdf($scope.local.data.path);
         } else {
             $scope.local.singleMarker = false;
-            if (!localStorage.getObject('dsdrwact') || localStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
+            if (!sessionStorage.getObject('dsdrwact') || sessionStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(localStorage.getObject('dsproject')).then(function(res) {
+                    store.find(sessionStorage.getObject('dsproject')).then(function(res) {
                         var drawing = $filter('filter')(res.drawings, {
                             id: $stateParams.id
                         })[0];
-                        localStorage.setObject('dsdrwact', drawing)
+                        sessionStorage.setObject('dsdrwact', drawing)
                         $scope.local.data = drawing;
                         $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
                         setPdf($scope.local.data.pdfPath)
                     })
                 })
             } else {
-                $scope.local.data = localStorage.getObject('dsdrwact');
+                $scope.local.data = sessionStorage.getObject('dsdrwact');
                 $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
                 setPdf($scope.local.data.pdfPath)
             }
         }
 
         $scope.back = function() {
-            var routeback = localStorage.getObject('ds.fullscreen.back')
-            var aux = localStorage.getObject('ds.defect.drawing')
+            var routeback = sessionStorage.getObject('ds.fullscreen.back')
+            var aux = sessionStorage.getObject('ds.defect.drawing')
             if (aux) {
                 aux.markers = $scope.local.markers
-                localStorage.setObject('ds.defect.drawing', aux);
+                sessionStorage.setObject('ds.defect.drawing', aux);
             }
             if (routeback) {
                 $state.go(routeback.state, {

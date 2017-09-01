@@ -66,7 +66,7 @@ angular.module($APP.name).controller('NavCtrl', [
             SyncService.sync();
         }
         $scope.$watch(function() {
-            return localStorage.getObject('dsnavTitle')
+            return sessionStorage.getObject('dsnavTitle')
         }, function(value) {
             $scope.settings.header = value;
         })

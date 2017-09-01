@@ -3,11 +3,11 @@ angular.module($APP.name).controller('AppCtrl', [
     '$scope',
     '$state',
     function ($rootScope, $scope,  $state) {
-       localStorage.removeItem('ds.defect.new.data');
-       localStorage.removeItem('ds.defect.active.data');
-       localStorage.removeItem('ds.defect.backup');
-       localStorage.removeItem('ds.defect.drawing');
-       localStorage.removeItem('ds.fullscreen.back');
-       localStorage.removeItem('dsdrwact');
+       sessionStorage.removeItem('ds.defect.new.data');
+       sessionStorage.removeItem('ds.defect.active.data');
+       sessionStorage.removeItem('ds.defect.backup');
+       sessionStorage.removeItem('ds.defect.drawing');
+       sessionStorage.removeItem('ds.fullscreen.back');
+       sessionStorage.removeItem('dsdrwact');
     }
 ]);

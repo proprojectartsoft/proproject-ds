@@ -16,15 +16,15 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = localStorage.getObject('dsproject');
+        $scope.settings.project = sessionStorage.getObject('dsproject');
         $scope.settings.state = 'related';
         $scope.local = {};
-        $scope.local.data = localStorage.getObject('dsscact');
+        $scope.local.data = sessionStorage.getObject('dsscact');
         $scope.local.entityId = $stateParams.id;
         $scope.local.loaded = false;
         $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
         $indexedDB.openStore('projects', function(store) {
-            store.find(localStorage.getObject('dsproject')).then(function(res) {
+            store.find(sessionStorage.getObject('dsproject')).then(function(res) {
                 var subcontr = $filter('filter')(res.subcontractors, {
                     id: $scope.local.data.id
                 })[0];
@@ -162,7 +162,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(localStorage.getObject('dsproject')).then(function(project) {})
+                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({
