@@ -38,11 +38,13 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
                         var colorsLength = Object.keys(colorList).length;
                         angular.forEach($scope.local.data.related_tasks, function(relTask) {
                             //get from defects list the current defect
-                            var def = $filter('filter')(result.defects, {
+                            crtDef = $filter('filter')(result.defects, {
                                 id: relTask.id
                             })[0];
+                            //update the assignee_name if changed
+                            relTask.assignee_name = crtDef.assignee_name;
                             //assign the collor corresponding to user id and customer id
-                            var colorId = (parseInt(result.customer_id + "" + def.completeInfo.assignee_id)) % colorsLength;
+                            var colorId = (parseInt(result.customer_id + "" + crtDef.completeInfo.assignee_id)) % colorsLength;
                             relTask.backgroundColor = colorList[colorId].backColor;
                             relTask.foregroundColor = colorList[colorId].foreColor;
                         })
@@ -87,19 +89,19 @@ angular.module($APP.name).controller('_DefectRelatedCtrl', [
             }
             $indexedDB.openStore('projects', function(store) {
                 store.find($scope.settings.project).then(function(result) {
-                  ColorService.get_colors().then(function(colorList) {
-                      var colorsLength = Object.keys(colorList).length;
-                      angular.forEach($scope.local.data.related_tasks, function(relTask) {
-                          //get from defects list the current defect
-                          var def = $filter('filter')(result.defects, {
-                              id: relTask.id
-                          })[0];
-                          //assign the collor corresponding to user id and customer id
-                          var colorId = (parseInt(result.customer_id + "" + def.completeInfo.assignee_id)) % colorsLength;
-                          relTask.backgroundColor = colorList[colorId].backColor;
-                          relTask.foregroundColor = colorList[colorId].foreColor;
-                      })
-                  })
+                    ColorService.get_colors().then(function(colorList) {
+                        var colorsLength = Object.keys(colorList).length;
+                        angular.forEach($scope.local.data.related_tasks, function(relTask) {
+                            //get from defects list the current defect
+                            var def = $filter('filter')(result.defects, {
+                                id: relTask.id
+                            })[0];
+                            //assign the collor corresponding to user id and customer id
+                            var colorId = (parseInt(result.customer_id + "" + def.completeInfo.assignee_id)) % colorsLength;
+                            relTask.backgroundColor = colorList[colorId].backColor;
+                            relTask.foregroundColor = colorList[colorId].foreColor;
+                        })
+                    })
                 })
             })
             $scope.modal.hide();

@@ -201,15 +201,24 @@ angular.module($APP.name).controller('DefectsCtrl', [
                     })
                 })
             } else {
-                $scope.local.data = ConvertersService.init_defect(localStorage.getObject('ds.defect.active.data'));
-                $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
-                if ($scope.local.data.drawing && $scope.local.data.drawing.pdfPath) {
-                    $scope.local.data.drawing.path = $scope.local.data.drawing.pdfPath;
-                    $scope.local.drawing = localStorage.getObject('ds.defect.drawing');
-                    setPdf($scope.local.data.drawing.pdfPath);
-                } else {
-                    showEmpty()
-                }
+                $indexedDB.openStore('projects', function(store) {
+                    store.find(localStorage.getObject('dsproject')).then(function(res) {
+                        $scope.local.data = ConvertersService.init_defect(localStorage.getObject('ds.defect.active.data'));
+                        $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
+                        crtDef = $filter('filter')(res.defects, {
+                            id: $scope.local.data.id
+                        })[0];
+                        crtDef.assignee_name = $scope.local.data.assignee_name;
+                        saveChanges(res);
+                        if ($scope.local.data.drawing && $scope.local.data.drawing.pdfPath) {
+                            $scope.local.data.drawing.path = $scope.local.data.drawing.pdfPath;
+                            $scope.local.drawing = localStorage.getObject('ds.defect.drawing');
+                            setPdf($scope.local.data.drawing.pdfPath);
+                        } else {
+                            showEmpty()
+                        }
+                    })
+                })
             }
         }
 
