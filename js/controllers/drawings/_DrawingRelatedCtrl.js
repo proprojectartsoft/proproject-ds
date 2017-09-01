@@ -8,7 +8,8 @@ angular.module($APP.name).controller('_DrawingRelatedCtrl', [
     '$indexedDB',
     '$filter',
     'DrawingsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DrawingsService) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
+    'ColorService',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DrawingsService, ColorService) {
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
@@ -33,6 +34,19 @@ angular.module($APP.name).controller('_DrawingRelatedCtrl', [
                     id: $stateParams.id
                 })[0].relatedDefects;
                 $scope.local.loaded = true;
+                ColorService.get_colors().then(function(colorList) {
+                    var colorsLength = Object.keys(colorList).length;
+                    angular.forEach($scope.local.list, function(relTask) {
+                        //get from defects list the current defect
+                        var def = $filter('filter')(res.defects, {
+                            id: relTask.id
+                        })[0];
+                        //assign the collor corresponding to user id and customer id
+                        var colorId = (parseInt(res.customer_id + "" + def.completeInfo.assignee_id)) % colorsLength;
+                        relTask.backgroundColor = colorList[colorId].backColor;
+                        relTask.foregroundColor = colorList[colorId].foreColor;
+                    })
+                })
             })
         })
 

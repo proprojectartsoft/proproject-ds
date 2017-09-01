@@ -259,6 +259,7 @@ angular.module($APP.name).factory('SyncService', [
                                 if (!project.defects || project.defects && !project.defects.length) {
                                     def.resolve();
                                 }
+                                //get the colors list from json
                                 angular.forEach(project.defects, function(defect) {
                                     var getDefect = DefectsService.get(defect.id).then(function(result) {
                                         defect.completeInfo = result;

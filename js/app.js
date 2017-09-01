@@ -37,7 +37,7 @@ angular.module($APP.name).config([
     function($stateProvider, $urlRouterProvider, $indexedDBProvider) {
         //        angular.extend(CacheFactoryProvider.defaults, {maxAge: 15 * 60 * 1000});
         $indexedDBProvider
-            .connection('preprod')
+            .connection('DefectsAndSnagging')
             .upgradeDatabase(1, function(event, db, tx) {
                 var objStore = db.createObjectStore('projects', {
                     keyPath: 'id',

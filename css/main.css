@@ -572,7 +572,8 @@ input[type=checkbox]:checked.blue-ck+label {
     margin-right: 10px;
 }
 
-.ds-incomplete.ds-tileandborder .ds-tile {
+/*colors according to the status of the defects*/
+/*.ds-incomplete.ds-tileandborder .ds-tile {
     background-color: #3598db !important;
 }
 
@@ -624,7 +625,7 @@ input[type=checkbox]:checked.blue-ck+label {
 .ds-closedout.ds-tileandborder.item {
     background-color: #fff;
     border-left-color: #1bbc9b !important;
-}
+}*/
 
 .ds-incomplete-brd {
     border-left: 4px solid #3598db !important;

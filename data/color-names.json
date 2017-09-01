@@ -1,0 +1,594 @@
+[
+	{
+		"backColor": "#f0f8ff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#faebd7",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#00ffff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#7fffd4",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f0ffff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f5f5dc",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffe4c4",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#000000",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffebcd",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#0000ff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#8a2be2",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#a52a2a",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#deb887",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#5f9ea0",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#7fff00",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#d2691e",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff7f50",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#6495ed",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fff8dc",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#dc143c",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#00ffff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#00008b",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#008b8b",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#b8860b",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#a9a9a9",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#006400",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#a9a9a9",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#bdb76b",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#8b008b",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#556b2f",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff8c00",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#9932cc",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#8b0000",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#e9967a",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#8fbc8f",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#483d8b",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#2f4f4f",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#2f4f4f",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#00ced1",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#9400d3",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff1493",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#00bfff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#696969",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#696969",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#1e90ff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#b22222",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fffaf0",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#228b22",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff00ff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#dcdcdc",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f8f8ff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffd700",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#daa520",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#808080",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fefefe",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#008000",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#adff2f",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#808080",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f0fff0",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff69b4",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#cd5c5c",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#4b0082",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fffff0",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f0e68c",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#e6e6fa",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fff0f5",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#7cfc00",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fffacd",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#add8e6",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f08080",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#e0ffff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fafad2",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#d3d3d3",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#90ee90",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#d3d3d3",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffb6c1",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffa07a",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#20b2aa",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#87cefa",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#778899",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#778899",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#b0c4de",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffffe0",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#00ff00",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#32cd32",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#faf0e6",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff00ff",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#800000",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#66cdaa",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#0000cd",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ba55d3",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#9370db",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#3cb371",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#7b68ee",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#00fa9a",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#48d1cc",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#c71585",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#191970",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f5fffa",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffe4e1",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffe4b5",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffdead",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#000080",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fdf5e6",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#808000",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#6b8e23",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffa500",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff4500",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#da70d6",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#eee8aa",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#98fb98",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#afeeee",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#db7093",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffefd5",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffdab9",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#cd853f",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffc0cb",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#dda0dd",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#b0e0e6",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#800080",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#663399",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff0000",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#bc8f8f",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#4169e1",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#8b4513",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fa8072",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f4a460",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#2e8b57",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fff5ee",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#a0522d",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#c0c0c0",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#87ceeb",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#6a5acd",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#708090",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#708090",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#fffafa",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#00ff7f",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#4682b4",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#d2b48c",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#008080",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#d8bfd8",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ff6347",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#40e0d0",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ee82ee",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f5deb3",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#f5f5f5",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#ffff00",
+		"foreColor": "#ffffff"
+	},
+	{
+		"backColor": "#9acd32",
+		"foreColor": "#ffffff"
+	}
+]

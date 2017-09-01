@@ -10,7 +10,8 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
     '$filter',
     '$ionicPopup',
     'ConvertersService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB, $filter, $ionicPopup, ConvertersService) {
+    'ColorService',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB, $filter, $ionicPopup, ConvertersService, ColorService) {
         $scope.settings = {};
         $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -30,7 +31,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
                 $scope.local.list = subcontr.related;
                 $scope.local.loaded = true;
                 $scope.local.poplist = [];
-
+                //fill the list of possible related defects
                 for (var i = 0; i < res.defects.length; i++) {
                     var sw = true;
                     for (var j = 0; j < subcontr.related.length; j++) {
@@ -42,6 +43,20 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
                         $scope.local.poplist.push(res.defects[i]);
                     }
                 }
+                //get the colors from json
+                ColorService.get_colors().then(function(colorList) {
+                    var colorsLength = Object.keys(colorList).length;
+                    angular.forEach($scope.local.list, function(relTask) {
+                        //get from defects list the current defect
+                        var def = $filter('filter')(res.defects, {
+                            id: relTask.id
+                        })[0];
+                        //assign the collor corresponding to user id and customer id
+                        var colorId = (parseInt(res.customer_id + "" + def.completeInfo.assignee_id)) % colorsLength;
+                        relTask.backgroundColor = colorList[colorId].backColor;
+                        relTask.foregroundColor = colorList[colorId].foreColor;
+                    });
+                })
             })
         })
 
@@ -83,6 +98,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.find($scope.settings.project).then(function(project) {
                     for (var i = 0; i < project.subcontractors.length; i++) {
+                        //remove the task from the list of the old subcontractor
                         if ($filter('filter')(project.subcontractors[i].related, {
                                 id: related.id
                             }).length != 0) {
@@ -109,7 +125,18 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
                     if (typeof defect.isNew == 'undefined')
                         defect.isModified = true;
                     project.isModified = true;
+                    //add the task to the list of the new subcontractor
                     subcontr.related.push(defect);
+                    //get the colors from json
+                    ColorService.get_colors().then(function(colorList) {
+                        var colorsLength = Object.keys(colorList).length;
+                        angular.forEach(subcontr.related, function(relTask) {
+                            //assign the collor corresponding to user id and customer id
+                            var colorId = (parseInt(project.customer_id + "" + relTask.completeInfo.assignee_id)) % colorsLength;
+                            relTask.backgroundColor = colorList[colorId].backColor;
+                            relTask.foregroundColor = colorList[colorId].foreColor;
+                        })
+                    })
                     ConvertersService.increase_nr_tasks(subcontr, defect.status_name);
                     saveChanges(project);
                     $scope.local.list = subcontr.related;

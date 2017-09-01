@@ -8,7 +8,8 @@ angular.module($APP.name).controller('TabCtrl', [
     '$indexedDB',
     'SubcontractorsService',
     '$timeout',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, $indexedDB, SubcontractorsService, $timeout) {
+    'ColorService',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, $indexedDB, SubcontractorsService, $timeout, ColorService) {
         $scope.settings = {};
         $scope.settings.tabs = SettingsService.get_settings('tabs');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
@@ -88,15 +89,23 @@ angular.module($APP.name).controller('TabCtrl', [
                     $indexedDB.openStore('projects', function(store) {
                         store.find($scope.settings.project).then(function(res) {
                             $scope.list = [];
-                            angular.forEach(res.subcontractors, function(subcontr) {
-                                $scope.list.push({
-                                    id: subcontr.id,
-                                    name: subcontr.last_name + " " + subcontr.first_name,
-                                    description: subcontr.company,
-                                    icon: $scope.getInitials(subcontr.last_name + " " + subcontr.first_name),
-                                    tasks: subcontr.completed_tasks + subcontr.contested_tasks + subcontr.delayed_tasks + subcontr.incomplete_tasks + subcontr.partially_completed_tasks + subcontr.closed_out_tasks
-                                })
-                            });
+                            //get the colors from json
+                            ColorService.get_colors().then(function(colorList) {
+                                var colorsLength = Object.keys(colorList).length;
+                                angular.forEach(res.subcontractors, function(subcontr) {
+                                    //assign the collor corresponding to user id and customer id
+                                    var colorId = (parseInt(res.customer_id + "" + subcontr.id)) % colorsLength;
+                                    $scope.list.push({
+                                        id: subcontr.id,
+                                        name: subcontr.last_name + " " + subcontr.first_name,
+                                        description: subcontr.company,
+                                        icon: $scope.getInitials(subcontr.last_name + " " + subcontr.first_name),
+                                        backgroundColor: colorList[colorId].backColor,
+                                        foregroundColor: colorList[colorId].foreColor,
+                                        tasks: subcontr.completed_tasks + subcontr.contested_tasks + subcontr.delayed_tasks + subcontr.incomplete_tasks + subcontr.partially_completed_tasks + subcontr.closed_out_tasks
+                                    })
+                                });
+                            })
                         })
                         $scope.settings.loaded = true;
                     })
@@ -105,10 +114,18 @@ angular.module($APP.name).controller('TabCtrl', [
                     $indexedDB.openStore('projects', function(store) {
                         store.find($scope.settings.project).then(function(res) {
                             $scope.list = [];
-                            angular.forEach(res.defects, function(defect) {
-                                defect.icon = $scope.getInitials(defect.assignee_name);
-                                $scope.list.push(defect)
-                            });
+                            //get the colors from json
+                            ColorService.get_colors().then(function(colorList) {
+                                var colorsLength = Object.keys(colorList).length;
+                                angular.forEach(res.defects, function(defect) {
+                                    defect.icon = $scope.getInitials(defect.assignee_name);
+                                    //assign the collor corresponding to user id and customer id
+                                    var colorId = (parseInt(res.customer_id + "" + defect.completeInfo.assignee_id)) % colorsLength;
+                                    defect.backgroundColor = colorList[colorId].backColor;
+                                    defect.foregroundColor = colorList[colorId].foreColor;
+                                    $scope.list.push(defect)
+                                });
+                            })
                         })
                         $scope.settings.loaded = true;
                     })
