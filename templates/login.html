@@ -1,6 +1,6 @@
-<ion-view title="Login" id="login" cache-view="false">
-    <ion-content>
-        <div class="login-container">
+<!-- <ion-view title="Login" id="login" cache-view="false">
+    <ion-content> -->
+        <!-- <div class="login-container">
             <div class="welcome-container">
                 <div class="welcome-big">Welcome</div>
                 <div class="welcome-small">to</div>
@@ -36,6 +36,36 @@
                     </div>
                 </div>
             </div>
+        </div> -->
+    <!-- </ion-content>
+</ion-view> -->
+<ion-view title="Login" id="login-new" cache-view="false">
+    <ion-content>
+      <div class="login-text">
+        WELCOME TO
+      </div>
+      <div class="login-icon">
+        <img src="img/DS_icon.png">
+      </div>
+      <div class="login-text">
+        DEFECTS & SNAGGING
+      </div>
+      <form role="form" name="loginForm" novalidate="">
+        <div>
+          <input type="email" ng-model="user.username" placeholder="Username" required="required">
+          <input type="password" ng-model="user.password" placeholder="Password" required="required">
         </div>
+        <div class="login-buttons">
+          <button class="forgot-button" type="button" name="forgot-button" ui-sref="forgotpassword">
+            FORGOT?
+          </button>
+          <button class="login-button"type="button" name="login-button" ng-click="login()" ng-disabled="loginForm.$invalid">
+            LOGIN
+          </button>
+        </div>
+      </form>
+      <div class="login-remember">
+        <ion-checkbox ng-model="user.rememberMe">REMEMBER ME</ion-checkbox>
+      </div>
     </ion-content>
 </ion-view>
