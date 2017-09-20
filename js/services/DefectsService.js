@@ -1,4 +1,4 @@
-angular.module($APP.name).factory('DefectsService', [
+dsApp.factory('DefectsService', [
     '$http',
     '$rootScope',
     function($http, $rootScope) {

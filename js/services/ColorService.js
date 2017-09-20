@@ -1,4 +1,4 @@
-angular.module($APP.name).factory('ColorService', [
+dsApp.factory('ColorService', [
     '$http',
     function($http) {
         return {

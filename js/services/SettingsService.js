@@ -1,6 +1,7 @@
-angular.module($APP.name).factory('SettingsService', [
-    '$http',
-    function($http) {
+dsApp.factory('SettingsService', [
+    '$http', '$ionicPopup',
+
+    function($http, $ionicPopup) {
         return {
             get_settings: function(predicate) {
                 var list = predicate.split(".");
@@ -32,6 +33,21 @@ angular.module($APP.name).factory('SettingsService', [
                     }
                 );
 
+            },
+            show_message_popup: function(title, template) {
+                var popup = $ionicPopup.alert({
+                    title: title,
+                    template: template,
+                    content: "",
+                    buttons: [{
+                        text: 'Ok',
+                        type: 'button-positive',
+                        onTap: function(e) {
+                            popup.close();
+                        }
+                    }]
+                });
+                return popup;
             }
         };
     }

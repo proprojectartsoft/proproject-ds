@@ -3,7 +3,7 @@ var $APP = $APP || {}; // App namespace
 // $APP.server = 'http://proproject.artsoft-consult.ro/';
 // $APP.server = 'http://app.preprod.proproject.io/';
 $APP.server = 'http://app.proproject.io/';
-$APP.name = 'proproject';
+$APP.name = 'ppds';
 
 $APP.settings = {
     tabs: {
@@ -23,14 +23,12 @@ Storage.prototype.getObject = function(key) {
     return value && JSON.parse(value);
 }
 
-angular.module($APP.name, [
+var dsApp = angular.module($APP.name, [
     'ionic',
     'ion-datetime-picker',
     'indexedDB',
     'ngCordova',
-]);
-angular.module($APP.name).run(function($rootScope) {});
-angular.module($APP.name).config([
+]).run(function($rootScope) {}).config([
     '$stateProvider',
     '$urlRouterProvider',
     '$indexedDBProvider',

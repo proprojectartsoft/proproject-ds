@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('LoginCtrl', [
+dsApp.controller('LoginCtrl', [
     '$rootScope',
     '$scope',
     '$state',
@@ -17,65 +17,88 @@ angular.module($APP.name).controller('LoginCtrl', [
             $scope.user.username = localStorage.getObject('dsremember').username;
             $scope.user.password = localStorage.getObject('dsremember').password;
             $scope.user.rememberMe = localStorage.getObject('dsremember').rememberMe;
-            if (localStorage.getObject('automLogin'))
-                AuthService.login($scope.user).success(function(result) {
-                    SyncService.sync();
-                    localStorage.setObject('ds.user', {
-                        role: result.data.role.id,
-                        name: result.data.username
-                    });
-                }).error(function(response, status) {
-                    if (status === 0 || status === -1) {
-                        localStorage.setObject('ds.user', {
-                            role: 0,
-                            name: $scope.user.username
+            var loginPopup = $ionicPopup.show({
+                title: "Sync",
+                template: "<center><ion-spinner icon='android'></ion-spinner></center>",
+                content: "",
+                buttons: []
+            });
+            AuthService.login($scope.user).success(function(result) {
+                SyncService.syncData().then(function(res) { //TODO: update
+                    SyncService.sync().then(function(res) {
+                        localStorage.setObject('ds.user', { //TODO: use sessionStorage
+                            role: result.data.role.id,
+                            name: result.data.username
                         });
+                        loginPopup.close();
                         $state.go('app.projects');
-                    }
-                    if (status === 502) {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Offline',
-                            template: "<center>Server offline</center>",
-                        });
-                        alertPopup.then(function(res) {});
-                    }
-                    if (status === 400) {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Error',
-                            template: "<center>Incorrect user data</center>",
-                        });
-                        alertPopup.then(function(res) {});
-                    }
-                    if (status === 401) {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Error',
-                            template: 'Your account has been de-activated. Contact your supervisor for further information',
-                        });
-                        alertPopup.then(function(res) {});
-                    }
-                })
+                    })
+                });
+            }).error(function(response, status) {
+                if (status === 0 || status === -1) {
+                    SyncService.syncData().then(function(res) { //TODO: update
+                        SyncService.sync().then(function(res) {
+                            localStorage.setObject('ds.user', {
+                                role: 0,
+                                name: $scope.user.username
+                            });
+                            loginPopup.close();
+                            $state.go('app.projects');
+
+                        })
+                    });
+                }
+                if (status === 502) {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Offline',
+                        template: "<center>Server offline</center>",
+                    });
+                    alertPopup.then(function(res) {});
+                }
+                if (status === 400) {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: "<center>Incorrect user data</center>",
+                    });
+                    alertPopup.then(function(res) {});
+                }
+                if (status === 401) {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error',
+                        template: 'Your account has been de-activated. Contact your supervisor for further information',
+                    });
+                    alertPopup.then(function(res) {});
+                }
+            })
         }
 
         $scope.login = function() {
+            var loginPopup = $ionicPopup.show({
+                title: "Sync",
+                template: "<center><ion-spinner icon='android'></ion-spinner></center>",
+                content: "",
+                buttons: []
+            });
             if ($scope.user.username && $scope.user.password) {
                 AuthService.login($scope.user).success(function(result) {
-                    if (result.data.status) {
-                        SyncService.sync();
-                    } else {
-                        if (result.data) {
-                            SyncService.sync();
-                            localStorage.setObject('ds.user', {
-                                role: result.data.role.id,
-                                name: result.data.username
-                            });
-                            if ($scope.user.rememberMe) {
-                                localStorage.setObject('dsremember', $scope.user);
-                                localStorage.setItem('automLogin', true);
-                            } else {
-                                localStorage.removeItem('dsremember');
-                                localStorage.removeItem('automLogin');
-                            }
+                    if (result.data) {
+                        SyncService.sync().then(function(res) {
+                            loginPopup.close();
+                            $state.go('app.projects');
+                        })
+                        //store data for currently logged user
+                        localStorage.setObject('ds.user', {
+                            role: result.data.role.id,
+                            name: result.data.username
+                        });
+                        //store credentials if remember me is checked
+                        if ($scope.user.rememberMe) {
+                            localStorage.setObject('dsremember', $scope.user);
+                        } else {
+                            localStorage.removeItem('dsremember');
                         }
+                    } else {
+                        loginPopup.close();
                     }
                 }).error(function(response, status) {
                     if (status === 0 || status === -1) {

@@ -1,4 +1,4 @@
-angular.module($APP.name).directive('severity', function($rootScope) {
+dsApp.directive('severity', function($rootScope) {
     return {
         restrict: 'E',
         link: link,

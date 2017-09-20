@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('NavCtrl', [
+dsApp.controller('NavCtrl', [
     '$rootScope',
     '$state',
     '$scope',
@@ -48,7 +48,6 @@ angular.module($APP.name).controller('NavCtrl', [
         $scope.logout = function() {
             if (navigator.onLine) {
                 localStorage.removeItem('ds.user');
-                localStorage.removeItem('automLogin');
                 localStorage.removeItem('dsremember');
                 $indexedDB.openStore('projects', function(store) {
                     store.clear();
@@ -63,7 +62,10 @@ angular.module($APP.name).controller('NavCtrl', [
             }
         }
         $scope.sync = function() {
-            SyncService.sync();
+            SyncService.sync().then(function(res) {
+              //TODO: check if error or sync_done and go to corresponding page
+              $state.go('app.projects');
+            })
         }
         $scope.$watch(function() {
             return sessionStorage.getObject('dsnavTitle')

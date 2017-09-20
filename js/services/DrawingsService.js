@@ -1,4 +1,4 @@
-angular.module($APP.name).factory('DrawingsService', [
+dsApp.factory('DrawingsService', [
     '$http',
     '$rootScope',
     function($http, $rootScope) {
@@ -263,7 +263,7 @@ angular.module($APP.name).factory('DrawingsService', [
     }
 ]);
 
-angular.module($APP.name).service('fileUpload', ['$http', function($http) {
+dsApp.service('fileUpload', ['$http', function($http) {
     this.uploadFileToUrl = function(file, uploadUrl) {
         var fd = new FormData();
         fd.append('file', file);

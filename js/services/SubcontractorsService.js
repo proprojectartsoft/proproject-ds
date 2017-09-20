@@ -1,4 +1,4 @@
-angular.module($APP.name).factory('SubcontractorsService', [
+dsApp.factory('SubcontractorsService', [
     '$http',
     '$rootScope',
     function($http, $rootScope) {

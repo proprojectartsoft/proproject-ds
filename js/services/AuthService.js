@@ -1,10 +1,6 @@
-angular.module($APP.name).factory('AuthService', [
+dsApp.factory('AuthService', [
     '$http',
     function($http) {
-        localStorage.setObject('automLogin', true);
-        var reload = function() {
-
-        }
         return {
             init: function() {
                 return $http.get($APP.server + '/api/me', {
@@ -53,12 +49,15 @@ angular.module($APP.name).factory('AuthService', [
                         return 'login.user.name=' + user.username + '&login.user.password=' + user.password + '&user=true';
                     },
                     data: user
-                }).success(function(data) {}).error(function errorCallback(response, status) {})
+                }).success(function(data) {
+                    sessionStorage.setObject('isLoggedIn', true);
+                }).error(function errorCallback(response, status) {})
             },
             logout: function() {
                 return $http.post($APP.server + '/pub/logout', {
                     withCredentials: true
                 }).then(function(result) {
+                    sessionStorage.removeItem('isLoggedIn');
                     return result;
                 });
             }

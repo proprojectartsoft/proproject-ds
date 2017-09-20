@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('_DrawingRelatedCtrl', [
+dsApp.controller('_DrawingRelatedCtrl', [
     '$rootScope',
     '$scope',
     '$stateParams',

@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('SubcontractorsCtrl', [
+dsApp.controller('SubcontractorsCtrl', [
     '$rootScope',
     '$scope',
     '$stateParams',

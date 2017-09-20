@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('PhotoCtrl', [
+dsApp.controller('PhotoCtrl', [
     '$rootScope',
     '$scope',
     '$stateParams',

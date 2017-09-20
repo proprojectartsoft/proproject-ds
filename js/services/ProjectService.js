@@ -1,4 +1,4 @@
-angular.module($APP.name).factory('ProjectService', [
+dsApp.factory('ProjectService', [
     '$http',
     '$rootScope',
     function($http, $rootScope) {
@@ -10,6 +10,17 @@ angular.module($APP.name).factory('ProjectService', [
                     }
                 );
             },
+
+            sync_projects: function() { //TODO:
+                return $http.get($APP.server + '/api/sync/ds', {}).success(
+                    function(payload) {
+                        return payload.data;
+                    }
+                ).error(function(err) {
+                    return err;
+                });
+            },
+
             users: function(customerId) {
                 return $http.get($APP.server + 'api/user/ds', {
                     params: {

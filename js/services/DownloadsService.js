@@ -1,4 +1,4 @@
-angular.module($APP.name).factory('DownloadsService', [
+dsApp.factory('DownloadsService', [
     '$http',
     '$rootScope',
     '$ionicPlatform',

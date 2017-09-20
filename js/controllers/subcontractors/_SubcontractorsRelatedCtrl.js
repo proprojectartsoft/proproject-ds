@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
+dsApp.controller('_SubcontractorsRelatedCtrl', [
     '$rootScope',
     '$scope',
     '$stateParams',
@@ -183,7 +183,7 @@ angular.module($APP.name).controller('_SubcontractorsRelatedCtrl', [
     }
 ]);
 
-angular.module($APP.name).filter('capitalize', function() {
+dsApp.filter('capitalize', function() {
     return function(input) {
         return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
     }

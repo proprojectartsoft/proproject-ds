@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('TabCtrl', [
+dsApp.controller('TabCtrl', [
     '$rootScope',
     '$scope',
     '$stateParams',

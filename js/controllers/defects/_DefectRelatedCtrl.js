@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('_DefectRelatedCtrl', [
+dsApp.controller('_DefectRelatedCtrl', [
     '$rootScope',
     '$scope',
     '$stateParams',

@@ -1,4 +1,4 @@
-angular.module($APP.name).directive('priority', function($rootScope) {
+dsApp.directive('priority', function($rootScope) {
     return {
         restrict: 'E',
         link: link,

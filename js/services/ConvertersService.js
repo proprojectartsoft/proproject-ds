@@ -1,4 +1,4 @@
-angular.module($APP.name).factory('ConvertersService', ConvertersService)
+dsApp.factory('ConvertersService', ConvertersService)
 
 ConvertersService.$inject = ['$http']
 

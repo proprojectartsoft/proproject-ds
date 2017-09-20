@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('FullscreenCtrl', [
+dsApp.controller('FullscreenCtrl', [
     '$rootScope',
     '$scope',
     '$stateParams',

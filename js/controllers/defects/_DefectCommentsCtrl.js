@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('_DefectCommentsCtrl', [
+dsApp.controller('_DefectCommentsCtrl', [
     '$rootScope',
     '$scope',
     '$stateParams',

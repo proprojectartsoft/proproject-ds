@@ -1,4 +1,4 @@
-angular.module($APP.name).directive('status', function($rootScope) {
+dsApp.directive('status', function($rootScope) {
     return {
         restrict: 'E',
         link: link,

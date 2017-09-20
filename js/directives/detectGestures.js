@@ -1,4 +1,4 @@
-angular.module($APP.name).directive('detectGestures', function($ionicGesture) {
+dsApp.directive('detectGestures', function($ionicGesture) {
     return {
         restrict: 'A',
 

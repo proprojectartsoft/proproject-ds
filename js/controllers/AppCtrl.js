@@ -1,4 +1,4 @@
-angular.module($APP.name).controller('AppCtrl', [
+dsApp.controller('AppCtrl', [
     '$rootScope',
     '$scope',
     '$state',
