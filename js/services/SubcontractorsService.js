@@ -43,7 +43,7 @@ dsApp.factory('SubcontractorsService', [
                     url: $APP.server + '/api/subcontractor',
                     data: dataIn,
                     params: {
-                        projectId: sessionStorage.getObject('dsproject')
+                        projectId: $rootScope.projId
                     }
                 }).then(
                     function(payload) {
@@ -61,7 +61,7 @@ dsApp.factory('SubcontractorsService', [
                 }
                 return $http({
                     method: 'POST',
-                    url: $APP.server + 'api/invite/subcontractor?email=' + dataIn + '&projectId=' + sessionStorage.getObject('dsproject')
+                    url: $APP.server + 'api/invite/subcontractor?email=' + dataIn + '&projectId=' + $rootScope.projId
                 }).then(
                     function(payload) {
                         return payload.data;
@@ -82,7 +82,7 @@ dsApp.factory('SubcontractorsService', [
             delete: function(subcontractorId) {
                 return $http({
                     method: 'DELETE',
-                    url: $APP.server + 'api/subcontractor?subcontractorId=' + subcontractorId + '&projectId=' + sessionStorage.getObject('dsproject')
+                    url: $APP.server + 'api/subcontractor?subcontractorId=' + subcontractorId + '&projectId=' + $rootScope.projId
 
                 }).then(
                     function(payload) {
@@ -96,7 +96,7 @@ dsApp.factory('SubcontractorsService', [
                     url: $APP.server + '/api/subcontractor/comments',
                     data: dataIn,
                     params: {
-                        projectId: sessionStorage.getObject('dsproject')
+                        projectId: $rootScope.projId
                     }
                 }).success(function(response) {}).error(function(response) {});
             },

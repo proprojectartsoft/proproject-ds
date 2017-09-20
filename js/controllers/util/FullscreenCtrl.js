@@ -11,9 +11,8 @@ dsApp.controller('FullscreenCtrl', [
     '$ionicScrollDelegate',
     function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DrawingsService, $ionicScrollDelegate) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.tabActive = SettingsService.get_settings('tabActive');
+        $scope.settings.tabActive = $rootScope.currentTab;
         $scope.local = {};
         $scope.local.markers = [];
         $scope.disableZoomOut = true;
@@ -314,25 +313,25 @@ dsApp.controller('FullscreenCtrl', [
             if ($scope.local.data.markers && $scope.local.data.markers.length && $scope.local.data.markers[0].id) {
                 $scope.local.disableAddMarker = true;
             }
-            setPdf($scope.local.data.path);
+            setPdf($scope.local.data.path || ($APP.server + '/pub/drawings/' + $rootScope.currentItem.base64String));
         } else {
             $scope.local.singleMarker = false;
             if (!sessionStorage.getObject('dsdrwact') || sessionStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(sessionStorage.getObject('dsproject')).then(function(res) {
+                    store.find($rootScope.projId).then(function(res) {
                         var drawing = $filter('filter')(res.drawings, {
                             id: $stateParams.id
                         })[0];
                         sessionStorage.setObject('dsdrwact', drawing)
                         $scope.local.data = drawing;
                         $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                        setPdf($scope.local.data.pdfPath)
+                        setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentItem.base64String))
                     })
                 })
             } else {
                 $scope.local.data = sessionStorage.getObject('dsdrwact');
                 $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                setPdf($scope.local.data.pdfPath)
+                setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentItem.base64String))
             }
         }
 

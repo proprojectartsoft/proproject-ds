@@ -44,7 +44,6 @@ dsApp.controller('LoginCtrl', [
                             });
                             loginPopup.close();
                             $state.go('app.projects');
-
                         })
                     });
                 }

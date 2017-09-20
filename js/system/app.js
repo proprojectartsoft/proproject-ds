@@ -58,7 +58,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/util/tab.html",
-                        controller: 'TabCtrl'
+                        controller: 'TabCtrl as vm'
                     }
                 }
             })
@@ -76,7 +76,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/projects/_list.html",
-                        controller: 'ProjectsCtrl'
+                        controller: 'ProjectsCtrl as vm'
                     }
                 }
             })

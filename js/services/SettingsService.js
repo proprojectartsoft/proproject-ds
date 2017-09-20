@@ -48,6 +48,13 @@ dsApp.factory('SettingsService', [
                     }]
                 });
                 return popup;
+            },
+            get_initials: function(str) {
+                if (str) {
+                    var aux = str.split(" ");
+                    return (aux[0][0] + aux[1][0]).toUpperCase();
+                }
+                return "";
             }
         };
     }

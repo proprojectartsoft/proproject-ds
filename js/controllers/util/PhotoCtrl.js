@@ -6,7 +6,6 @@ dsApp.controller('PhotoCtrl', [
     'SettingsService',
     function($rootScope, $scope, $stateParams, $state, SettingsService) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = SettingsService.get_settings('tabActive');
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {

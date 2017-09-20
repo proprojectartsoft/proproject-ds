@@ -9,18 +9,16 @@ dsApp.controller('_DefectCommentsCtrl', [
     '$ionicPopup',
     '$filter',
     'DefectsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $ionicPopup, $filter, DefectsService) {
+    'SettingsService',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $ionicPopup, $filter, DefectsService, SettingsService) {
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-
         $scope.local = {};
         $scope.local.loaded = false;
         $scope.local.data = sessionStorage.getObject('ds.defect.active.data');
 
         $indexedDB.openStore('projects', function(store) {
-            store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+            store.find($rootScope.projId).then(function(project) {
                 var defect = $filter('filter')(project.defects, {
                     id: ($stateParams.id)
                 })[0];
@@ -36,7 +34,7 @@ dsApp.controller('_DefectCommentsCtrl', [
         $scope.addComment = function() {
             if ($scope.local.comment) {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+                    store.find($rootScope.projId).then(function(project) {
                         var userInfo = $filter('filter')(project.users, {
                             login_name: (localStorage.getObject('ds.user').name)
                         });
@@ -80,7 +78,7 @@ dsApp.controller('_DefectCommentsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
+                        store.find($rootScope.projId).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({
@@ -104,11 +102,7 @@ dsApp.controller('_DefectCommentsCtrl', [
             }
         }
         $scope.getInitials = function(str) {
-            if (str) {
-                var aux = str.split(" ");
-                return (aux[0][0] + aux[1][0]).toUpperCase();
-            }
-            return "";
+            return SettingsService.get_initials(str);
         }
         $scope.back = function() {
             $state.go('app.defects', {

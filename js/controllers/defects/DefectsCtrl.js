@@ -16,8 +16,7 @@ dsApp.controller('DefectsCtrl', [
     function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DefectsService, ConvertersService, $ionicViewSwitcher, $ionicModal, $indexedDB, DrawingsService, $ionicPopup) {
         $scope.settings = {};
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = sessionStorage.getObject('dsproject');
+        $scope.settings.project = $rootScope.projId;
         $scope.local = {};
         $scope.local.entityId = $stateParams.id;
         sessionStorage.setObject('ds.fullscreen.back', {
@@ -152,7 +151,7 @@ dsApp.controller('DefectsCtrl', [
                     name: 'None'
                 };
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+                    store.find($rootScope.projId).then(function(project) {
                         var user = "";
                         if (project.users && project.users.length != 0) {
                             user = $filter('filter')(project.users, {
@@ -183,7 +182,7 @@ dsApp.controller('DefectsCtrl', [
             $rootScope.thiscreate = false;
             if (!sessionStorage.getObject('ds.defect.active.data') || sessionStorage.getObject('ds.defect.active.data').id !== parseInt($stateParams.id)) {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(sessionStorage.getObject('dsproject')).then(function(res) {
+                    store.find($rootScope.projId).then(function(res) {
                         $scope.local.data = ConvertersService.init_defect($filter('filter')(res.defects, {
                             id: $stateParams.id
                         })[0].completeInfo);
@@ -201,7 +200,7 @@ dsApp.controller('DefectsCtrl', [
                 })
             } else {
                 $indexedDB.openStore('projects', function(store) {
-                    store.find(sessionStorage.getObject('dsproject')).then(function(res) {
+                    store.find($rootScope.projId).then(function(res) {
                         $scope.local.data = ConvertersService.init_defect(sessionStorage.getObject('ds.defect.active.data'));
                         $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
                         crtDef = $filter('filter')(res.defects, {
@@ -226,7 +225,7 @@ dsApp.controller('DefectsCtrl', [
         }
         $scope.cancelEdit = function() {
             $indexedDB.openStore("projects", function(store) {
-                store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+                store.find($rootScope.projId).then(function(project) {
                     var defect = $filter('filter')(project.defects, {
                         id: sessionStorage.getObject('ds.defect.active.data').id
                     })[0];
@@ -253,7 +252,7 @@ dsApp.controller('DefectsCtrl', [
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             $indexedDB.openStore("projects", function(store) {
-                store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+                store.find($rootScope.projId).then(function(project) {
                     var defect = $filter('filter')(project.defects, {
                         id: $scope.local.data.id
                     })[0];
@@ -357,7 +356,7 @@ dsApp.controller('DefectsCtrl', [
                     })
                 })
                 $indexedDB.openStore("projects", function(store) {
-                    store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+                    store.find($rootScope.projId).then(function(project) {
                         var newDef = ConvertersService.save_defect($scope.local.data);
                         newDef.id = nextId + 1;
                         var localStorredDef = {};
@@ -447,7 +446,7 @@ dsApp.controller('DefectsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
+                        store.find($rootScope.projId).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({
@@ -473,7 +472,6 @@ dsApp.controller('DefectsCtrl', [
         }
 
         $scope.back = function() {
-            var routeback = sessionStorage.getObject('ds.defect.back')
             if ($stateParams.id === '0') {
                 sessionStorage.removeItem('ds.defect.new.data');
             } else {
@@ -483,9 +481,9 @@ dsApp.controller('DefectsCtrl', [
             sessionStorage.removeItem('ds.defect.drawing');
             $rootScope.disableedit = true;
             $ionicViewSwitcher.nextDirection('back')
-            if (routeback) {
-                $state.go(routeback.state, {
-                    id: routeback.id
+            if ($rootScope.routeback) {
+                $state.go($rootScope.routeback.state, {
+                    id: $rootScope.routeback.id
                 });
             } else {
                 $state.go('app.tab')

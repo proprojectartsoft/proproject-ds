@@ -14,7 +14,7 @@ dsApp.service('SyncService', [
 
         var service = this,
             worker = false;
-        service.getProjects = function(data, callback) {
+        service.getProjects = function(callback) {
             try {
                 worker = new Worker('js/system/worker.js');
 
@@ -45,7 +45,7 @@ dsApp.service('SyncService', [
                 worker.addEventListener('message', function(ev) {
                     worker.terminate();
                     if (ev.data.finished == true) {
-                        callback(ev.data.results);
+                        callback(ev.data.results[0]);
                     }
                 });
 
@@ -122,9 +122,6 @@ dsApp.service('SyncService', [
                                 if (!navigator.onLine) {
                                     var loggedIn = localStorage.getObject('dsremember');
                                     SettingsService.show_message_popup("You are offline", "<center>You can sync your data when online</center>");
-                                    if (loggedIn) {
-                                        // $state.go('app.projects');
-                                    }
                                 }
                             });
                     } else {
@@ -221,10 +218,9 @@ dsApp.service('SyncService', [
                                     angular.forEach(orderedDraws, function(draw) {
                                         DownloadsService.downloadPdf(draw, path).then(function(downloadRes) {
                                             if (downloadRes == "") {
-                                                SettingsService.show_message_popup("Download stopped", "<center>Not enough space to download all files</center>");
-                                                //TODO: on close: location.reload();
                                                 //not enpugh space to download all pdfs; stop download
                                                 def.resolve(projects);
+                                                SettingsService.show_message_popup("Download stopped", "<center>Not enough space to download all files</center>");
                                             } else {
                                                 draw.pdfPath = downloadRes;
                                                 //all pdfs have been downloaded

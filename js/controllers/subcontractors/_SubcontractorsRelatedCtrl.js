@@ -13,10 +13,8 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
     'ColorService',
     function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB, $filter, $ionicPopup, ConvertersService, ColorService) {
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = sessionStorage.getObject('dsproject');
+        $scope.settings.project = $rootScope.projId;
         $scope.settings.state = 'related';
         $scope.local = {};
         $scope.local.data = sessionStorage.getObject('dsscact');
@@ -24,7 +22,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
         $scope.local.loaded = false;
         $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
         $indexedDB.openStore('projects', function(store) {
-            store.find(sessionStorage.getObject('dsproject')).then(function(res) {
+            store.find($rootScope.projId).then(function(res) {
                 var subcontr = $filter('filter')(res.subcontractors, {
                     id: $scope.local.data.id
                 })[0];
@@ -68,11 +66,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             })
         }
         $scope.getInitials = function(str) {
-            if (str) {
-                var aux = str.split(" ");
-                return (aux[0][0] + aux[1][0]).toUpperCase();
-            }
-            return "";
+            return SettingsService.get_initials(str);
         }
         $scope.back = function() {
             $state.go('app.subcontractors', {
@@ -162,7 +156,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
+                        store.find($rootScope.projId).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({

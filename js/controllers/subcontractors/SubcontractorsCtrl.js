@@ -11,19 +11,17 @@ dsApp.controller('SubcontractorsCtrl', [
     'ConvertersService',
     function($rootScope, $scope, $stateParams, $state, $indexedDB, $filter, $ionicPopup, SettingsService, SubcontractorsService, ConvertersService) {
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
-        $scope.settings.tabActive = 'subcontractors'
         $scope.local = {};
         $scope.local.entityId = $stateParams.id;
         $rootScope.disableedit = true;
         SettingsService.put_settings('tabActive', 'subcontractors');
-        sessionStorage.setObject('ds.defect.back', {
+        $rootScope.routeback = {
             id: $stateParams.id,
             state: 'app.subcontractorrelated'
-        })
+        }
         if (!sessionStorage.getObject('dsscact') || sessionStorage.getObject('dsscact').id !== parseInt($stateParams.id)) {
             $indexedDB.openStore('projects', function(store) {
-                store.find(sessionStorage.getObject('dsproject')).then(function(res) {
+                store.find($rootScope.projId).then(function(res) {
                     var subcontractor = $filter('filter')(res.subcontractors, {
                         id: $stateParams.id
                     })[0];
@@ -49,7 +47,7 @@ dsApp.controller('SubcontractorsCtrl', [
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             $indexedDB.openStore("projects", function(store) {
-                store.find(sessionStorage.getObject('dsproject')).then(function(project) {
+                store.find($rootScope.projId).then(function(project) {
                     var subcontr = $filter('filter')(project.subcontractors, {
                         id: $scope.local.data.id
                     })[0];
@@ -66,7 +64,7 @@ dsApp.controller('SubcontractorsCtrl', [
             $indexedDB.openStore('projects', function(store) {
                 store.upsert(project).then(
                     function(e) {
-                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
+                        store.find($rootScope.projId).then(function(project) {})
                     },
                     function(e) {
                         var offlinePopup = $ionicPopup.alert({
@@ -91,7 +89,7 @@ dsApp.controller('SubcontractorsCtrl', [
         }
         $scope.back = function() {
             $rootScope.disableedit = true;
-            sessionStorage.removeItem('ds.defect.back');
+            $rootScope.routeback = null;
             $state.go('app.tab')
         }
     }

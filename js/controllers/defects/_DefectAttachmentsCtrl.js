@@ -10,9 +10,8 @@ dsApp.controller('_DefectAttachmentsCtrl', [
     'DefectsService',
     function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DefectsService) {
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.tabActive = SettingsService.get_settings('tabActive');
+        $scope.settings.tabActive = $rootScope.currentTab;
         $scope.settings.entityId = $stateParams.id;
         $scope.local = {};
         $scope.local.loaded = false;
@@ -29,7 +28,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             }, 200);
         }
         $indexedDB.openStore('projects', function(store) {
-            store.find(sessionStorage.getObject('dsproject')).then(function(res) {
+            store.find($rootScope.projId).then(function(res) {
                 var defect = $filter('filter')(res.defects, {
                     id: $stateParams.id
                 })[0];

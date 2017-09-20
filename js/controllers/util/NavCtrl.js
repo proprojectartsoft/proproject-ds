@@ -13,8 +13,8 @@ dsApp.controller('NavCtrl', [
     function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $http, $indexedDB, $ionicPopup, SettingsService, AuthService, SyncService) {
         $scope.disconnectDesignValue = true;
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.editMode = false;
+        $rootScope.navTitle = "";
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -63,14 +63,9 @@ dsApp.controller('NavCtrl', [
         }
         $scope.sync = function() {
             SyncService.sync().then(function(res) {
-              //TODO: check if error or sync_done and go to corresponding page
-              $state.go('app.projects');
+                //TODO: check if error or sync_done and go to corresponding page
+                $state.go('app.projects');
             })
         }
-        $scope.$watch(function() {
-            return sessionStorage.getObject('dsnavTitle')
-        }, function(value) {
-            $scope.settings.header = value;
-        })
     }
 ]);

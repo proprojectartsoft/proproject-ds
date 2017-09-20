@@ -1,13 +1,13 @@
 <ion-view id="projects" hide-back-button="true" cache-view="false">
     <ion-content class="has-header ds-blackscroll">
         <ion-list>
-            <ion-item ng-click="go(local.activeProject)" class="ds-active" ng-if="local.activeProject">
-                <div>{{local.activeProject.name}}</div>
-                <span class="ds-tag">ID:&nbsp;{{local.activeProject.project_number}}</span>
+            <ion-item ng-click="vm.go(vm.local.activeProject)" class="ds-active" ng-if="vm.local.activeProject">
+                <div>{{vm.local.activeProject.name}}</div>
+                <span class="ds-tag">ID:&nbsp;{{vm.local.activeProject.project_number}}</span>
             </ion-item>
-            <ion-item ng-repeat="project in projects track by $index" ng-click="go(project)">
-                <div>{{project.name}}</div>
-                <span class="ds-tag">ID:&nbsp;{{project.project_number}}</span>
+            <ion-item ng-repeat="project in vm.projects" ng-click="vm.go(project.value)">
+                <div>{{project.value.name}}</div>
+                <span class="ds-tag">ID:&nbsp;{{project.value.project_number}}</span>
             </ion-item>
         </ion-list>
     </ion-content>

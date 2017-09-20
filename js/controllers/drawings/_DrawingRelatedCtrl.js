@@ -5,19 +5,16 @@ dsApp.controller('_DrawingRelatedCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    '$indexedDB',
     '$filter',
     'DrawingsService',
     'ColorService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DrawingsService, ColorService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DrawingsService, ColorService) {
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
-        $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = parseInt(sessionStorage.getObject('dsproject'));
-        sessionStorage.setObject('ds.defect.back', {
+        $scope.settings.project = parseInt($rootScope.projId);
+        $rootScope.routeback = {
             id: $stateParams.id,
             state: 'app.drawingrelated'
-        })
+        }
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -25,28 +22,21 @@ dsApp.controller('_DrawingRelatedCtrl', [
         }
         $scope.local = {};
         $scope.local.loaded = false;
-        $scope.local.data = sessionStorage.getObject('dsdrwact');
-        $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
+        $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentItem.title;
+        $scope.local.list = $rootScope.currentItem.defects;
 
-        $indexedDB.openStore('projects', function(store) {
-            store.find(sessionStorage.getObject('dsproject')).then(function(res) {
-                $scope.local.list = $filter('filter')(res.drawings, {
-                    id: $stateParams.id
-                })[0].relatedDefects;
-                $scope.local.loaded = true;
-                ColorService.get_colors().then(function(colorList) {
-                    var colorsLength = Object.keys(colorList).length;
-                    angular.forEach($scope.local.list, function(relTask) {
-                        //get from defects list the current defect
-                        var def = $filter('filter')(res.defects, {
-                            id: relTask.id
-                        })[0];
-                        //assign the collor corresponding to user id and customer id
-                        var colorId = (parseInt(res.customer_id + "" + def.completeInfo.assignee_id)) % colorsLength;
-                        relTask.backgroundColor = colorList[colorId].backColor;
-                        relTask.foregroundColor = colorList[colorId].foreColor;
-                    })
-                })
+        ColorService.get_colors().then(function(colorList) {
+            $scope.local.loaded = true;
+            var colorsLength = Object.keys(colorList).length;
+            angular.forEach($scope.local.list, function(relTask) {
+                //get from defects list the current defect
+                // var def = $filter('filter')($scope.local.list, {
+                //     id: relTask.id
+                // })[0];
+                // assign the collor corresponding to user id and customer id
+                var colorId = (parseInt(relTask.customer_id || 0 + "" + relTask.assignee_id)) % colorsLength; //TODO: get ids!!!!!
+                relTask.backgroundColor = colorList[colorId].backColor;
+                relTask.foregroundColor = colorList[colorId].foreColor;
             })
         })
 
@@ -59,11 +49,7 @@ dsApp.controller('_DrawingRelatedCtrl', [
         }
 
         $scope.getInitials = function(str) {
-            if (str) {
-                var aux = str.split(" ");
-                return (aux[0][0] + aux[1][0]).toUpperCase();
-            }
-            return "";
+            return SettingsService.get_initials(str);
         }
 
         $scope.back = function() {

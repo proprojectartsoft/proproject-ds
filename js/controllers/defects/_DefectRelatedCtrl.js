@@ -11,10 +11,8 @@ dsApp.controller('_DefectRelatedCtrl', [
     '$filter',
     function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB, ColorService, $filter) {
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = sessionStorage.getObject('dsproject');
+        $scope.settings.project = $rootScope.projId;
         $scope.settings.state = 'related';
         $scope.local = {};
         if ($stateParams.id === '0') {
@@ -60,11 +58,7 @@ dsApp.controller('_DefectRelatedCtrl', [
         }
 
         $scope.getInitials = function(str) {
-            if (str) {
-                var aux = str.split(" ");
-                return (aux[0][0] + aux[1][0]).toUpperCase();
-            }
-            return "";
+            return SettingsService.get_initials(str);
         }
 
         $ionicModal.fromTemplateUrl('templates/defects/_popover.html', {

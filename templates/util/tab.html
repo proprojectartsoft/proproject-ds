@@ -1,39 +1,39 @@
 <div class="tabs-striped tabs-top tabs-color-light">
     <div class="tabs">
-        <a class="tab-item" ng-click="tabSelect('drawings')" ng-class="{'active':settings.tabActive === 'drawings'}">
-            <img ng-src="{{settings.tabs['drawings']}}">
+        <a class="tab-item" ng-click="vm.tabSelect('drawings')" ng-class="{'active':currentTab === 'drawings'}">
+            <img ng-src="{{vm.settings.tabs['drawings']}}">
         </a>
-        <a class="tab-item" ng-click="tabSelect('subcontractors')" ng-class="{'active':settings.tabActive === 'subcontractors'}">
-            <img ng-src="{{settings.tabs['subcontractors']}}">
+        <a class="tab-item" ng-click="vm.tabSelect('subcontractors')" ng-class="{'active':currentTab === 'subcontractors'}">
+            <img ng-src="{{vm.settings.tabs['subcontractors']}}">
         </a>
-        <a class="tab-item" ng-click="tabSelect('defects')" ng-class="{'active':settings.tabActive === 'defects'}">
-            <img ng-src="{{settings.tabs['defects']}}">
+        <a class="tab-item" ng-click="vm.tabSelect('defects')" ng-class="{'active':currentTab === 'defects'}">
+            <img ng-src="{{vm.settings.tabs['defects']}}">
         </a>
     </div>
 </div>
 <ion-content class="has-subheader ds-tabslist">
-    <ion-list ng-if="settings.tabActive==='drawings'">
-        <ion-item ng-repeat="item in list track by $index" ng-click="goItem(item)" class="ds-tileandborder ds-delayed">
+    <ion-list ng-if="currentTab==='drawings'">
+        <ion-item ng-repeat="item in vm.list" ng-click="vm.goItem(item)" class="ds-tileandborder ds-delayed">
             <img src="img/pdf.png">
             <h3>
-              <div>{{item.name}}</div>
-              <div>{{item.tasks}} Tasks</div>
+              <div>{{item.title}}</div>
+              <div>{{item.nr_of_defects}} Tasks</div>
             </h3>
         </ion-item>
     </ion-list>
-    <ion-list ng-if="settings.tabActive==='subcontractors'">
-        <ion-item ng-repeat="item in list track by $index" ng-click="goItem(item)" class="ds-delayed" style="border-left-color: {{item.backgroundColor}}">
+    <ion-list ng-if="currentTab==='subcontractors'">
+        <ion-item ng-repeat="item in vm.list" ng-click="vm.goItem(item)" class="ds-delayed" style="border-left-color: {{item.backgroundColor}}">
             <span class="ds-tile" style="background-color: {{item.backgroundColor}}">{{item.icon}}</span>
             <h3>
-              <div>{{item.name}}
-                <span class="ds-date pull-right">{{item.tasks}} tasks</span>
+              <div>{{item.title}}
+                <span class="ds-date pull-right">{{item.nr_of_defects}} tasks</span>
               </div>
               <div>{{item.description}}</div>
             </h3>
         </ion-item>
     </ion-list>
-    <ion-list ng-if="settings.tabActive==='defects'">
-        <ion-item ng-repeat="item in list | orderBy: '-date'" style="border-left-color: {{item.backgroundColor}}" ng-click="goItem(item)">
+    <ion-list ng-if="currentTab==='defects'">
+        <ion-item ng-repeat="item in vm.list | orderBy: '-date'" style="border-left-color: {{item.backgroundColor}}" ng-click="vm.goItem(item)">
             <span class="ds-tile" style="background-color: {{item.backgroundColor}}">{{item.icon}}</span>
             <h3>
               <div>{{item.title}}</div>
@@ -46,10 +46,10 @@
             </h3>
         </ion-item>
     </ion-list>
-    <div ng-if="!list.length && settings.loaded" class="ds-nodata">
-        <span>No data</span>for {{settings.tabActive}}
+    <div ng-if="!vm.list.length && vm.settings.loaded" class="ds-nodata">
+        <span>No data</span>for {{currentTab}}
     </div>
 </ion-content>
-<span ng-if="settings.tabActive==='subcontractors' || settings.tabActive==='defects'" class="ds-actionbtn" ng-click="showPopup()">
+<span ng-if="currentTab==='subcontractors' || currentTab==='defects'" class="ds-actionbtn" ng-click="vm.showPopup()">
   <i class="ion-ios-plus-empty"></i>
 </span>

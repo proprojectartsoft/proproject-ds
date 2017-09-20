@@ -36,7 +36,6 @@ dsApp.factory('DownloadsService', [
                                         uri,
                                         fileURL,
                                         function(entry) {
-                                            console.log("download complete: " + entry.toURL());
                                             def.resolve(fileURL);
                                         },
                                         function(error) {
@@ -65,10 +64,8 @@ dsApp.factory('DownloadsService', [
 
                         $cordovaFile.createDir(cordova.file.dataDirectory, dirName, true)
                             .then(function(success) {
-                                console.log('dir created:');
                                 def.resolve(cordova.file.dataDirectory + "/" + dirName);
                             }, function(error) {
-                                console.log(error);
                                 def.resolve('fail');
                             });
                     }

@@ -5,15 +5,13 @@ dsApp.controller('DrawingsCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    '$indexedDB',
     '$filter',
     '$ionicPopup',
     'DrawingsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, $ionicPopup, DrawingsService) {
+    'SyncService',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, $ionicPopup, DrawingsService, SyncService) {
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.tabActive = 'drawings';
         $scope.settings.entityId = $stateParams.id;
         $scope.local = {};
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
@@ -22,10 +20,10 @@ dsApp.controller('DrawingsCtrl', [
             }, 200);
         }
         SettingsService.put_settings('tabActive', 'drawings');
-        sessionStorage.setObject('ds.defect.back', {
+        $rootScope.routeback = {
             id: $stateParams.id,
             state: 'app.drawings'
-        })
+        }
         sessionStorage.setObject('ds.fullscreen.back', {
             id: $stateParams.id,
             state: 'app.drawings'
@@ -54,7 +52,7 @@ dsApp.controller('DrawingsCtrl', [
                     page.render(renderContext).then(function() {
                         $timeout(function() {
                             $scope.markers = [];
-                            angular.forEach($scope.local.data.markers, function(markerResult) {
+                            angular.forEach($rootScope.currentItem.markers, function(markerResult) {
                                 if (!(markerResult.position_x === 0 && markerResult.position_y === 0)) {
                                     var auxPoint = {
                                         xInit: markerResult.position_x,
@@ -74,25 +72,8 @@ dsApp.controller('DrawingsCtrl', [
                 });
             });
         }
-
-        if (!sessionStorage.getObject('dsdrwact') || sessionStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
-            $indexedDB.openStore('projects', function(store) {
-                store.find(sessionStorage.getObject('dsproject')).then(function(res) {
-                    var drawing = $filter('filter')(res.drawings, {
-                        id: $stateParams.id
-                    })[0];
-                    sessionStorage.setObject('dsdrwact', drawing)
-                    $scope.local.data = drawing;
-                    $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                    setPdf($scope.local.data.pdfPath)
-                })
-            })
-        } else {
-            $scope.local.data = sessionStorage.getObject('dsdrwact');
-            $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-            setPdf($scope.local.data.pdfPath)
-        }
-
+        $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentItem.title;
+        setPdf($rootScope.currentItem.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentItem.base64String));
         $scope.getFullscreen = function() {
             $scope.go('fullscreen', $stateParams.id);
         }
@@ -100,63 +81,21 @@ dsApp.controller('DrawingsCtrl', [
             $rootScope.disableedit = false;
         }
         $scope.cancelEdit = function() {
-            $indexedDB.openStore("projects", function(store) {
-                store.find(sessionStorage.getObject('dsproject')).then(function(project) {
-                    var draw = $filter('filter')(project.drawings, {
-                        id: sessionStorage.getObject('dsdrwact').id
-                    })[0];
-                    //restore the drawing before changes
-                    $scope.local.data = draw;
-                    sessionStorage.setObject('dsdrwact', $scope.local.data)
-                    $rootScope.disableedit = true;
-                })
-            })
+            $rootScope.currentItem = angular$rootScope.backupItem;
+            $rootScope.disableedit = true;
         }
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
-            $indexedDB.openStore('projects', function(store) {
-                store.find(sessionStorage.getObject('dsproject')).then(function(proj) {
-                    var draw = $filter('filter')(proj.drawings, {
-                        id: $scope.local.data.id
-                    })[0];
-                    draw.title = $scope.local.data.title;
-                    draw.code = $scope.local.data.code;
-                    draw.revision = $scope.local.data.revision;
-                    draw.drawing_date = new Date($scope.local.data.drawing_date).getTime();
-                    proj.isModified = true;
-                    draw.isModified = true;
-                    sessionStorage.setObject('dsdrwact', $scope.local.data)
-                    saveChanges(proj);
-                })
-            })
-        }
-
-        function saveChanges(project) {
-            $indexedDB.openStore('projects', function(store) {
-                store.upsert(project).then(
-                    function(e) {
-                        store.find(sessionStorage.getObject('dsproject')).then(function(project) {})
-                    },
-                    function(e) {
-                        var offlinePopup = $ionicPopup.alert({
-                            title: "Unexpected error",
-                            template: "<center>An unexpected error has occurred.</center>",
-                            content: "",
-                            buttons: [{
-                                text: 'Ok',
-                                type: 'button-positive',
-                                onTap: function(e) {
-                                    offlinePopup.close();
-                                }
-                            }]
-                        });
-                    })
-            })
+            $rootScope.currentItem.drawing_date = new Date($rootScope.currentItem.drawing_date).getTime(); //TODO: check if needed
+            // TODO:
+            // proj.isModified = true;
+            // draw.isModified = true;
+            // in tabCtrl when return from here
+            $state.go('app.tab')
         }
 
         $scope.back = function() {
-            sessionStorage.removeItem('dsdrwact');
-            sessionStorage.removeItem('ds.defect.back');
+            $rootScope.routeback = null;
             $rootScope.disableedit = true;
             $state.go('app.tab')
         }

@@ -8,12 +8,10 @@ dsApp.controller('_DefectDetailsCtrl', [
     '$indexedDB',
     '$ionicModal',
     'ProjectService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $ionicModal, ProjectService) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $ionicModal, ProjectService) { 
         $scope.settings = {};
-        $scope.settings.header = SettingsService.get_settings('header');
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.tabActive = SettingsService.get_settings('tabActive');
-        $scope.settings.project = sessionStorage.getObject('dsproject');
+        $scope.settings.project = $rootScope.projId;
         $scope.settings.state = 'details';
         $scope.local = {};
         $scope.local.search = '';
