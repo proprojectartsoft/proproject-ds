@@ -4,7 +4,7 @@
         <h1 class="title">{{settings.subHeader}}</h1>
     </ion-header-bar>
     <ion-content class="has-header ds-blackscroll ds-page ds-page-details">
-        <div class="title">{{currentItem.title}}</div>
+        <div class="title">{{currentDraw.title}}</div>
         <ion-item class="ds-grh-cont active">
             <div class="ds-grh">
                 <h3>Drawing details<i class="ion ion-ios-arrow-down"></i>
@@ -15,31 +15,31 @@
                     <div class="ds-content">
                         <span class="ds-title">Name</span>
                     </div>
-                    <input type="text" ng-model="currentItem.title" ng-readonly="disableedit">
+                    <input type="text" ng-model="currentDraw.title" ng-readonly="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Code</span>
                     </div>
-                    <input type="text" ng-model="currentItem.code" ng-readonly="disableedit">
+                    <input type="text" ng-model="currentDraw.code" ng-readonly="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Revisions</span>
                     </div>
-                    <input type="text" ng-model="currentItem.revision" ng-readonly="disableedit">
+                    <input type="text" ng-model="currentDraw.revision" ng-readonly="disableedit">
                 </label>
                 <div class="ds-label">
                     <div class="ds-content">
                         <span class="ds-title">Date</span>
                     </div>
-                    <div ion-datetime-picker date ng-model="currentItem.drawing_date" month-step="1" hour-step="1" minute-step="1" second-step="1" class="ds-date" ng-if="!disableedit">
-                        <div ng-if="currentItem.drawing_date">{{currentItem.drawing_date | date}}</div>
-                        <div ng-if="!currentItem.drawing_date">Tap here to select a date.</div>
+                    <div ion-datetime-picker date ng-model="currentDraw.drawing_date" month-step="1" hour-step="1" minute-step="1" second-step="1" class="ds-date" ng-if="!disableedit">
+                        <div ng-if="currentDraw.drawing_date">{{currentDraw.drawing_date | date}}</div>
+                        <div ng-if="!currentDraw.drawing_date">Tap here to select a date.</div>
                     </div>
                     <div class="ds-date" ng-if="disableedit">
-                        <div ng-if="currentItem.drawing_date">{{currentItem.drawing_date | date}}</div>
-                        <div ng-if="!currentItem.drawing_date">Tap here to select a date.</div>
+                        <div ng-if="currentDraw.drawing_date">{{currentDraw.drawing_date | date}}</div>
+                        <div ng-if="!currentDraw.drawing_date">Tap here to select a date.</div>
                     </div>
                 </div>
             </div>

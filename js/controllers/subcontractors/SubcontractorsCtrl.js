@@ -1,93 +1,52 @@
 dsApp.controller('SubcontractorsCtrl', [
     '$rootScope',
-    '$scope',
     '$stateParams',
     '$state',
-    '$indexedDB',
     '$filter',
     '$ionicPopup',
     'SettingsService',
     'SubcontractorsService',
     'ConvertersService',
-    function($rootScope, $scope, $stateParams, $state, $indexedDB, $filter, $ionicPopup, SettingsService, SubcontractorsService, ConvertersService) {
-        $scope.settings = {};
-        $scope.local = {};
-        $scope.local.entityId = $stateParams.id;
+    function($rootScope, $stateParams, $state, $filter, $ionicPopup, SettingsService, SubcontractorsService, ConvertersService) {
+        var vm = this;
+        vm.settings = {};
+        vm.local = {};
+        vm.local.entityId = $stateParams.id;
         $rootScope.disableedit = true;
         SettingsService.put_settings('tabActive', 'subcontractors');
         $rootScope.routeback = {
             id: $stateParams.id,
             state: 'app.subcontractorrelated'
         }
-        if (!sessionStorage.getObject('dsscact') || sessionStorage.getObject('dsscact').id !== parseInt($stateParams.id)) {
-            $indexedDB.openStore('projects', function(store) {
-                store.find($rootScope.projId).then(function(res) {
-                    var subcontractor = $filter('filter')(res.subcontractors, {
-                        id: $stateParams.id
-                    })[0];
-                    delete subcontractor.company_logo;
-                    sessionStorage.setObject('dsscact', subcontractor)
-                    $scope.local.data = subcontractor;
-                    $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
-                })
-            })
-        } else {
-            $scope.local.data = sessionStorage.getObject('dsscact');
-            $scope.settings.subHeader = 'Subcontractor - ' + $scope.local.data.last_name + ' ' + $scope.local.data.first_name;
-        }
+        vm.local.data = $rootScope.currentSubcontr;
+        vm.settings.subHeader = 'Subcontractor - ' + vm.local.data.last_name + ' ' + vm.local.data.first_name;
+        //delete subcontractor.company_logo;
 
-        $scope.toggleEdit = function() {
+        vm.toggleEdit = function() {
             $rootScope.disableedit = false;
-            $scope.local.backup = angular.copy($scope.local.data);
+            vm.local.backup = angular.copy(vm.local.data);
         }
-        $scope.cancelEdit = function() {
-            $scope.local.data = $scope.local.backup;
+        vm.cancelEdit = function() {
+            vm.local.data = vm.local.backup;
             $rootScope.disableedit = true;
-        }
-        $scope.saveEdit = function() {
-            $rootScope.disableedit = true;
-            $indexedDB.openStore("projects", function(store) {
-                store.find($rootScope.projId).then(function(project) {
-                    var subcontr = $filter('filter')(project.subcontractors, {
-                        id: $scope.local.data.id
-                    })[0];
-                    ConvertersService.modify_subcontractor(subcontr, $scope.local.data);
-                    subcontr.isModified = true;
-                    project.isModified = true;
-                    saveChanges(project);
-                    sessionStorage.setObject('dsscact', $scope.local.data)
-                })
-            })
         }
 
-        function saveChanges(project) {
-            $indexedDB.openStore('projects', function(store) {
-                store.upsert(project).then(
-                    function(e) {
-                        store.find($rootScope.projId).then(function(project) {})
-                    },
-                    function(e) {
-                        var offlinePopup = $ionicPopup.alert({
-                            title: "Unexpected error",
-                            template: "<center>An unexpected error has occurred.</center>",
-                            content: "",
-                            buttons: [{
-                                text: 'Ok',
-                                type: 'button-positive',
-                                onTap: function(e) {
-                                    offlinePopup.close();
-                                }
-                            }]
-                        });
-                    })
-            })
+        vm.saveEdit = function() {
+            $rootScope.disableedit = true;
+            $rootScope.currentSubcontr.isModified = true;
+            //go to main page and save the changes there
+            vm.go('tab');
+
+            // subcontr.isModified = true;
+            // project.isModified = true;
         }
-        $scope.go = function(predicate, item) {
+
+        vm.go = function(predicate, item) {
             $state.go('app.' + predicate, {
                 id: item
             });
         }
-        $scope.back = function() {
+        vm.back = function() {
             $rootScope.disableedit = true;
             $rootScope.routeback = null;
             $state.go('app.tab')

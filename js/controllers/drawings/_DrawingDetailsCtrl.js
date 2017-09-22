@@ -10,7 +10,7 @@ dsApp.controller('_DrawingDetailsCtrl', [
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;
         }
-        $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentItem.title;
+        $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentDraw.title;
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')

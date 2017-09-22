@@ -313,7 +313,7 @@ dsApp.controller('FullscreenCtrl', [
             if ($scope.local.data.markers && $scope.local.data.markers.length && $scope.local.data.markers[0].id) {
                 $scope.local.disableAddMarker = true;
             }
-            setPdf($scope.local.data.path || ($APP.server + '/pub/drawings/' + $rootScope.currentItem.base64String));
+            setPdf($scope.local.data.path || ($APP.server + '/pub/drawings/' + $rootScope.currentDraw.base64String));
         } else {
             $scope.local.singleMarker = false;
             if (!sessionStorage.getObject('dsdrwact') || sessionStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
@@ -325,13 +325,13 @@ dsApp.controller('FullscreenCtrl', [
                         sessionStorage.setObject('dsdrwact', drawing)
                         $scope.local.data = drawing;
                         $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                        setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentItem.base64String))
+                        setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentDraw.base64String))
                     })
                 })
             } else {
                 $scope.local.data = sessionStorage.getObject('dsdrwact');
                 $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentItem.base64String))
+                setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentDraw.base64String))
             }
         }
 

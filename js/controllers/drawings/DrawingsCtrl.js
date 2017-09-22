@@ -52,7 +52,7 @@ dsApp.controller('DrawingsCtrl', [
                     page.render(renderContext).then(function() {
                         $timeout(function() {
                             $scope.markers = [];
-                            angular.forEach($rootScope.currentItem.markers, function(markerResult) {
+                            angular.forEach($rootScope.currentDraw.markers, function(markerResult) {
                                 if (!(markerResult.position_x === 0 && markerResult.position_y === 0)) {
                                     var auxPoint = {
                                         xInit: markerResult.position_x,
@@ -72,8 +72,8 @@ dsApp.controller('DrawingsCtrl', [
                 });
             });
         }
-        $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentItem.title;
-        setPdf($rootScope.currentItem.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentItem.base64String));
+        $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentDraw.title;
+        setPdf($rootScope.currentDraw.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentDraw.base64String));
         $scope.getFullscreen = function() {
             $scope.go('fullscreen', $stateParams.id);
         }
@@ -81,12 +81,12 @@ dsApp.controller('DrawingsCtrl', [
             $rootScope.disableedit = false;
         }
         $scope.cancelEdit = function() {
-            $rootScope.currentItem = angular$rootScope.backupItem;
+            $rootScope.currentDraw = angular.copy($rootScope.backupItem);
             $rootScope.disableedit = true;
         }
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
-            $rootScope.currentItem.drawing_date = new Date($rootScope.currentItem.drawing_date).getTime(); //TODO: check if needed
+            $rootScope.currentDraw.drawing_date = new Date($rootScope.currentDraw.drawing_date).getTime(); //TODO: check if needed
             // TODO:
             // proj.isModified = true;
             // draw.isModified = true;

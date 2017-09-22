@@ -1,16 +1,16 @@
 dsApp.factory('ConvertersService', ConvertersService)
 
-ConvertersService.$inject = ['$http']
+ConvertersService.$inject = ['$http', '$rootScope', '$filter']
 
-function ConvertersService($http) {
+function ConvertersService($http, $rootScope, $filter) {
     var service = {
         init_defect: init_defect,
         save_defect: save_defect,
         save_local: save_local,
-        modify_subcontractor: modify_subcontractor,
         increase_nr_tasks: increase_nr_tasks,
         decrease_nr_tasks: decrease_nr_tasks,
-        clear_id: clear_id
+        clear_id: clear_id,
+        getEmptyDefect: getEmptyDefect
     }
     return service;
 
@@ -64,15 +64,6 @@ function ConvertersService($http) {
             "relatedDefects": drawing.relatedDefects,
             "markers": []
         };
-    }
-
-    function modify_subcontractor(subcontr, subcontractor) {
-        subcontr.address = subcontractor.address;
-        subcontr.country = subcontractor.country;
-        subcontr.first_name = subcontractor.first_name;
-        subcontr.last_name = subcontractor.last_name;
-        subcontr.phone_number = subcontractor.phone_number;
-        subcontr.registration_number = subcontractor.registration_number;
     }
 
     function increase_nr_tasks(subcontr, task) {
@@ -129,5 +120,42 @@ function ConvertersService($http) {
         var def = angular.copy(defect);
         def.id = 0;
         return def;
+    }
+
+    function getEmptyDefect() {
+        var defect = {};
+        defect.id = 0;
+        defect.active = true;
+        defect.project_id = $rootScope.projId;
+        defect.defect_id = 0;
+        defect.related_tasks = [];
+        defect.due_date = 0;
+        defect.status_obj = {
+            id: 0,
+            name: 'Incomplete'
+        };
+        defect.severity_obj = {
+            id: 0,
+            name: 'None'
+        };
+        defect.priority_obj = {
+            id: 0,
+            name: 'None'
+        };
+
+        var user = "";
+        if ($rootScope.users && $rootScope.users.length) {
+            user = $filter('filter')($rootScope.users, {
+                login_name: localStorage.getObject('ds.user') && localStorage.getObject('ds.user').name
+            })[0];
+            if (user) {
+                defect.assignee_name = user.first_name + " " + user.last_name;
+                defect.assignee_id = user.id;
+            }
+        } else {
+            defect.assignee_name = "";
+            defect.assignee_id = 0;
+        }
+        return defect;
     }
 };

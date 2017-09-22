@@ -124,7 +124,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/subcontractors/_entity.html",
-                        controller: 'SubcontractorsCtrl'
+                        controller: 'SubcontractorsCtrl as vm'
                     }
                 }
             })
@@ -136,7 +136,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/subcontractors/_related.html",
-                        controller: '_SubcontractorsRelatedCtrl'
+                        controller: '_SubcontractorsRelatedCtrl as vm'
                     }
                 }
             })
@@ -148,7 +148,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/defects/_entity.html",
-                        controller: 'DefectsCtrl'
+                        controller: 'DefectsCtrl as vm'
                     }
                 }
             })
@@ -160,7 +160,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/defects/_details.html",
-                        controller: '_DefectDetailsCtrl'
+                        controller: '_DefectDetailsCtrl as vm'
                     }
                 }
             })
@@ -172,7 +172,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/defects/_related.html",
-                        controller: '_DefectRelatedCtrl'
+                        controller: '_DefectRelatedCtrl as vm'
                     }
                 }
             })
@@ -184,7 +184,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/defects/_attachments.html",
-                        controller: '_DefectAttachmentsCtrl'
+                        controller: '_DefectAttachmentsCtrl as vm'
                     }
                 }
             })
@@ -221,7 +221,7 @@ var dsApp = angular.module($APP.name, [
                 views: {
                     'menuContent': {
                         templateUrl: "templates/util/photo.html",
-                        controller: 'PhotoCtrl'
+                        controller: 'PhotoCtrl as vm'
                     }
                 }
             })

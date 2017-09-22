@@ -10,15 +10,15 @@ dsApp.controller('DefectsCtrl', [
     'ConvertersService',
     '$ionicViewSwitcher',
     '$ionicModal',
-    '$indexedDB',
     'DrawingsService',
     '$ionicPopup',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DefectsService, ConvertersService, $ionicViewSwitcher, $ionicModal, $indexedDB, DrawingsService, $ionicPopup) {
-        $scope.settings = {};
-        $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.project = $rootScope.projId;
-        $scope.local = {};
-        $scope.local.entityId = $stateParams.id;
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DefectsService, ConvertersService, $ionicViewSwitcher, $ionicModal, DrawingsService, $ionicPopup) {
+        var vm = this;
+        vm.settings = {};
+        vm.settings.subHeader = SettingsService.get_settings('subHeader');
+        vm.settings.project = $rootScope.projId;
+        vm.local = {};
+        vm.local.entityId = $stateParams.id;
         sessionStorage.setObject('ds.fullscreen.back', {
             id: $stateParams.id,
             state: 'app.defects'
@@ -31,7 +31,7 @@ dsApp.controller('DefectsCtrl', [
         $ionicModal.fromTemplateUrl('templates/defects/_drawings.html', {
             scope: $scope
         }).then(function(modal) {
-            $scope.modal = modal;
+            vm.modal = modal;
         });
 
         var setPdf = function(url) {
@@ -53,14 +53,14 @@ dsApp.controller('DefectsCtrl', [
                         };
                         page.render(renderContext).then(function() {
                             var width = $("#defectPreviewCanvas").width();
-                            $scope.perc = width / 12;
-                            if ($scope.local.drawing && $scope.local.drawing.markers && $scope.local.drawing.markers.length) {
-                                $scope.$apply(function() {
-                                    $scope.local.marker = {};
-                                    $scope.local.marker.id = $scope.local.drawing.markers[0].id;
-                                    $scope.local.marker.x = $scope.local.drawing.markers[0].position_x * ($scope.perc / 100) - 6;
-                                    $scope.local.marker.y = $scope.local.drawing.markers[0].position_y * ($scope.perc / 100) - 6;
-                                    $scope.local.marker.status = $scope.local.drawing.markers[0].status;
+                            vm.perc = width / 12;
+                            if (vm.local.drawing && vm.local.drawing.markers && vm.local.drawing.markers.length) {
+                                vm.$apply(function() {
+                                    vm.local.marker = {};
+                                    vm.local.marker.id = vm.local.drawing.markers[0].id;
+                                    vm.local.marker.x = vm.local.drawing.markers[0].position_x * (vm.perc / 100) - 6;
+                                    vm.local.marker.y = vm.local.drawing.markers[0].position_y * (vm.perc / 100) - 6;
+                                    vm.local.marker.status = vm.local.drawing.markers[0].status;
                                 })
                             }
                         })
@@ -87,349 +87,115 @@ dsApp.controller('DefectsCtrl', [
                 ctx.textAlign = "center";
                 ctx.fillText("Click to select a drawing.", x, 80);
                 canvas.onclick = function(event) {
-                    modalDrawing();
+                    vm.local.drawingsLight = $rootScope.drawingsLight;
+                    vm.modal.show();
                 }
             });
         };
-        var modalDrawing = function() {
-            $indexedDB.openStore('projects', function(store) {
-                store.find($scope.settings.project).then(function(proj) {
-                    $scope.local.drawingsLight = proj.light_drawings;
-                })
-            })
-            $scope.modal.show();
-        }
-        $scope.closePopup = function() {
-            $scope.modal.hide();
+
+        vm.closePopup = function() {
+            vm.modal.hide();
         };
-        $scope.selectDrawing = function(data) {
-            $scope.local.drawing = data;
+
+        vm.selectDrawing = function(data) {
+            vm.local.drawing = data;
             sessionStorage.setObject('ds.defect.drawing', data);
-            $scope.go('fullscreen', $scope.local.drawing.id);
-            $scope.modal.hide();
+            vm.go('fullscreen', vm.local.drawing.id);
+            vm.modal.hide();
         }
-        $scope.getFullscreen = function() {
+
+        vm.getFullscreen = function() {
             if ($stateParams.id !== "0") {
-                $scope.go('fullscreen', $scope.local.data.drawing.id);
+                vm.go('fullscreen', vm.defect.drawing.id);
             } else {
-                $scope.go('fullscreen', $scope.local.drawing.id);
+                vm.go('fullscreen', vm.local.drawing.id);
             }
         }
 
         function newDefect() {
             $rootScope.disableedit = false;
             $rootScope.thiscreate = true;
-            if (sessionStorage.getObject('ds.drawing.defect') && !sessionStorage.getObject('ds.defect.drawing')) {
-                $scope.local.drawing = sessionStorage.getObject('ds.drawing.defect')
-                sessionStorage.setObject('ds.defect.drawing', $scope.local.drawing)
-            } else {
-                $scope.local.drawing = sessionStorage.getObject('ds.defect.drawing');
-            }
-            if ($scope.local.drawing && $scope.local.drawing.path) {
-                setPdf($scope.local.drawing.path)
+            if (vm.local.drawing && vm.local.drawing.pdfPath) {
+                setPdf(vm.local.drawing.pdfPath)
             } else {
                 addDrawing()
             }
-            if (!sessionStorage.getObject('ds.defect.new.data')) {
-                $scope.local.data = {};
-                $scope.local.data.id = 0;
-                $scope.local.data.active = true;
-                $scope.local.data.project_id = $scope.settings.project;
-                $scope.local.data.defect_id = 0;
-                $scope.local.data.related_tasks = [];
-                $scope.local.data.due_date = 0;
-                $scope.local.data.status_obj = {
-                    id: 0,
-                    name: 'Incomplete'
-                };
-                $scope.local.data.severity_obj = {
-                    id: 0,
-                    name: 'None'
-                };
-                $scope.local.data.priority_obj = {
-                    id: 0,
-                    name: 'None'
-                };
-                $indexedDB.openStore('projects', function(store) {
-                    store.find($rootScope.projId).then(function(project) {
-                        var user = "";
-                        if (project.users && project.users.length != 0) {
-                            user = $filter('filter')(project.users, {
-                                login_name: localStorage.getObject('ds.user') && localStorage.getObject('ds.user').name
-                            })[0];
-                            if (user) {
-                                $scope.local.data.assignee_name = user.first_name + " " + user.last_name;
-                                $scope.local.data.assignee_id = user.id;
-                            }
-                        } else {
-                            $scope.local.data.assignee_name = "";
-                            $scope.local.data.assignee_id = 0;
-                        }
-                        sessionStorage.setObject('ds.defect.new.data', $scope.local.data);
-                    })
-                })
-            } else {
-                $scope.local.data = sessionStorage.getObject('ds.defect.new.data');
-            }
-            $scope.settings.subHeader = 'New defect'
-            sessionStorage.removeItem('ds.defect.active.data')
+            vm.defect = $rootScope.currentDefect;
+            vm.settings.subHeader = 'New defect'
         }
 
         function existingDefect() {
+            //it is a related defect
             if ($rootScope.disableedit === undefined) {
                 $rootScope.disableedit = true;
             }
             $rootScope.thiscreate = false;
-            if (!sessionStorage.getObject('ds.defect.active.data') || sessionStorage.getObject('ds.defect.active.data').id !== parseInt($stateParams.id)) {
-                $indexedDB.openStore('projects', function(store) {
-                    store.find($rootScope.projId).then(function(res) {
-                        $scope.local.data = ConvertersService.init_defect($filter('filter')(res.defects, {
-                            id: $stateParams.id
-                        })[0].completeInfo);
-                        sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
-                        $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
-                        if ($scope.local.data.drawing && $scope.local.data.drawing.pdfPath) {
-                            $scope.local.data.drawing.path = $scope.local.data.drawing.pdfPath;
-                            $scope.local.drawing = $scope.local.data.drawing;
-                            sessionStorage.setObject('ds.defect.drawing', $scope.local.data.drawing);
-                            setPdf($scope.local.data.drawing.pdfPath);
-                        } else {
-                            showEmpty()
-                        }
-                    })
-                })
+            vm.defect = ConvertersService.init_defect($rootScope.currentDefect);
+            vm.settings.subHeader = 'Defect - ' + vm.defect.title;
+
+            if (vm.defect.drawing) {
+                vm.defect.drawing.pdfPath = vm.defect.drawing.pdfPath || ($APP.server + '/pub/drawings/' + vm.defect.drawing.base64String);
+                vm.local.drawing = vm.defect.drawing;
+                setPdf(vm.defect.drawing.pdfPath);
             } else {
-                $indexedDB.openStore('projects', function(store) {
-                    store.find($rootScope.projId).then(function(res) {
-                        $scope.local.data = ConvertersService.init_defect(sessionStorage.getObject('ds.defect.active.data'));
-                        $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
-                        crtDef = $filter('filter')(res.defects, {
-                            id: $scope.local.data.id
-                        })[0];
-                        crtDef.assignee_name = $scope.local.data.assignee_name;
-                        saveChanges(res);
-                        if ($scope.local.data.drawing && $scope.local.data.drawing.pdfPath) {
-                            $scope.local.data.drawing.path = $scope.local.data.drawing.pdfPath;
-                            $scope.local.drawing = sessionStorage.getObject('ds.defect.drawing');
-                            setPdf($scope.local.data.drawing.pdfPath);
-                        } else {
-                            showEmpty()
-                        }
-                    })
-                })
+                showEmpty()
             }
         }
 
-        $scope.toggleEdit = function() {
+        vm.toggleEdit = function() {
             $rootScope.disableedit = false;
         }
-        $scope.cancelEdit = function() {
-            $indexedDB.openStore("projects", function(store) {
-                store.find($rootScope.projId).then(function(project) {
-                    var defect = $filter('filter')(project.defects, {
-                        id: sessionStorage.getObject('ds.defect.active.data').id
-                    })[0];
-                    //restore the defect before changes
-                    $scope.local.data = defect.completeInfo;
-                    $scope.local.data.severity_obj = {
-                        id: $scope.local.data.severity_id,
-                        name: $scope.local.data.severity_name
-                    }
-                    $scope.local.data.priority_obj = {
-                        id: $scope.local.data.priority_id,
-                        name: $scope.local.data.priority_name
-                    }
-                    $scope.local.data.status_obj = {
-                        id: $scope.local.data.status_id,
-                        name: $scope.local.data.status_name
-                    }
-                    sessionStorage.setObject('ds.defect.active.data', $scope.local.data);
-                    $rootScope.disableedit = true;
-                })
-            })
-        }
-
-        $scope.saveEdit = function() {
+        vm.cancelEdit = function() {
+            $rootScope.currentDefect = angular.copy($rootScope.backupDefect);
             $rootScope.disableedit = true;
-            $indexedDB.openStore("projects", function(store) {
-                store.find($rootScope.projId).then(function(project) {
-                    var defect = $filter('filter')(project.defects, {
-                        id: $scope.local.data.id
-                    })[0];
-                    var old_assignee_id = defect.completeInfo.assignee_id;
-                    defect.completeInfo = ConvertersService.save_defect($scope.local.data);
-                    defect.status_name = defect.completeInfo.status_name;
-                    defect.priority_name = defect.completeInfo.priority_name;
-                    defect.severity_name = defect.completeInfo.severity_name;
-                    defect.number_of_photos = defect.completeInfo.number_of_photos;
-                    defect.number_of_comments = defect.completeInfo.number_of_comments;
-                    defect.title = defect.completeInfo.title;
-                    defect.completeInfo.due_date = new Date(defect.completeInfo.due_date).getTime();
-                    defect.due_date = defect.completeInfo.due_date;
-                    if (typeof defect.isNew == 'undefined')
-                        defect.isModified = true;
-                    project.isModified = true;
-
-                    //assignee changes
-                    if (old_assignee_id != defect.completeInfo.assignee_id) {
-                        //remove from old assignee related list
-                        var subcontr = $filter('filter')(project.subcontractors, {
-                            id: old_assignee_id
-                        })[0]
-                        if (subcontr) {
-                            var rel = $filter('filter')(subcontr.related, {
-                                id: defect.id
-                            })[0];
-                            subcontr.related = $filter('filter')(subcontr.related, {
-                                id: ('!' + rel.id)
-                            });
-                            ConvertersService.decrease_nr_tasks(subcontr, defect.status_name);
-                        }
-                        //add to new assignee related list
-                        var newSubcontr = $filter('filter')(project.subcontractors, {
-                            id: defect.completeInfo.assignee_id
-                        })[0];
-                        if (newSubcontr) {
-                            newSubcontr.related.push(defect.completeInfo);
-                            ConvertersService.increase_nr_tasks(newSubcontr, defect.status_name);
-                        } else {
-                            var assignee = $filter('filter')(project.users, {
-                                id: defect.completeInfo.assignee_id
-                            })[0];
-                            defect.assignee_name = assignee.first_name + " " + assignee.last_name;
-                        }
-                    } else {
-                        var subcontr = $filter('filter')(project.subcontractors, {
-                            id: defect.completeInfo.assignee_id
-                        })[0];
-                        if (subcontr) {
-                            subcontr.related = $filter('filter')(subcontr.related, {
-                                id: ('!' + defect.id)
-                            });
-                            subcontr.related.push(defect.completeInfo);
-                        }
-                    }
-                    if (defect.completeInfo.drawing) {
-                        var drawForDefect = $filter('filter')(project.drawings, {
-                            id: defect.completeInfo.drawing.id
-                        })[0];
-                        if (drawForDefect) {
-                            if (drawForDefect.markers && drawForDefect.markers.length != 0) {
-                                $filter('filter')(drawForDefect.markers, {
-                                    defect_id: defect.id
-                                })[0].status = defect.completeInfo.drawing.markers[0].status;
-                            }
-                            if (drawForDefect.relatedDefects && drawForDefect.relatedDefects.length != 0) {
-                                var relDefect = $filter('filter')(drawForDefect.relatedDefects, {
-                                    id: defect.id
-                                })[0];
-                                relDefect.assignee_name = defect.assignee_name;
-                                relDefect.date = defect.date;
-                                relDefect.due_date = defect.due_date;
-                                relDefect.number_of_comments = defect.number_of_comments;
-                                relDefect.number_of_photos = defect.number_of_photos;
-                                relDefect.priority_name = defect.priority_name;
-                                relDefect.severity_name = defect.severity_name;
-                                relDefect.status_name = defect.status_name;
-                                relDefect.title = defect.title;
-                            }
-                        }
-                        sessionStorage.setObject('dsdrwact', drawForDefect);
-                    }
-                    saveChanges(project);
-                    sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
-                })
-            })
         }
-        $scope.saveCreate = function() {
-            if ($scope.local.data.title) {
-                $rootScope.disableedit = true;
-                var nextId = 0;
-                $indexedDB.openStore("projects", function(store) {
-                    store.getAll().then(function(res) {
-                        angular.forEach(res, function(proj) {
-                            angular.forEach(proj.defects, function(defect) {
-                                if (defect.id > nextId)
-                                    nextId = defect.id;
-                            })
-                        })
-                    })
-                })
-                $indexedDB.openStore("projects", function(store) {
-                    store.find($rootScope.projId).then(function(project) {
-                        var newDef = ConvertersService.save_defect($scope.local.data);
-                        newDef.id = nextId + 1;
-                        var localStorredDef = {};
-                        localStorredDef.isNew = true;
-                        localStorredDef.assignee_name = newDef.assignee_name;
-                        localStorredDef.attachements = [];
-                        localStorredDef.comments = [];
-                        localStorredDef.id = newDef.id;
-                        localStorredDef.number_of_comments = 0;
-                        localStorredDef.number_of_photos = 0;
-                        newDef.due_date = new Date(newDef.due_date).getTime();
-                        localStorredDef.due_date = newDef.due_date;
-                        localStorredDef.priority_name = newDef.priority_name;
-                        localStorredDef.severity_name = newDef.severity_name;
-                        localStorredDef.status_name = newDef.status_name;
-                        localStorredDef.title = newDef.title;
-                        localStorredDef.completeInfo = newDef;
-                        var subcontr = $filter('filter')(project.subcontractors, {
-                            id: newDef.assignee_id
-                        })[0];
-                        if (subcontr) {
-                            subcontr.related.push(newDef);
-                            ConvertersService.increase_nr_tasks(subcontr, newDef.status_name);
-                        }
-                        sessionStorage.setObject('ds.defect.active.data', ConvertersService.clear_id($scope.local.data));
-                        //drawing added for defect
-                        if ($scope.local.drawing) {
-                            var drawing = $filter('filter')(project.drawings, {
-                                id: $scope.local.drawing.id
-                            })[0];
-                            drawing.nr_of_defects++;
-                            var aux = {};
-                            if ($scope.local.drawing.markers && $scope.local.drawing.markers.length) {
-                                aux = angular.copy($scope.local.drawing.markers[0])
-                                aux.defect_id = nextId + 1;
-                                aux.drawing_id = $scope.local.drawing.id;
-                                aux.position_x = aux.xInit;
-                                aux.position_y = aux.yInit;
-                                drawing.markers.push(aux);
-                                aux.status = localStorredDef.status_name;
-                            }
 
-                            localStorredDef.draw = drawing;
-                            localStorredDef.completeInfo.drawing = ConvertersService.save_local(drawing);
-                            if ($scope.local.drawing.markers) {
-                                localStorredDef.completeInfo.drawing.markers.push(aux);
-                            }
-                            //add defect in the related defects list of the corresponding drawing
-                            var drawForDefect = $filter('filter')(project.drawings, {
-                                id: localStorredDef.draw.id
-                            })[0];
-                            if (drawForDefect) {
-                                var relDefect = {};
-                                relDefect.id = localStorredDef.id;
-                                relDefect.assignee_name = localStorredDef.assignee_name;
-                                relDefect.date = localStorredDef.date;
-                                relDefect.due_date = localStorredDef.due_date;
-                                relDefect.number_of_comments = 0;
-                                relDefect.number_of_photos = 0;
-                                relDefect.priority_name = localStorredDef.priority_name;
-                                relDefect.severity_name = localStorredDef.severity_name;
-                                relDefect.status_name = localStorredDef.status_name;
-                                relDefect.title = localStorredDef.title;
-                                drawForDefect.relatedDefects.push(relDefect);
-                            }
-                        }
-                        project.defects.push(localStorredDef);
-                        project.isModified = true;
-                        saveChanges(project);
-                        sessionStorage.removeItem('dsdrwact');
-                        $scope.back();
-                    })
-                })
+        if ($stateParams.id === "0") {
+            newDefect();
+        } else {
+            existingDefect()
+        }
+
+        vm.saveEdit = function() {
+            $rootScope.disableedit = true;
+            $rootScope.currentDefect.isModified = true;
+            //keep old assignee
+            // var old_assignee_id = vm.defect.assignee_id;
+            //set status, priority, severity fields from objects
+            // vm.defect.due_date = new Date(defect.completeInfo.due_date).getTime();
+            // defect.due_date = defect.completeInfo.due_date;
+            // if (typeof defect.isNew == 'undefined')
+            //     defect.isModified = true;
+            // project.isModified = true;
+            vm.go('tab');
+        }
+
+        vm.saveCreate = function() {
+            if (vm.defect.title) {
+                $rootScope.disableedit = true;
+                $rootScope.currentDefect.isNew = true;
+                vm.back();
+
+                // newDef.id = nextId + 1;
+                // var localStorredDef = {};
+                // localStorredDef.isNew = true;
+                // localStorredDef.assignee_name = newDef.assignee_name;
+                // localStorredDef.attachements = [];
+                // localStorredDef.comments = [];
+                // localStorredDef.id = newDef.id;
+                // localStorredDef.number_of_comments = 0;
+                // localStorredDef.number_of_photos = 0;
+                // newDef.due_date = new Date(newDef.due_date).getTime();
+                // localStorredDef.due_date = newDef.due_date;
+                // localStorredDef.priority_name = newDef.priority_name;
+                // localStorredDef.severity_name = newDef.severity_name;
+                // localStorredDef.status_name = newDef.status_name;
+                // localStorredDef.title = newDef.title;
+                // localStorredDef.completeInfo = newDef;
+
+                // sessionStorage.setObject('ds.defect.active.data', ConvertersService.clear_id(vm.defect));
+                // project.isModified = true;
+
             } else {
                 var alertPopup = $ionicPopup.show({
                     title: 'Error',
@@ -442,43 +208,7 @@ dsApp.controller('DefectsCtrl', [
             }
         }
 
-        function saveChanges(project) {
-            $indexedDB.openStore('projects', function(store) {
-                store.upsert(project).then(
-                    function(e) {
-                        store.find($rootScope.projId).then(function(project) {})
-                    },
-                    function(e) {
-                        var offlinePopup = $ionicPopup.alert({
-                            title: "Unexpected error",
-                            template: "<center>An unexpected error has occurred.</center>",
-                            content: "",
-                            buttons: [{
-                                text: 'Ok',
-                                type: 'button-positive',
-                                onTap: function(e) {
-                                    offlinePopup.close();
-                                }
-                            }]
-                        });
-                    })
-            })
-        }
-
-        if ($stateParams.id === "0") {
-            newDefect();
-        } else {
-            existingDefect()
-        }
-
-        $scope.back = function() {
-            if ($stateParams.id === '0') {
-                sessionStorage.removeItem('ds.defect.new.data');
-            } else {
-                sessionStorage.removeItem('ds.defect.active.data');
-            }
-            sessionStorage.removeItem('ds.drawing.defect')
-            sessionStorage.removeItem('ds.defect.drawing');
+        vm.back = function() {
             $rootScope.disableedit = true;
             $ionicViewSwitcher.nextDirection('back')
             if ($rootScope.routeback) {
@@ -489,7 +219,7 @@ dsApp.controller('DefectsCtrl', [
                 $state.go('app.tab')
             }
         }
-        $scope.go = function(predicate, item) {
+        vm.go = function(predicate, item) {
             $state.go('app.' + predicate, {
                 id: item
             });

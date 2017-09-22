@@ -1,12 +1,12 @@
 <ion-view hide-back-button="true" cache-view="false">
-    <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+    <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="vm.back()">
         <button class="button ion-ios-arrow-left"></button>
-        <h1 class="title">{{settings.subHeader}}</h1>
+        <h1 class="title">{{vm.settings.subHeader}}</h1>
     </ion-header-bar>
     <ion-content class="has-header ds-blackscroll ds-page ds-tabslist ds-related">
         <ion-list>
-            <ion-item ng-repeat="item in local.data.related_tasks track by $index" ng-click="goItem(item)" style="border-left-color: {{item.backgroundColor}}">
-                <span class="ds-tile" style="background-color: {{item.backgroundColor}}">{{getInitials(item.assignee_name)}}</span>
+            <ion-item ng-repeat="item in vm.defect.related_tasks track by $index" ng-click="vm.goItem(item)" style="border-left-color: {{item.backgroundColor}}">
+                <span class="ds-tile" style="background-color: {{item.backgroundColor}}">{{vm.getInitials(item.assignee_name)}}</span>
                 <h3>
                     <div>{{item.title}}</div>
                     <div class="ds-description">
@@ -19,12 +19,12 @@
                     </div>
                 </h3>
             </ion-item>
-            <div ng-if="!local.data.related_tasks.length" class="ds-nodata">
+            <div ng-if="!vm.defect.related_tasks.length" class="ds-nodata">
                 <span>No related tasks</span>
             </div>
         </ion-list>
     </ion-content>
-    <span class="ds-actionbtn" ng-click="related()">
+    <span class="ds-actionbtn" ng-click="vm.related()">
         <i class="ion-ios-plus-empty"></i>
     </span>
 </ion-view>

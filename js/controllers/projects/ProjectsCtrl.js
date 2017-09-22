@@ -35,6 +35,8 @@ dsApp.controller('ProjectsCtrl', [
         vm.go = function(item) {
             $rootScope.projId = item.id;
             $rootScope.navTitle = item.name;
+            $rootScope.customer_id = item.customer_id;
+            $rootScope.drawingsLight = getLightDrawings(item);
             $state.go('app.tab', {
                 page: 'drawings'
             });
@@ -43,6 +45,35 @@ dsApp.controller('ProjectsCtrl', [
             vm.picModal.hide();
             vm.picModal.remove();
         };
+
+        function getLightDrawings(project) {
+            var lightDrawings = [];
+            angular.forEach(project.drawings, function(draw) {
+                lightDrawings.push({
+                    'base64String': draw.base64String,
+                    'closed_out_defects': 0,
+                    'code': draw.code,
+                    'completed_defects': 0,
+                    'contested_defects': 0,
+                    'defects': null,
+                    'delayed_defects': 0,
+                    'drawing_date': draw.drawing_date,
+                    'file_name': draw.file_name,
+                    'id': draw.id,
+                    'incomplete_defects': 0,
+                    'markers': [],
+                    'nr_of_defects': 0,
+                    'partially_completed_defects': 0,
+                    'project_id': draw.project_id,
+                    'project_name': draw.project_name,
+                    'resized_path': draw.resized_path,
+                    'revision': draw.revision,
+                    'title': draw.title
+                })
+            })
+            return lightDrawings;
+        }
+
         //create new project; NOT NEEDED YET
         vm.showPopup = function() {
             $ionicPopup.show({

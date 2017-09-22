@@ -5,17 +5,17 @@ dsApp.controller('_DefectDetailsCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    '$indexedDB',
     '$ionicModal',
     'ProjectService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $ionicModal, ProjectService) { 
-        $scope.settings = {};
-        $scope.settings.subHeader = SettingsService.get_settings('subHeader');
-        $scope.settings.project = $rootScope.projId;
-        $scope.settings.state = 'details';
-        $scope.local = {};
-        $scope.local.search = '';
-        $scope.local.entityId = $stateParams.id;
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, ProjectService) {
+        var vm = this;
+        vm.settings = {};
+        vm.settings.subHeader = SettingsService.get_settings('subHeader');
+        vm.settings.project = $rootScope.projId;
+        vm.settings.state = 'details';
+        vm.local = {};
+        vm.local.search = '';
+        vm.local.entityId = $stateParams.id;
 
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;
@@ -25,67 +25,54 @@ dsApp.controller('_DefectDetailsCtrl', [
                 screen.orientation.lock('portrait')
             }, 200);
         }
+        vm.local.poplist = $rootScope.users;
+        vm.defect = $rootScope.currentDefect;
+        if ($stateParams.id === '0') {
+            vm.settings.subHeader = 'New defect'
+        } else {
+            vm.settings.subHeader = 'Defect - ' + vm.defect.title;
+        }
+
         $ionicModal.fromTemplateUrl('templates/defects/_popover.html', {
             scope: $scope
         }).then(function(modal) {
-            $scope.modal = modal;
+            vm.modal = modal;
         });
         // Triggered in the login modal to close it
-        $scope.closePopup = function() {
-            $scope.modal.hide();
+        vm.closePopup = function() {
+            vm.modal.hide();
         };
         // Open the login modal
-        $scope.assignee = function() {
-            $scope.modal.show();
+        vm.assignee = function() {
+            vm.modal.show();
         };
-        $scope.addAssignee = function(item) {
-            $scope.local.data.assignee_name = item.first_name + ' ' + item.last_name;
-            $scope.local.data.assignee_id = item.id;
-            $scope.modal.hide();
+        vm.addAssignee = function(item) {
+            vm.defect.assignee_name = item.first_name + ' ' + item.last_name;
+            vm.defect.assignee_id = item.id;
+            vm.modal.hide();
         }
 
-        $indexedDB.openStore('projects', function(store) {
-            store.find($scope.settings.project).then(function(res) {
-                $scope.local.poplist = res.users;
-            })
-        })
-
-        if ($stateParams.id === '0') {
-            $scope.settings.subHeader = 'New defect'
-            $scope.local.data = sessionStorage.getObject('ds.defect.new.data')
-        } else {
-            $scope.local.data = sessionStorage.getObject('ds.defect.active.data')
-            $scope.settings.subHeader = 'Defect - ' + $scope.local.data.title;
-        }
-        $scope.objtofields = function() {
-            $scope.local.data.status_id = $scope.local.data.status_obj.id;
-            $scope.local.data.status_name = $scope.local.data.status_obj.name;
-            $scope.local.data.priority_id = $scope.local.data.priority_obj.id;
-            $scope.local.data.priority_name = $scope.local.data.priority_obj.name;
-            $scope.local.data.severity_id = $scope.local.data.severity_obj.id;
-            $scope.local.data.severity_name = $scope.local.data.severity_obj.name;
-            if ($scope.local.data.drawing && $scope.local.data.drawing.markers && $scope.local.data.drawing.markers.length) {
-                $scope.local.data.drawing.markers[0].status = $scope.local.data.status_obj.name;
+        vm.objtofields = function() {
+            vm.defect.status_id = vm.defect.status_obj.id;
+            vm.defect.status_name = vm.defect.status_obj.name;
+            vm.defect.priority_id = vm.defect.priority_obj.id;
+            vm.defect.priority_name = vm.defect.priority_obj.name;
+            vm.defect.severity_id = vm.defect.severity_obj.id;
+            vm.defect.severity_name = vm.defect.severity_obj.name;
+            if (vm.defect.drawing && vm.defect.drawing.markers && vm.defect.drawing.markers.length) {
+                vm.defect.drawing.markers[0].status = vm.defect.status_obj.name;
             }
         }
 
-        $scope.back = function() {
-            $scope.objtofields();
-            if ($stateParams.id === '0') {
-                sessionStorage.setObject('ds.defect.new.data', $scope.local.data)
-            } else {
-                if (!$rootScope.disableedit) {
-                    sessionStorage.setObject('ds.defect.active.data', $scope.local.data)
-                }
-            }
+        vm.back = function() {
+            vm.objtofields();
             $state.go('app.defects', {
                 id: $stateParams.id
             })
         }
 
-        $scope.$watch('local.data.status_obj', function(value) {
-
-            var drawing = sessionStorage.getObject('ds.defect.drawing')
+        $scope.$watch('defect.status_obj', function(value) {
+            var drawing = $rootScope.currentDefect.drawing;
             if (drawing && drawing.markers && drawing.markers.length) {
                 var img = '';
                 switch (value.name) {
@@ -110,9 +97,7 @@ dsApp.controller('_DefectDetailsCtrl', [
                 }
                 drawing.markers[0].status = value.name;
                 drawing.markers[0].img = img;
-                sessionStorage.setObject('ds.defect.drawing', drawing)
             }
         })
-
     }
 ]);

@@ -1,12 +1,12 @@
 <ion-view hide-back-button="true" cache-view="false">
-    <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+    <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="vm.back()">
         <button class="button ion-ios-arrow-left"></button>
-        <h1 class="title">{{settings.subHeader}}</h1>
+        <h1 class="title">{{vm.settings.subHeader}}</h1>
     </ion-header-bar>
     <ion-content class="has-header ds-blackscroll ds-page ds-subcontractors">
-        <div class="title">{{local.data.user_name}}<img src="img/use/edit.png" ng-click="toggleEdit()"  ng-if="disableedit"/></div>
+        <div class="title">{{vm.local.data.user_name}}<img src="img/use/edit.png" ng-click="vm.toggleEdit()"  ng-if="disableedit"/></div>
         <div class="title">
-            <i class="ion-android-globe"></i>{{local.data.company}}</div>
+            <i class="ion-android-globe"></i>{{vm.local.data.company}}</div>
         <ion-item class="ds-grh-cont active">
             <div class="ds-grh">
                 <h3>Drawing details<i class="ion ion-ios-arrow-down"></i>
@@ -17,45 +17,45 @@
                     <div class="ds-content">
                         <span class="ds-title">Last name</span>
                     </div>
-                    <input ng-model="local.data.last_name" ng-disabled="disableedit">
+                    <input ng-model="vm.local.data.last_name" ng-disabled="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">First name</span>
                     </div>
-                    <input ng-model="local.data.first_name" ng-disabled="disableedit">
+                    <input ng-model="vm.local.data.first_name" ng-disabled="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Phone number</span>
                     </div>
-                    <input type="tel" ng-model="local.data.phone_number" ng-disabled="disableedit">
+                    <input type="tel" ng-model="vm.local.data.phone_number" ng-disabled="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Registration number</span>
                     </div>
-                    <input ng-model="local.data.registration_number" ng-disabled="disableedit">
+                    <input ng-model="vm.local.data.registration_number" ng-disabled="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Address</span>
                     </div>
-                    <input ng-model="local.data.address" ng-disabled="disableedit">
+                    <input ng-model="vm.local.data.address" ng-disabled="disableedit">
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Country</span>
                     </div>
-                    <input ng-model="local.data.country" ng-disabled="disableedit">
+                    <input ng-model="vm.local.data.country" ng-disabled="disableedit">
                 </label>
             </div>
         </ion-item>
-        <ion-item class="ds-grh" ng-click="go('subcontractorrelated', local.entityId)">
+        <ion-item class="ds-grh" ng-click="vm.go('subcontractorrelated', local.entityId)">
             <h3>Tasks<i class="ion ion-ios-folder-outline"></i>
             </h3>
         </ion-item>
-        <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="saveEdit()">Save changes</div>
-        <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="cancelEdit()">Cancel</div>
+        <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="vm.saveEdit()">Save changes</div>
+        <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="vm.cancelEdit()">Cancel</div>
     </ion-content>
 </ion-view>
