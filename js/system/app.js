@@ -31,20 +31,20 @@ var dsApp = angular.module($APP.name, [
 ]).run(function($rootScope) {}).config([
     '$stateProvider',
     '$urlRouterProvider',
-    '$indexedDBProvider',
-    function($stateProvider, $urlRouterProvider, $indexedDBProvider) {
+    // '$indexedDBProvider',
+    function($stateProvider, $urlRouterProvider) { //$indexedDBProvider
         //        angular.extend(CacheFactoryProvider.defaults, {maxAge: 15 * 60 * 1000});
-        $indexedDBProvider
-            .connection('DefectsAndSnagging')
-            .upgradeDatabase(1, function(event, db, tx) {
-                var objStore = db.createObjectStore('projects', {
-                    keyPath: 'id',
-                    autoIncrement: true
-                });
-                objStore.createIndex('id_idx', 'id', {
-                    unique: true
-                });
-            });
+        // $indexedDBProvider
+        //     .connection('DefectsAndSnagging')
+        //     .upgradeDatabase(1, function(event, db, tx) {
+        //         var objStore = db.createObjectStore('projects', {
+        //             keyPath: 'id',
+        //             autoIncrement: true
+        //         });
+        //         objStore.createIndex('id_idx', 'id', {
+        //             unique: true
+        //         });
+        //     });
 
         $stateProvider
             .state('app', {

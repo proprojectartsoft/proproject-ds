@@ -54,13 +54,13 @@ dsApp.controller('DefectsCtrl', [
                         page.render(renderContext).then(function() {
                             var width = $("#defectPreviewCanvas").width();
                             vm.perc = width / 12;
-                            if (vm.local.drawing && vm.local.drawing.markers && vm.local.drawing.markers.length) {
-                                vm.$apply(function() {
+                            if (vm.defect.drawing && vm.defect.drawing.markers && vm.defect.drawing.markers.length) {
+                                $scope.$apply(function() {
                                     vm.local.marker = {};
-                                    vm.local.marker.id = vm.local.drawing.markers[0].id;
-                                    vm.local.marker.x = vm.local.drawing.markers[0].position_x * (vm.perc / 100) - 6;
-                                    vm.local.marker.y = vm.local.drawing.markers[0].position_y * (vm.perc / 100) - 6;
-                                    vm.local.marker.status = vm.local.drawing.markers[0].status;
+                                    vm.local.marker.id = vm.defect.drawing.markers[0].id;
+                                    vm.local.marker.x = vm.defect.drawing.markers[0].position_x * (vm.perc / 100) - 6;
+                                    vm.local.marker.y = vm.defect.drawing.markers[0].position_y * (vm.perc / 100) - 6;
+                                    vm.local.marker.status = vm.defect.drawing.markers[0].status;
                                 })
                             }
                         })
@@ -98,9 +98,9 @@ dsApp.controller('DefectsCtrl', [
         };
 
         vm.selectDrawing = function(data) {
-            vm.local.drawing = data;
-            sessionStorage.setObject('ds.defect.drawing', data);
-            vm.go('fullscreen', vm.local.drawing.id);
+            $rootScope.currentDraw = data;
+            vm.defect.drawing = $rootScope.currentDraw;
+            vm.go('fullscreen', vm.defect.drawing.id);
             vm.modal.hide();
         }
 
@@ -108,19 +108,19 @@ dsApp.controller('DefectsCtrl', [
             if ($stateParams.id !== "0") {
                 vm.go('fullscreen', vm.defect.drawing.id);
             } else {
-                vm.go('fullscreen', vm.local.drawing.id);
+                vm.go('fullscreen', vm.defect.drawing.id);
             }
         }
 
         function newDefect() {
             $rootScope.disableedit = false;
             $rootScope.thiscreate = true;
-            if (vm.local.drawing && vm.local.drawing.pdfPath) {
-                setPdf(vm.local.drawing.pdfPath)
+            vm.defect = $rootScope.currentDefect;
+            if (vm.defect && vm.defect.drawing) {
+                setPdf(vm.defect.drawing.pdfPath || ($APP.server + '/pub/drawings/' + vm.defect.drawing.base64String))
             } else {
                 addDrawing()
             }
-            vm.defect = $rootScope.currentDefect;
             vm.settings.subHeader = 'New defect'
         }
 
@@ -135,7 +135,6 @@ dsApp.controller('DefectsCtrl', [
 
             if (vm.defect.drawing) {
                 vm.defect.drawing.pdfPath = vm.defect.drawing.pdfPath || ($APP.server + '/pub/drawings/' + vm.defect.drawing.base64String);
-                vm.local.drawing = vm.defect.drawing;
                 setPdf(vm.defect.drawing.pdfPath);
             } else {
                 showEmpty()
@@ -159,14 +158,7 @@ dsApp.controller('DefectsCtrl', [
         vm.saveEdit = function() {
             $rootScope.disableedit = true;
             $rootScope.currentDefect.isModified = true;
-            //keep old assignee
-            // var old_assignee_id = vm.defect.assignee_id;
-            //set status, priority, severity fields from objects
-            // vm.defect.due_date = new Date(defect.completeInfo.due_date).getTime();
-            // defect.due_date = defect.completeInfo.due_date;
-            // if (typeof defect.isNew == 'undefined')
-            //     defect.isModified = true;
-            // project.isModified = true;
+            $rootScope.currentDefect.modified = true;
             vm.go('tab');
         }
 
@@ -174,28 +166,8 @@ dsApp.controller('DefectsCtrl', [
             if (vm.defect.title) {
                 $rootScope.disableedit = true;
                 $rootScope.currentDefect.isNew = true;
+                $rootScope.currentDefect.new = true;
                 vm.back();
-
-                // newDef.id = nextId + 1;
-                // var localStorredDef = {};
-                // localStorredDef.isNew = true;
-                // localStorredDef.assignee_name = newDef.assignee_name;
-                // localStorredDef.attachements = [];
-                // localStorredDef.comments = [];
-                // localStorredDef.id = newDef.id;
-                // localStorredDef.number_of_comments = 0;
-                // localStorredDef.number_of_photos = 0;
-                // newDef.due_date = new Date(newDef.due_date).getTime();
-                // localStorredDef.due_date = newDef.due_date;
-                // localStorredDef.priority_name = newDef.priority_name;
-                // localStorredDef.severity_name = newDef.severity_name;
-                // localStorredDef.status_name = newDef.status_name;
-                // localStorredDef.title = newDef.title;
-                // localStorredDef.completeInfo = newDef;
-
-                // sessionStorage.setObject('ds.defect.active.data', ConvertersService.clear_id(vm.defect));
-                // project.isModified = true;
-
             } else {
                 var alertPopup = $ionicPopup.show({
                     title: 'Error',

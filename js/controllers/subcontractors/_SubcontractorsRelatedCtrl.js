@@ -78,7 +78,8 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
         vm.addRelated = function(related) {
             vm.modal.hide();
             $rootScope.currentSubcontr.isModified = true;
-            $rootScope.currentSubcontr.nr_of_defects++; //TODO:
+            $rootScope.currentSubcontr.modified = true;
+            $rootScope.currentSubcontr.nr_of_defects++; 
             related.assignee_id = vm.subcontractor.id;
             related.assignee_name = vm.subcontractor.first_name + " " + vm.subcontractor.last_name;
             ColorService.get_colors().then(function(colorList) {

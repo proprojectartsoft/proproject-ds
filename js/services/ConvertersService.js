@@ -10,7 +10,9 @@ function ConvertersService($http, $rootScope, $filter) {
         increase_nr_tasks: increase_nr_tasks,
         decrease_nr_tasks: decrease_nr_tasks,
         clear_id: clear_id,
-        getEmptyDefect: getEmptyDefect
+        getEmptyDefect: getEmptyDefect,
+        add_task_for_subcontractor: add_task_for_subcontractor,
+        remove_task_for_subcontractor: remove_task_for_subcontractor
     }
     return service;
 
@@ -116,6 +118,41 @@ function ConvertersService($http, $rootScope, $filter) {
         }
     }
 
+    function add_task_for_subcontractor(task, subcontractors) {
+        if (task.assignee_id) {
+            //search the new assignee having the id 'assignee_id' through the subcontractors list
+            var subcontr = $filter('filter')(subcontractors, {
+                id: task.assignee_id
+            })[0];
+            //if the new assignee is a subcontractor, add the task to his tasks list
+            if (subcontr) {
+                increase_nr_tasks(subcontr, task.status_name);
+                //keep all tasks except for the new task given by id, if it is already in that list
+                subcontr.tasks = $filter('filter')(subcontr.tasks, {
+                    id: ('!' + task.id)
+                }) || [];
+                //add the new task
+                subcontr.tasks.push(task);
+            }
+        }
+    }
+
+    function remove_task_for_subcontractor(task, subcontractors, assignee_id) {
+        //search the old assignee having the id 'assignee_id' through the subcontractors list
+        var subcontr = $filter('filter')(subcontractors, {
+            id: assignee_id
+        })[0];
+        //if the old assignee is a subcontractor, remove the task from his tasks list
+        if (subcontr) {
+            // remove from old assignee related list
+            subcontr.tasks = $filter('filter')(subcontr.related, {
+                id: ('!' + task.id)
+            });
+            //derease the number of tasks corresponding to task's status
+            decrease_nr_tasks(subcontr, task.status_name);
+        }
+    }
+
     function clear_id(defect) {
         var def = angular.copy(defect);
         def.id = 0;
@@ -130,6 +167,9 @@ function ConvertersService($http, $rootScope, $filter) {
         defect.defect_id = 0;
         defect.related_tasks = [];
         defect.due_date = 0;
+        defect.drawing = null;
+        defect.photos = [];
+        defect.comments = [];
         defect.status_obj = {
             id: 0,
             name: 'Incomplete'

@@ -5,18 +5,18 @@ dsApp.controller('FullscreenCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    '$indexedDB',
     '$filter',
     'DrawingsService',
     '$ionicScrollDelegate',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DrawingsService, $ionicScrollDelegate) { //   $scope.settings = {tabs:$rootScope.settings.tabs,tabActive:$rootScope.settings.tabActive};
+    'ConvertersService',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DrawingsService, $ionicScrollDelegate, ConvertersService) {
         $scope.settings = {};
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = $rootScope.currentTab;
         $scope.local = {};
         $scope.local.markers = [];
         $scope.disableZoomOut = true;
-        $scope.addingMarker
+        $scope.addingMarker = false;
 
         var index = 0;
         $scope.width = $("#canvasCointainer").width();
@@ -46,6 +46,11 @@ dsApp.controller('FullscreenCtrl', [
             value: 2400
         }];
 
+        //rotate screen
+        screen.orientation.addEventListener('change', function() {});
+        screen.orientation.unlock();
+        var perc = $scope.width / 12;
+
         var renderPoints = function(index, pinched) {
             $timeout(function() {
                 $scope.$apply(function() {
@@ -65,111 +70,7 @@ dsApp.controller('FullscreenCtrl', [
                 })
             })
         };
-        $scope.zoomIn = function() {
-            if (index === 4) {
-                index++;
-                $scope.disableZoomIn = true;
-                $scope.disableZoomOut = false;
-            } else {
-                index++;
-                $scope.disableZoomIn = false;
-                $scope.disableZoomOut = false;
-            }
-            $scope.index = $scope.widthMap[index].value;
-            renderPoints(index, false);
-        };
-        $scope.zoomOut = function() {
-            if (index === 1 && !$scope.disableZoomOut) {
-                index--;
-                $scope.disableZoomOut = true;
-                $scope.disableZoomIn = false;
-            } else {
-                index--;
-                $scope.disableZoomOut = false;
-                $scope.disableZoomIn = false;
-            }
-            $scope.index = $scope.widthMap[index].value;
-            renderPoints(index, false);
-        };
 
-        //zoom in on pinch gesture
-        function pinchOut() {
-            var zoom = $scope.widthMap[index].zoom;
-            //zoom in if less than max allowed value
-            if ($scope.index < $scope.widthMap[5].value) {
-                $scope.index += 30;
-                //set the correct index for points to be rendered
-                zoom += 2.5;
-                //keep consistency between zoom on pinch and on button click
-                for (var i = 0; i < $scope.widthMap.length - 1; i++) {
-                    if ($scope.index >= $scope.widthMap[i].value) {
-                        index = i;
-                    }
-                }
-            }
-            renderPoints(zoom, true);
-        }
-        //zoom out on pinch gesture
-        function pinchIn() {
-            var zoom = $scope.widthMap[index].zoom;
-            //zoom out if more than min allowed value
-            if ($scope.index > $scope.widthMap[0].value) {
-                $scope.index -= 30;
-                //set the correct index for points to be rendered
-                zoom -= 2.5;
-                //keep consistency between zoom on pinch and on button click
-                for (var i = $scope.widthMap.length - 1; i >= 0; i--) {
-                    if ($scope.index <= $scope.widthMap[i].value) {
-                        index = i;
-                    }
-                }
-            }
-            renderPoints(zoom, true);
-        }
-        //pinch event handling
-        $scope.reportEvent = function(event) {
-            switch (event.type) {
-                case 'pinchin':
-                    pinchIn();
-                    break;
-                case 'pinchout':
-                    pinchOut();
-                    break;
-                default:
-            }
-        }
-
-        //rotate screen
-        screen.orientation.addEventListener('change', function() {});
-        screen.orientation.unlock();
-
-        $scope.triggerMarker = function() {
-            $scope.addingMarker = !$scope.addingMarker;
-        }
-
-        function generateDefectImg(newstatus) {
-            switch (newstatus) {
-                case 'Incomplete':
-                    img = 'img/incomplete.png'
-                    break;
-                case 'Completed':
-                    img = 'img/completed.png'
-                    break;
-                case 'Contested':
-                    img = 'img/contested.png'
-                    break;
-                case 'Delayed':
-                    img = 'img/delayed.png'
-                    break;
-                case 'Closed Out':
-                    img = 'img/closed_out.png'
-                    break;
-                case 'Partially Completed':
-                    img = 'img/partially_completed.png'
-                    break;
-            }
-        }
-        var perc = $scope.width / 12;
         var setPdf = function(url) {
             $timeout(function() {
                 PDFJS.getDocument(url).then(function(pdf) {
@@ -187,9 +88,9 @@ dsApp.controller('FullscreenCtrl', [
                                 $scope.addingMarker = false;
                                 var newstatus = 'Incomplete';
                                 var img = 'img/incomplete.png';
-                                if (sessionStorage.getObject('ds.defect.new.data')) {
-                                    newstatus = sessionStorage.getObject('ds.defect.new.data').status_obj.name
-                                    generateDefectImg(newstatus);
+                                if ($rootScope.currentDraw) { //TODO:sessionStorage.getObject('ds.defect.new.data')
+                                    // newstatus = $rootScope.currentDraw.status_obj.name
+                                    generateDefectImg('Incomplete');
                                 }
                                 if (index !== 2) {
                                     var x = (Math.floor(event.offsetX) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
@@ -207,14 +108,23 @@ dsApp.controller('FullscreenCtrl', [
                                     if ($scope.local.singleMarker) {
                                         $scope.local.markers = [];
                                         $scope.local.markers.push(newMarker);
+                                        //set the current drawing as drawing for the new defect
+                                        $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
+                                        //keep only the marker of the new defect
+                                        $rootScope.currentDefect.drawing.markers = [newMarker];
+                                        $rootScope.currentDraw.defects = $rootScope.currentDraw.defects || [];
+                                        $rootScope.currentDraw.defects.push($rootScope.currentDefect);
+                                        ($rootScope.currentDraw.markers || []).push(newMarker);
                                     } else {
-                                        var aux = {
-                                            id: $scope.local.data.id,
-                                            path: $scope.local.data.pdfPath,
-                                            base64String: $scope.local.data.base64String,
-                                            markers: [newMarker]
-                                        }
-                                        sessionStorage.setObject('ds.drawing.defect', aux)
+                                        //add new defect for the current drawing
+                                        $rootScope.currentDefect = ConvertersService.getEmptyDefect();
+                                        //set the current drawing as drawing for the new defect
+                                        $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
+                                        //keep only the marker of the new defect
+                                        $rootScope.currentDefect.drawing.markers = [newMarker];
+                                        $rootScope.currentDraw.defects = $rootScope.currentDraw.defects || [];
+                                        $rootScope.currentDraw.defects.push($rootScope.currentDefect);
+                                        ($rootScope.currentDraw.markers || []).push(newMarker);
                                         $state.go('app.defects', {
                                             id: 0
                                         })
@@ -237,13 +147,15 @@ dsApp.controller('FullscreenCtrl', [
                                         $scope.local.markers = [];
                                         $scope.local.markers.push(newMarker);
                                     } else {
-                                        var aux = {
-                                            id: $scope.local.data.id,
-                                            path: $scope.local.data.pdfPath,
-                                            base64String: $scope.local.data.base64String,
-                                            markers: [newMarker]
-                                        }
-                                        sessionStorage.setObject('ds.drawing.defect', aux)
+                                        //add new defect for the current drawing
+                                        $rootScope.currentDefect = ConvertersService.getEmptyDefect();
+                                        //set the current drawing as drawing for the new defect
+                                        $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
+                                        //keep only the marker of the new defect
+                                        $rootScope.currentDefect.drawing.markers = [newMarker];
+                                        $rootScope.currentDraw.defects = $rootScope.currentDraw.defects || [];
+                                        $rootScope.currentDraw.defects.push($rootScope.currentDefect);
+                                        ($rootScope.currentDraw.markers || []).push(newMarker);
                                         $state.go('app.defects', {
                                             id: 0
                                         })
@@ -307,41 +219,125 @@ dsApp.controller('FullscreenCtrl', [
                 });
             });
         }
-        if (sessionStorage.getObject('ds.fullscreen.back').state === 'app.defects' && sessionStorage.getObject('ds.defect.drawing')) {
-            $scope.local.data = sessionStorage.getObject('ds.defect.drawing')
+
+        $scope.local.data = $rootScope.currentDraw;
+        setPdf($scope.local.data.path || ($APP.server + '/pub/drawings/' + $scope.local.data.base64String));
+        if (sessionStorage.getObject('ds.fullscreen.back').state === 'app.defects' && $rootScope.currentDraw) {
+            //fullscreen for drawing of a defect fron defects tab
             $scope.local.singleMarker = true;
             if ($scope.local.data.markers && $scope.local.data.markers.length && $scope.local.data.markers[0].id) {
                 $scope.local.disableAddMarker = true;
             }
-            setPdf($scope.local.data.path || ($APP.server + '/pub/drawings/' + $rootScope.currentDraw.base64String));
         } else {
+            //fullscreen for a drawing from drawings tab
             $scope.local.singleMarker = false;
-            if (!sessionStorage.getObject('dsdrwact') || sessionStorage.getObject('dsdrwact').id !== parseInt($stateParams.id)) {
-                $indexedDB.openStore('projects', function(store) {
-                    store.find($rootScope.projId).then(function(res) {
-                        var drawing = $filter('filter')(res.drawings, {
-                            id: $stateParams.id
-                        })[0];
-                        sessionStorage.setObject('dsdrwact', drawing)
-                        $scope.local.data = drawing;
-                        $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                        setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentDraw.base64String))
-                    })
-                })
+            $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
+        }
+
+        $scope.zoomIn = function() {
+            if (index === 4) {
+                index++;
+                $scope.disableZoomIn = true;
+                $scope.disableZoomOut = false;
             } else {
-                $scope.local.data = sessionStorage.getObject('dsdrwact');
-                $scope.settings.subHeader = 'Drawing - ' + $scope.local.data.title;
-                setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $rootScope.currentDraw.base64String))
+                index++;
+                $scope.disableZoomIn = false;
+                $scope.disableZoomOut = false;
+            }
+            $scope.index = $scope.widthMap[index].value;
+            renderPoints(index, false);
+        };
+
+        $scope.zoomOut = function() {
+            if (index === 1 && !$scope.disableZoomOut) {
+                index--;
+                $scope.disableZoomOut = true;
+                $scope.disableZoomIn = false;
+            } else {
+                index--;
+                $scope.disableZoomOut = false;
+                $scope.disableZoomIn = false;
+            }
+            $scope.index = $scope.widthMap[index].value;
+            renderPoints(index, false);
+        };
+
+        //zoom in on pinch gesture
+        function pinchOut() {
+            var zoom = $scope.widthMap[index].zoom;
+            //zoom in if less than max allowed value
+            if ($scope.index < $scope.widthMap[5].value) {
+                $scope.index += 30;
+                //set the correct index for points to be rendered
+                zoom += 2.5;
+                //keep consistency between zoom on pinch and on button click
+                for (var i = 0; i < $scope.widthMap.length - 1; i++) {
+                    if ($scope.index >= $scope.widthMap[i].value) {
+                        index = i;
+                    }
+                }
+            }
+            renderPoints(zoom, true);
+        }
+        //zoom out on pinch gesture
+        function pinchIn() {
+            var zoom = $scope.widthMap[index].zoom;
+            //zoom out if more than min allowed value
+            if ($scope.index > $scope.widthMap[0].value) {
+                $scope.index -= 30;
+                //set the correct index for points to be rendered
+                zoom -= 2.5;
+                //keep consistency between zoom on pinch and on button click
+                for (var i = $scope.widthMap.length - 1; i >= 0; i--) {
+                    if ($scope.index <= $scope.widthMap[i].value) {
+                        index = i;
+                    }
+                }
+            }
+            renderPoints(zoom, true);
+        }
+        //pinch event handling
+        $scope.reportEvent = function(event) {
+            switch (event.type) {
+                case 'pinchin':
+                    pinchIn();
+                    break;
+                case 'pinchout':
+                    pinchOut();
+                    break;
+                default:
+            }
+        }
+
+        $scope.triggerMarker = function() {
+            $scope.addingMarker = !$scope.addingMarker;
+        }
+
+        function generateDefectImg(newstatus) {
+            switch (newstatus) {
+                case 'Incomplete':
+                    img = 'img/incomplete.png'
+                    break;
+                case 'Completed':
+                    img = 'img/completed.png'
+                    break;
+                case 'Contested':
+                    img = 'img/contested.png'
+                    break;
+                case 'Delayed':
+                    img = 'img/delayed.png'
+                    break;
+                case 'Closed Out':
+                    img = 'img/closed_out.png'
+                    break;
+                case 'Partially Completed':
+                    img = 'img/partially_completed.png'
+                    break;
             }
         }
 
         $scope.back = function() {
             var routeback = sessionStorage.getObject('ds.fullscreen.back')
-            var aux = sessionStorage.getObject('ds.defect.drawing')
-            if (aux) {
-                aux.markers = $scope.local.markers
-                sessionStorage.setObject('ds.defect.drawing', aux);
-            }
             if (routeback) {
                 $state.go(routeback.state, {
                     id: routeback.id

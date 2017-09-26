@@ -34,11 +34,9 @@ dsApp.controller('SubcontractorsCtrl', [
         vm.saveEdit = function() {
             $rootScope.disableedit = true;
             $rootScope.currentSubcontr.isModified = true;
+            $rootScope.currentSubcontr.modified = true;
             //go to main page and save the changes there
             vm.go('tab');
-
-            // subcontr.isModified = true;
-            // project.isModified = true;
         }
 
         vm.go = function(predicate, item) {

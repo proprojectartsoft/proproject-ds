@@ -37,6 +37,7 @@ dsApp.controller('_DefectCommentsCtrl', [
                 };
                 //TODO: do sth with the status
                 if (typeof $scope.defect.isNew == 'undefined') {
+                    $scope.defect.modified = true;
                     $scope.defect.isModified = true;
                     request.isNew = true;
                 }

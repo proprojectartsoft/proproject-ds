@@ -10,7 +10,8 @@ dsApp.service('SyncService', [
     'DownloadsService',
     'AuthService',
     'SettingsService',
-    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, ProjectService, DownloadsService, AuthService, SettingsService) {
+    '$ionicPopup',
+    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, ProjectService, DownloadsService, AuthService, SettingsService, $ionicPopup) {
 
         var service = this,
             worker = false;
@@ -209,7 +210,20 @@ dsApp.service('SyncService', [
                         DownloadsService.createDirectory("ds-downloads").then(function(path) {
                             if (path == 'fail') {
                                 def.resolve(projects);
-                                SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again");
+                                var popup = $ionicPopup.alert({
+                                    title: "Error",
+                                    template: "Could not create directory to download the files. Please try again",
+                                    content: "",
+                                    buttons: [{
+                                        text: 'Ok',
+                                        type: 'button-positive',
+                                        onTap: function(e) {
+                                            popup.close();
+                                            location.reload();
+                                        }
+                                    }]
+                                });
+                                // SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again");
                             } else {
                                 angular.forEach(projects, function(proj) {
                                     //order drawings by date
@@ -220,7 +234,20 @@ dsApp.service('SyncService', [
                                             if (downloadRes == "") {
                                                 //not enpugh space to download all pdfs; stop download
                                                 def.resolve(projects);
-                                                SettingsService.show_message_popup("Download stopped", "<center>Not enough space to download all files</center>");
+                                                var popup = $ionicPopup.alert({
+                                                    title: "Download stopped",
+                                                    template: "<center>Not enough space to download all files</center>",
+                                                    content: "",
+                                                    buttons: [{
+                                                        text: 'Ok',
+                                                        type: 'button-positive',
+                                                        onTap: function(e) {
+                                                            popup.close();
+                                                            location.reload();
+                                                        }
+                                                    }]
+                                                });
+                                                // SettingsService.show_message_popup("Download stopped", "<center>Not enough space to download all files</center>");
                                             } else {
                                                 draw.pdfPath = downloadRes;
                                                 //all pdfs have been downloaded
@@ -243,9 +270,18 @@ dsApp.service('SyncService', [
         };
 
         service.syncData = function() {
+            var def = $q.defer();
             var commentsToAdd = [],
                 defectsToAdd = [],
                 defectsToUpdate = [];
+
+            service.getProjects.then(function(projects) {
+              if (projects.length != 0) {
+                  syncProject(projects, 0, def);
+              } else {
+                  def.resolve();
+              }
+            })
 
             function storeNewDefects(project) {
                 angular.forEach(project.defects, function(defect) {
@@ -448,19 +484,7 @@ dsApp.service('SyncService', [
                 })
             }
 
-            function syncData() {
-                var def = $q.defer();
-                $indexedDB.openStore('projects', function(store) {
-                    store.getAll().then(function(projects) {
-                        if (projects.length != 0) {
-                            syncProject(projects, 0, def);
-                        } else {
-                            def.resolve();
-                        }
-                    })
-                })
-                return def.promise;
-            }
+            return def.promise;
         }
     }
 ]);

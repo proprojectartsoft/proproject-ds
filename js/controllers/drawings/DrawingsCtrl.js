@@ -87,10 +87,7 @@ dsApp.controller('DrawingsCtrl', [
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
             $rootScope.currentDraw.drawing_date = new Date($rootScope.currentDraw.drawing_date).getTime(); //TODO: check if needed
-            // TODO:
-            // proj.isModified = true;
-            // draw.isModified = true;
-            // in tabCtrl when return from here
+            $rootScope.currentDraw.isModified = true;
             $state.go('app.tab')
         }
 

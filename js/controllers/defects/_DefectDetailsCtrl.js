@@ -71,7 +71,7 @@ dsApp.controller('_DefectDetailsCtrl', [
             })
         }
 
-        $scope.$watch('defect.status_obj', function(value) {
+        $scope.$watch('vm.defect.status_obj', function(value) {
             var drawing = $rootScope.currentDefect.drawing;
             if (drawing && drawing.markers && drawing.markers.length) {
                 var img = '';
