@@ -232,7 +232,7 @@ dsApp.service('SyncService', [
                                             } else {
                                                 draw.pdfPath = downloadRes;
                                                 //all pdfs have been downloaded
-                                                if (drawings[drawings.length - 1] === draw)
+                                                if (orderedDraws[orderedDraws.length - 1] === draw)
                                                     def.resolve(projects);
                                             }
                                         })
