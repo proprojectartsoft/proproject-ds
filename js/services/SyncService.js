@@ -201,7 +201,6 @@ dsApp.service('SyncService', [
                                         }
                                     }]
                                 });
-                                SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again");
                             } else {
                                 angular.forEach(projects, function(proj) {
                                     if (!proj.value.drawings || proj.value.drawings && !proj.value.drawings.length) {
@@ -228,7 +227,6 @@ dsApp.service('SyncService', [
                                                         }
                                                     }]
                                                 });
-                                                SettingsService.show_message_popup("Download stopped", "<center>Not enough space to download all files</center>");
                                             } else {
                                                 draw.pdfPath = downloadRes;
                                                 //all pdfs have been downloaded
@@ -414,7 +412,7 @@ dsApp.service('SyncService', [
             function syncDefects() {
                 var defer = $q.defer();
                 if (defectsToAdd == null || defectsToAdd.length == 0) {
-                    sessionStorage.setObject('changedDefects', []); //TODO:
+                    sessionStorage.setObject('changedDefects', []); //TODO: remove session storage
                     defer.resolve();
                     return defer.promise;
                 }
@@ -422,9 +420,8 @@ dsApp.service('SyncService', [
                 return defer.promise;
             }
 
-            function updateDrawings() { //TODO:
+            function updateDrawings() {
                 angular.forEach(drawingsToUpd, function(draw) {
-                    console.log(draw);
                     DrawingsService.update(draw).then(function(result) {}, function(err) {})
                 })
             }

@@ -11,7 +11,7 @@ dsApp.factory('ProjectService', [
                 );
             },
 
-            sync_projects: function() { //TODO:
+            sync_projects: function() { 
                 return $http.get($APP.server + '/api/sync/ds', {}).success(
                     function(payload) {
                         return payload.data;

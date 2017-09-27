@@ -5,8 +5,7 @@ dsApp.controller('LoginCtrl', [
     '$ionicPopup',
     'AuthService',
     'SyncService',
-    'SettingsService',
-    function($rootScope, $scope, $state, $ionicPopup, AuthService, SyncService, SettingsService) {
+    function($rootScope, $scope, $state, $ionicPopup, AuthService, SyncService) {
         $scope.user = {};
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
@@ -44,7 +43,19 @@ dsApp.controller('LoginCtrl', [
                                 name: $scope.user.username
                             });
                             loginPopup.close();
-                            SettingsService.show_message_popup("You are offline", "<center>You can sync your data when online</center>");
+                            var popup = $ionicPopup.alert({
+                                title: "You are offline",
+                                template: "<center>You can sync your data when online</center>",
+                                content: "",
+                                buttons: [{
+                                    text: 'Ok',
+                                    type: 'button-positive',
+                                    onTap: function(e) {
+                                        popup.close();
+                                        location.reload();
+                                    }
+                                }]
+                            });
                             $state.go('app.projects');
                         })
                     });

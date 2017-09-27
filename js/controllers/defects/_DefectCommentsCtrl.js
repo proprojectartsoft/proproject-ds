@@ -35,13 +35,11 @@ dsApp.controller('_DefectCommentsCtrl', [
                     "defect_id": $stateParams.id,
                     "date": Date.now()
                 };
-                //TODO: do sth with the status
                 if (typeof $scope.defect.isNew == 'undefined') {
                     $scope.defect.modified = true;
                     $scope.defect.isModified = true;
                     request.isNew = true;
                 }
-                // project.isModified = true;
                 $scope.defect.comments.push(request);
                 $scope.local.comment = '';
                 $scope.local.list = $scope.defect.comments;

@@ -62,6 +62,22 @@ dsApp.controller('NavCtrl', [
             }
         }
         $scope.sync = function() {
+            if (!navigator.onLine) {
+                var popup = $ionicPopup.alert({
+                    title: "You are offline",
+                    template: "<center>You can sync your data when online</center>",
+                    content: "",
+                    buttons: [{
+                        text: 'Ok',
+                        type: 'button-positive',
+                        onTap: function(e) {
+                            popup.close();
+                            location.reload();
+                        }
+                    }]
+                });
+                return;
+            }
             var syncPopup = $ionicPopup.show({
                 title: "Sync",
                 template: "<center><ion-spinner icon='android'></ion-spinner></center>",

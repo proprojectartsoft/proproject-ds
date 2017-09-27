@@ -88,7 +88,7 @@ dsApp.controller('FullscreenCtrl', [
                                 $scope.addingMarker = false;
                                 var newstatus = 'Incomplete';
                                 var img = 'img/incomplete.png';
-                                if ($rootScope.currentDraw) { 
+                                if ($rootScope.currentDraw) {
                                     generateDefectImg('Incomplete');
                                 }
                                 if (index !== 2) {
@@ -146,9 +146,6 @@ dsApp.controller('FullscreenCtrl', [
                                         $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
                                         //keep only the marker of the new defect
                                         $rootScope.currentDefect.drawing.markers = [newMarker];
-                                        // $rootScope.currentDraw.defects = $rootScope.currentDraw.defects || [];//TODO: remove!!!!
-                                        // $rootScope.currentDraw.defects.push($rootScope.currentDefect);
-                                        // ($rootScope.currentDraw.markers || []).push(newMarker);
                                         $state.go('app.defects', {
                                             id: 0
                                         })
