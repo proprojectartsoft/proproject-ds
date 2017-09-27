@@ -11,26 +11,27 @@ dsApp.service('SyncService', [
     'AuthService',
     'SettingsService',
     '$ionicPopup',
-    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, ProjectService, DownloadsService, AuthService, SettingsService, $ionicPopup) {
+    'IndexedService',
+    'DefectsService',
+    'DrawingsService',
+    'SubcontractorsService',
+    'ConvertersService',
+    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, ProjectService, DownloadsService, AuthService, SettingsService, $ionicPopup, IndexedService, DefectsService, DrawingsService, SubcontractorsService, ConvertersService) {
 
-        var service = this,
-            worker = false;
+        var service = this;
+
+        IndexedService.createDB(function() {
+            console.log('DB creation done');
+        });
+
         service.getProjects = function(callback) {
             try {
-                worker = new Worker('js/system/worker.js');
-
-                worker.addEventListener('message', function(ev) {
-                    worker.terminate();
-                    if (ev.data.finished == true) {
-                        callback(ev.data.results);
-                    }
-                })
-
-                worker.postMessage({
+                IndexedService.runCommands({
                     data: {},
                     operation: 'getProjects'
+                }, function(result) {
+                    callback(result.results);
                 });
-
             } catch (e) {
                 throw ('Error getting data: ' + e);
             }
@@ -41,22 +42,14 @@ dsApp.service('SyncService', [
                 return false;
             }
             try {
-                worker = new Worker('js/system/worker.js');
-
-                worker.addEventListener('message', function(ev) {
-                    worker.terminate();
-                    if (ev.data.finished == true) {
-                        callback(ev.data.results[0]);
-                    }
-                });
-
-                worker.postMessage({
+                IndexedService.runCommands({
                     data: {
                         id: id
                     },
                     operation: 'getProject'
+                }, function(result) {
+                    callback(result.results[0]);
                 });
-
             } catch (e) {
                 throw ('Error getting data: ' + e);
             }
@@ -64,43 +57,27 @@ dsApp.service('SyncService', [
 
         service.setProjects = function(projects, callback) {
             try {
-                worker = new Worker('js/system/worker.js');
-
-                worker.addEventListener('message', function(ev) {
-                    worker.terminate();
-                    if (ev.data.finished == true) {
-                        callback(ev.data);
-                    }
-                });
-
-                worker.postMessage({
+                IndexedService.runCommands({
                     data: projects,
                     operation: 'setProjects'
+                }, function(result) {
+                    callback(result);
                 });
-
             } catch (e) {
-                throw ('Error setting data: ' + e);
+                throw ('Error getting data: ' + e);
             }
         };
 
         service.clearDb = function(callback) {
             try {
-                worker = new Worker('js/system/worker.js');
-
-                worker.addEventListener('message', function(ev) {
-                    worker.terminate();
-                    if (ev.data.finished == true) {
-                        callback(ev)
-                    }
-                });
-
-                worker.postMessage({
+                IndexedService.runCommands({
                     data: {},
                     operation: 'eraseDb'
-                })
-
+                }, function(result) {
+                    callback(result);
+                });
             } catch (e) {
-                throw ('Error clearing db ' + e)
+                throw ('Error getting data: ' + e);
             }
         };
 
@@ -273,30 +250,35 @@ dsApp.service('SyncService', [
             var def = $q.defer();
             var commentsToAdd = [],
                 defectsToAdd = [],
-                defectsToUpdate = [];
+                defectsToUpdate = [],
+                drawingsToUpd = [];
 
-            service.getProjects.then(function(projects) {
-              if (projects.length != 0) {
-                  syncProject(projects, 0, def);
-              } else {
-                  def.resolve();
-              }
+            service.getProjects(function(projects) {
+                if (projects.length != 0) {
+                    syncProject(projects, 0, def);
+                } else {
+                    def.resolve();
+                }
             })
 
             function storeNewDefects(project) {
                 angular.forEach(project.defects, function(defect) {
+                    //store all new defects for this project
                     if (typeof defect.isNew != 'undefined') {
                         delete defect.isNew;
                         defectsToAdd.push(defect);
                     }
                     if (typeof defect.isModified != 'undefined') {
+                        //store new comments for the defect
                         angular.forEach(defect.comments, function(comment) {
+                            //store new comments to be synced
                             if (typeof comment.isNew != 'undefined') {
                                 delete comment.isNew;
                                 commentsToAdd.push(comment);
                             }
                         })
-                        defectsToUpdate.push(defect.completeInfo);
+                        //store all modified defects for this project
+                        defectsToUpdate.push(defect);
                     }
                     delete defect.isNew;
                     delete defect.isModified;
@@ -304,18 +286,18 @@ dsApp.service('SyncService', [
             }
 
             function storeUpdatedDrawings(project) {
-                var drawingsToUpd = [];
                 angular.forEach(project.drawings, function(draw) {
+                    //store modified drawings
                     if (typeof draw.isModified != 'undefined') {
                         delete draw.isModified;
                         drawingsToUpd.push(draw);
                     }
                 })
-                sessionStorage.setObject('drawingsToUpd', drawingsToUpd);
             }
 
             function syncSubcontractors(project) {
                 angular.forEach(project.subcontractors, function(subcontr) {
+                    //store modified subcontractors to server
                     if (typeof subcontr.isModified != 'undefined') {
                         SubcontractorsService.update(subcontr).then(function(result) {
                             delete subcontr.isModified;
@@ -326,11 +308,12 @@ dsApp.service('SyncService', [
 
             function syncComments() {
                 angular.forEach(commentsToAdd, function(comment) {
+                    //add new comment for already existing defect
                     DefectsService.create_comment(comment).then(function(res) {}, function(err) {})
                 })
                 commentsToAdd = [];
             }
-
+            //add comments for new defects
             function addComments(comments, defect_id, defer, doDefer) {
                 if (comments.length == 0 && doDefer) {
                     defer.resolve();
@@ -353,60 +336,70 @@ dsApp.service('SyncService', [
             function addDefects(defects, index, defer) {
                 defectsToAdd = [];
                 var changed = sessionStorage.getObject('changedDefects') || [];
-                defect = defects[index];
-                var draw = defect.draw;
-                defect.completeInfo.id = 0;
-                DefectsService.create(defect.completeInfo).then(function(res) {
+                //get drawing
+                var draw = defects[index].drawing;
+                var comments = defects[index].comments;
+                var related_tasks = defects[index].related_tasks;
+                var oldId = defects[index].id;
+                var defect = ConvertersService.get_defect_for_create(defects[index]);
+                DefectsService.create(defect).then(function(res) {
+                    defect.id = res;
                     //if the created defect has related defects that are not added yet to the server, add them to defectsToUpd list
-                    var rel = defect.completeInfo.related_tasks;
+                    var rel = related_tasks;
                     for (var i = 0; i < rel.length; i++) {
                         if (rel[i].isNew) {
-                            defect.completeInfo.id = res;
-                            defectsToUpdate.push(defect.completeInfo);
-                            i = defect.completeInfo.related_tasks.length;
+                            defectsToUpdate.push(defect);
+                            i = defect.related_tasks.length;
                         }
                     }
                     //update defect id for related tasks of the defect to be added
-                    angular.forEach(defects, function(defToAdd) {
-                        if (defToAdd.completeInfo.related_tasks.length != 0 && defect.id != defToAdd.id) {
-                            for (var i = 0; i < defToAdd.completeInfo.related_tasks.length; i++) {
-                                if (defToAdd.completeInfo.related_tasks[i].id == defect.id) {
-                                    defToAdd.completeInfo.related_tasks[i].id = res;
-                                    delete defToAdd.completeInfo.related_tasks[i].isNew;
+                    angular.forEach(defects, function(defToAdd) { 
+                        if (defToAdd.related_tasks.length != 0 && oldId != defToAdd.id) {
+                            for (var i = 0; i < defToAdd.related_tasks.length; i++) {
+                                if (defToAdd.related_tasks[i].id == oldId) {
+                                    defToAdd.related_tasks[i].id = res;
+                                    delete defToAdd.related_tasks[i].isNew;
                                 }
                             }
                         }
                     })
                     if (draw) {
-                        // update defect id for new markers
-                        if (draw.markers && draw.markers.length) {
-                            var mark = $filter('filter')(draw.markers, {
-                                defect_id: defect.id
+                        var d = $filter('filter')(drawingsToUpd, {
+                            id: draw.id
+                        })[0];
+                        //update marker's defect id
+                        if (d && d.markers && d.markers.length) {
+                            var mark = $filter('filter')(d.markers, {
+                                defect_id: oldId
                             })[0];
                             if (mark) {
                                 mark.defect_id = res;
                             }
                         }
-                        DrawingsService.update(draw).then(function(drawingupdate) {
-                            addComments(defect.comments, res, defer, defects[defects.length - 1].id == defect.id);
-                        }, function(err) {
-                            addComments(defect.comments, res, defer, defects[defects.length - 1].id == defect.id);
-                        });
-                    } else {
-                        addComments(defect.comments, res, defer, defects[defects.length - 1].id == defect.id);
+                        //update defect's id
+                        if (d && d.defects && d.defects.length) {
+                            var def1 = $filter('filter')(d.defects, {
+                                id: oldId
+                            })[0];
+                            if (def1) {
+                                def1.id = res;
+                            }
+                        }
                     }
+                    addComments(comments, res, defer, defects[defects.length - 1].id == res);
                     changed.push({
-                        old: defect.id,
+                        old: oldId,
                         new: res
                     })
-                    if (defects[defects.length - 1].id == defect.id) {
+                    if (defects[defects.length - 1].id == res) {
                         sessionStorage.setObject('changedDefects', changed);
                     } else {
                         addDefects(defects, index + 1, defer);
                     }
                 }, function(err) {
-                    if (defects[defects.length - 1].id == defect.id) {
+                    if (defects[defects.length - 1].id == oldId) {
                         sessionStorage.setObject('changedDefects', changed);
+                        console.log("defer defects");
                         defer.resolve();
                     } else {
                         addDefects(defects, index + 1, defer);
@@ -417,7 +410,7 @@ dsApp.service('SyncService', [
             function syncDefects() {
                 var defer = $q.defer();
                 if (defectsToAdd == null || defectsToAdd.length == 0) {
-                    sessionStorage.setObject('changedDefects', []);
+                    sessionStorage.setObject('changedDefects', []); //TODO:
                     defer.resolve();
                     return defer.promise;
                 }
@@ -425,16 +418,17 @@ dsApp.service('SyncService', [
                 return defer.promise;
             }
 
-            function updateDrawings(drawings) {
-                sessionStorage.setObject('drawingsToUpd', []);
-                angular.forEach(drawings, function(draw) {
+            function updateDrawings() { //TODO:
+                angular.forEach(drawingsToUpd, function(draw) {
+                    console.log(draw);
                     DrawingsService.update(draw).then(function(result) {}, function(err) {})
                 })
             }
 
-            function updateDefects(defects) {
+            function updateDefects() {
                 updateRelatedDefectsId(defectsToUpdate);
                 angular.forEach(defectsToUpdate, function(defect) {
+                    defect = ConvertersService.get_defect_for_update(defect);
                     if (!defect.reporter_id || !defect.reporter_name) {
                         DefectsService.get(defect.id).then(function(defectToBeUpdated) {
                             defect.reporter_id = defectToBeUpdated.reporter_id;
@@ -465,7 +459,7 @@ dsApp.service('SyncService', [
             }
 
             function syncProject(projects, index, def) {
-                project = projects[index];
+                project = projects[index].value;
                 if (project.isModified) {
                     storeUpdatedDrawings(project);
                     storeNewDefects(project);
@@ -473,10 +467,12 @@ dsApp.service('SyncService', [
                     delete project.isModified;
                 }
                 syncComments();
+                //TODO: sync attachments
                 syncDefects().then(function(res) {
+                    console.log("defects synced ", index);
                     updateDefects();
-                    updateDrawings(sessionStorage.getObject('drawingsToUpd'));
-                    if (projects[projects.length - 1] == project) {
+                    updateDrawings();
+                    if (projects[projects.length - 1].value == project) {
                         def.resolve();
                     } else {
                         syncProject(projects, index + 1, def);

@@ -62,9 +62,11 @@ dsApp.controller('NavCtrl', [
             }
         }
         $scope.sync = function() {
-            SyncService.sync().then(function(res) {
-                //TODO: check if error or sync_done and go to corresponding page
-                $state.go('app.projects');
+            SyncService.syncData().then(function(res) {
+                SyncService.sync().then(function(res) {
+                    //TODO: check if error or sync_done and go to corresponding page
+                    $state.go('app.projects');
+                })
             })
         }
     }

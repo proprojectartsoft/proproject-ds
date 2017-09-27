@@ -105,11 +105,8 @@ dsApp.controller('DefectsCtrl', [
         }
 
         vm.getFullscreen = function() {
-            if ($stateParams.id !== "0") {
-                vm.go('fullscreen', vm.defect.drawing.id);
-            } else {
-                vm.go('fullscreen', vm.defect.drawing.id);
-            }
+            // $rootScope.currentDraw = vm.defect.drawing;
+            vm.go('fullscreen', vm.defect.drawing.id);
         }
 
         function newDefect() {
@@ -182,14 +179,15 @@ dsApp.controller('DefectsCtrl', [
 
         vm.back = function() {
             $rootScope.disableedit = true;
-            $ionicViewSwitcher.nextDirection('back')
-            if ($rootScope.routeback) {
-                $state.go($rootScope.routeback.state, {
-                    id: $rootScope.routeback.id
-                });
-            } else {
-                $state.go('app.tab')
-            }
+            $ionicViewSwitcher.nextDirection('back');
+            $state.go('app.tab');
+            // if ($rootScope.routeback) {
+            //     $state.go($rootScope.routeback.state, {
+            //         id: $rootScope.routeback.id
+            //     });
+            // } else {
+            //     $state.go('app.tab')
+            // }
         }
         vm.go = function(predicate, item) {
             $state.go('app.' + predicate, {

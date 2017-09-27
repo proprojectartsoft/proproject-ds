@@ -24,9 +24,9 @@ dsApp.controller('LoginCtrl', [
                 buttons: []
             });
             AuthService.login($scope.user).success(function(result) {
-                SyncService.syncData().then(function(res) { //TODO: update
+                SyncService.syncData().then(function(res) {
                     SyncService.sync().then(function(res) {
-                        localStorage.setObject('ds.user', { //TODO: use sessionStorage
+                        localStorage.setObject('ds.user', {
                             role: result.data.role.id,
                             name: result.data.username
                         });
@@ -36,7 +36,7 @@ dsApp.controller('LoginCtrl', [
                 });
             }).error(function(response, status) {
                 if (status === 0 || status === -1) {
-                    SyncService.syncData().then(function(res) { //TODO: update
+                    SyncService.syncData().then(function(res) { 
                         SyncService.sync().then(function(res) {
                             localStorage.setObject('ds.user', {
                                 role: 0,

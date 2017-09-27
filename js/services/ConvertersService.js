@@ -12,7 +12,9 @@ function ConvertersService($http, $rootScope, $filter) {
         clear_id: clear_id,
         getEmptyDefect: getEmptyDefect,
         add_task_for_subcontractor: add_task_for_subcontractor,
-        remove_task_for_subcontractor: remove_task_for_subcontractor
+        remove_task_for_subcontractor: remove_task_for_subcontractor,
+        get_defect_for_create: get_defect_for_create,
+        get_defect_for_update: get_defect_for_update
     }
     return service;
 
@@ -126,6 +128,7 @@ function ConvertersService($http, $rootScope, $filter) {
             })[0];
             //if the new assignee is a subcontractor, add the task to his tasks list
             if (subcontr) {
+                subcontr.isModified = true;
                 increase_nr_tasks(subcontr, task.status_name);
                 //keep all tasks except for the new task given by id, if it is already in that list
                 subcontr.tasks = $filter('filter')(subcontr.tasks, {
@@ -150,6 +153,7 @@ function ConvertersService($http, $rootScope, $filter) {
             });
             //derease the number of tasks corresponding to task's status
             decrease_nr_tasks(subcontr, task.status_name);
+            subcontr.isModified = true;
         }
     }
 
@@ -197,5 +201,53 @@ function ConvertersService($http, $rootScope, $filter) {
             defect.assignee_id = 0;
         }
         return defect;
+    }
+
+    function get_defect_for_create(defect) {
+        def = {
+            active: defect.active,
+            project_id: defect.project_id,
+            cost: defect.cost,
+            due_date: new Date(defect.due_date).getTime(),
+            location: defect.location,
+            title: defect.title,
+            priority_id: defect.priority_id,
+            severity_id: defect.severity_id,
+            status_id: defect.status_id,
+            description: "",
+            related_tasks: []
+        }
+
+        angular.forEach(defect.related_tasks, function(rel) {
+            def.related_tasks.push({
+                id: rel.id
+            })
+        })
+        return def;
+    }
+
+    function get_defect_for_update(defect) {
+        var def = {
+            id: defect.id,
+            reporter_id: defect.reporter_id,
+            assignee_id: defect.assignee_id,
+            active: defect.active,
+            project_id: defect.project_id,
+            due_date: new Date(defect.due_date).getTime(),
+            location: defect.location,
+            title: defect.title,
+            description: defect.description,
+            cost: defect.cost,
+            related_tasks: [],
+            priority_id: defect.priority_id,
+            severity_id: defect.severity_id,
+            status_id: defect.status_id
+        }
+        angular.forEach(defect.related_tasks, function(rel) {
+            def.related_tasks.push({
+                id: rel.id
+            })
+        })
+        return def;
     }
 };

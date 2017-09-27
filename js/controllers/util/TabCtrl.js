@@ -31,53 +31,48 @@ dsApp.controller('TabCtrl', [
         $rootScope.$on('$stateChangeStart',
             function(event, toState, toParams, fromState, fromParams) {
                 if (toState.name == 'app.tab') {
-                    reload();
+                    //possible changes were made, so initializa and store changes
+                    init();
                 }
             })
-        tabSelect($rootScope.currentTab);
-
-        function tabSelect(predicate) {
+        //initialize data if not initialized yet
+        if (!vm.project) {
             angular.forEach(vm.settings.tabs, function(value, key) {
                 vm.settings.tabs[key] = 'img/new/' + key + '.png';
             });
-            vm.settings.tabs[predicate] = vm.settings.tabs[predicate].substr(0, vm.settings.tabs[predicate].lastIndexOf(".png")) + "_active" + vm.settings.tabs[predicate].substr(vm.settings.tabs[predicate].lastIndexOf(".png"));
+            vm.settings.tabs[$rootScope.currentTab] = vm.settings.tabs[$rootScope.currentTab].substr(0, vm.settings.tabs[$rootScope.currentTab].lastIndexOf(".png")) + "_active" + vm.settings.tabs[$rootScope.currentTab].substr(vm.settings.tabs[$rootScope.currentTab].lastIndexOf(".png"));
             // vm.settings.tabActive = predicate;
-            $rootScope.currentTab = predicate;
-            SettingsService.set_settings(vm.settings)
-            vm.reload();
-        }
+            $rootScope.currentTab = $rootScope.currentTab;
+            SettingsService.set_settings(vm.settings);
+            init();
+        } else
+            tabSelect($rootScope.currentTab);
 
-        function saveChanges(project) {
-            //store new defect
-            if ($rootScope.currentDefect && $rootScope.currentDefect.new) {
-                storeNewDefect(project.value);
-                delete $rootScope.currentDefect.new;
-            }
-            //store defect's changes
-            if ($rootScope.currentDefect && $rootScope.currentDefect.modified) {
-                storeModifiedDefect(project.value);
-                delete $rootScope.currentDefect.modified;
-            }
-            //store subcontractor's changes
-            if ($rootScope.currentSubcontr && $rootScope.currentSubcontr.modified) {
-                storeModifiedSubcontractor(project.value);
-                delete $rootScope.currentSubcontr.modified;
+        function storeModifiedDraw(proj) {
+            proj.isModified = true;
+            //store the modified drawing
+            for (var i = 0; i < proj.drawings.length; i++) {
+                if (proj.drawings[i].id == $rootScope.currentDraw.id) {
+                    proj.drawings[i] = $rootScope.currentDraw;
+                    return;
+                }
             }
         }
 
-        function storeNewDefect(project) {
+        function storeNewDefect(proj) {
             var newDef = $rootScope.currentDefect;
             // assign an id
-            var nextId = "new" + project.defects.length;
+            var nextId = "new" + proj.defects.length;
             newDef.id = nextId;
-            project.defects.push(newDef);
-            project.isModified = true;
-            ConvertersService.add_task_for_subcontractor(newDef, project.subcontractors);
+            proj.defects.push(newDef);
+            proj.isModified = true;
+            ConvertersService.add_task_for_subcontractor(newDef, proj.subcontractors);
             if (newDef.drawing) {
                 //get the drawing for the new defect
-                var drawing = $filter('filter')(project.drawings, {
+                var drawing = $filter('filter')(proj.drawings, {
                     id: newDef.drawing.id
                 })[0];
+                drawing.isModified = true;
                 //store the new defect in drawing's defects list
                 drawing.defects.push(newDef);
                 drawing.nr_of_defects++;
@@ -93,22 +88,23 @@ dsApp.controller('TabCtrl', [
             }
         }
 
-        function storeModifiedDefect(project) {
+        function storeModifiedDefect(proj) {
             var defect = $rootScope.currentDefect;
             if (defect.assignee_id != $rootScope.backupDefect.assignee_id) {
                 // assignee changes
-                ConvertersService.remove_task_for_subcontractor(defect, project.subcontractors, $rootScope.backupDefect.assignee_id);
-                ConvertersService.add_task_for_subcontractor(defect, project.subcontractors);
+                ConvertersService.remove_task_for_subcontractor(defect, proj.subcontractors, $rootScope.backupDefect.assignee_id);
+                ConvertersService.add_task_for_subcontractor(defect, proj.subcontractors);
             } else {
                 //no initial assignee
-                ConvertersService.add_task_for_subcontractor(defect, project.subcontractors);
+                ConvertersService.add_task_for_subcontractor(defect, proj.subcontractors);
             }
 
             if (defect.drawing) {
                 //get the drawing for the new defect
-                var drawing = $filter('filter')(project.drawings, {
+                var drawing = $filter('filter')(proj.drawings, {
                     id: defect.drawing.id
                 })[0];
+                drawing.isModified = true;
                 //change the status for marker
                 if (drawing.markers && drawing.markers.length != 0) {
                     $filter('filter')(drawing.markers, {
@@ -124,21 +120,21 @@ dsApp.controller('TabCtrl', [
                     }
                 }
             }
-            project.isModified = true;
+            proj.isModified = true;
             //store the modified defect
-            for (var i = 0; i < project.defects.length; i++) {
-                if (project.defects[i].id == defect.id) {
-                    project.defects[i] = defect;
+            for (var i = 0; i < proj.defects.length; i++) {
+                if (proj.defects[i].id == defect.id) {
+                    proj.defects[i] = defect;
                     return;
                 }
             }
         }
 
-        function storeModifiedSubcontractor(project) {
+        function storeModifiedSubcontractor(proj) {
             //add to local db the new tasks added as related to current subcontractor
             angular.forEach($rootScope.currentSubcontr.newTasks, function(related) {
                 //change the assignee for the defect
-                var defect = $filter('filter')(project.defects, {
+                var defect = $filter('filter')(proj.defects, {
                     id: related.id
                 })[0];
                 //remember old assignee and use it to remove the task from his list
@@ -146,68 +142,106 @@ dsApp.controller('TabCtrl', [
                 //store new assignee for defect
                 defect.assignee_id = $rootScope.currentSubcontr.id;
                 defect.assignee_name = $rootScope.currentSubcontr.name;
+                defect.isModified = true;
                 //remove task from old assignee's list
-                ConvertersService.remove_task_for_subcontractor(related, project.subcontractors, oldAssignee);
+                ConvertersService.remove_task_for_subcontractor(related, proj.subcontractors, oldAssignee);
             })
-            project.isModified = true;
+            proj.isModified = true;
             //store the modified subcontractor
-            for (var i = 0; i < project.subcontractors.length; i++) {
-                if (project.subcontractors[i].id == $rootScope.currentSubcontr.id) {
-                    project.subcontractors[i].tasks = $rootScope.currentSubcontr.tasks;
+            for (var i = 0; i < proj.subcontractors.length; i++) {
+                if (proj.subcontractors[i].id == $rootScope.currentSubcontr.id) {
+                    proj.subcontractors[i].tasks = $rootScope.currentSubcontr.tasks;
                     return;
                 }
             }
         }
 
-        function reload() {
-            vm.settings.loaded = false;
-            vm.list = [];
-            SyncService.getProject($rootScope.projId, function(project) {
-                saveChanges(project);
-                SyncService.setProjects([project], function() {
-                    $rootScope.users = project.value.users;
-                    $rootScope.defects = project.value.defects;
-                    //TODO: store drawings for defects select
+        function init() {
+            SyncService.getProject($rootScope.projId, function(result) {
+                //store defect's changes
+                if ($rootScope.currentDraw && $rootScope.currentDraw.modified) {
+                    storeModifiedDraw(result.value);
+                    delete $rootScope.modified;
+                }
+                //store new defect
+                if ($rootScope.currentDefect && $rootScope.currentDefect.new) {
+                    storeNewDefect(result.value);
+                    delete $rootScope.currentDefect.new;
+                }
+                //store defect's changes
+                if ($rootScope.currentDefect && $rootScope.currentDefect.modified) {
+                    storeModifiedDefect(result.value);
+                    delete $rootScope.currentDefect.modified;
+                }
+                //store subcontractor's changes
+                if ($rootScope.currentSubcontr && $rootScope.currentSubcontr.modified) {
+                    storeModifiedSubcontractor(result.value);
+                    delete $rootScope.currentSubcontr.modified;
+                }
+                //store changes to lacal db
+                SyncService.setProjects([result], function() {
+                    //store local project
+                    vm.project = result;
+                    $rootScope.users = result.value.users;
+                    $rootScope.defects = result.value.defects;
                     ColorService.get_colors().then(function(colorList) {
                         var colorsLength = Object.keys(colorList).length;
                         angular.forEach($rootScope.defects, function(defect) {
                             defect.icon = SettingsService.get_initials(defect.assignee_name);
                             //assign the collor corresponding to user id and customer id
-                            var colorId = (parseInt(project.value.customer_id + "" + defect.assignee_id)) % colorsLength;
+                            var colorId = (parseInt(result.value.customer_id + "" + defect.assignee_id)) % colorsLength;
                             defect.backgroundColor = colorList[colorId].backColor;
                             defect.foregroundColor = colorList[colorId].foreColor;
                         });
+                        //load page for the active tab
+                        vm.reload();
                     })
-
-                    switch ($rootScope.currentTab) { //vm.settings.tabActive
-                        case 'drawings':
-                            vm.list = project.value.drawings;
-                            vm.settings.loaded = true;
-                            break;
-                        case 'subcontractors':
-                            ColorService.get_colors().then(function(colorList) {
-                                var colorsLength = Object.keys(colorList).length;
-                                angular.forEach(project.value.subcontractors, function(subcontr) {
-                                    //assign the collor corresponding to user id and customer id
-                                    var colorId = (parseInt(project.value.customer_id + "" + subcontr.id)) % colorsLength;
-                                    subcontr.name = subcontr.last_name + " " + subcontr.first_name;
-                                    subcontr.description = subcontr.company;
-                                    subcontr.icon = SettingsService.get_initials(subcontr.last_name + " " + subcontr.first_name);
-                                    subcontr.backgroundColor = colorList[colorId].backColor;
-                                    subcontr.foregroundColor = colorList[colorId].foreColor;
-                                    subcontr.nr_of_defects = subcontr.completed_tasks + subcontr.contested_tasks + subcontr.delayed_tasks + subcontr.incomplete_tasks + subcontr.partially_completed_tasks + subcontr.closed_out_tasks;
-                                    vm.list.push(subcontr);
-                                });
-                            })
-                            vm.settings.loaded = true;
-                            break;
-                        case 'defects':
-                            vm.list = $rootScope.defects;
-                            vm.settings.loaded = true;
-                            break;
-                    }
-                });
+                })
             })
+        }
+
+        function reload() {
+            vm.settings.loaded = false;
+            vm.list = [];
+            switch ($rootScope.currentTab) { //vm.settings.tabActive
+                case 'drawings':
+                    vm.list = vm.project.value.drawings;
+                    vm.settings.loaded = true;
+                    break;
+                case 'subcontractors':
+                    ColorService.get_colors().then(function(colorList) {
+                        var colorsLength = Object.keys(colorList).length;
+                        angular.forEach(vm.project.value.subcontractors, function(subcontr) {
+                            //assign the collor corresponding to user id and customer id
+                            var colorId = (parseInt(vm.project.value.customer_id + "" + subcontr.id)) % colorsLength;
+                            subcontr.name = subcontr.last_name + " " + subcontr.first_name;
+                            subcontr.description = subcontr.company;
+                            subcontr.icon = SettingsService.get_initials(subcontr.last_name + " " + subcontr.first_name);
+                            subcontr.backgroundColor = colorList[colorId].backColor;
+                            subcontr.foregroundColor = colorList[colorId].foreColor;
+                            subcontr.nr_of_defects = subcontr.completed_tasks + subcontr.contested_tasks + subcontr.delayed_tasks + subcontr.incomplete_tasks + subcontr.partially_completed_tasks + subcontr.closed_out_tasks;
+                            vm.list.push(subcontr);
+                        });
+                    })
+                    vm.settings.loaded = true;
+                    break;
+                case 'defects':
+                    vm.list = $rootScope.defects;
+                    vm.settings.loaded = true;
+                    break;
+            }
+        }
+
+        function tabSelect(predicate) {
+            angular.forEach(vm.settings.tabs, function(value, key) {
+                vm.settings.tabs[key] = 'img/new/' + key + '.png';
+            });
+            vm.settings.tabs[predicate] = vm.settings.tabs[predicate].substr(0, vm.settings.tabs[predicate].lastIndexOf(".png")) + "_active" + vm.settings.tabs[predicate].substr(vm.settings.tabs[predicate].lastIndexOf(".png"));
+            // vm.settings.tabActive = predicate;
+            $rootScope.currentTab = predicate;
+            SettingsService.set_settings(vm.settings);
+            //no updates were made, so just reload data
+            vm.reload();
         }
 
         function goItem(item) {
