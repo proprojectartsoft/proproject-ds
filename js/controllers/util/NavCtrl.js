@@ -62,9 +62,16 @@ dsApp.controller('NavCtrl', [
             }
         }
         $scope.sync = function() {
+            var syncPopup = $ionicPopup.show({
+                title: "Sync",
+                template: "<center><ion-spinner icon='android'></ion-spinner></center>",
+                content: "",
+                buttons: []
+            });
             SyncService.syncData().then(function(res) {
                 SyncService.sync().then(function(res) {
                     //TODO: check if error or sync_done and go to corresponding page
+                    syncPopup.close();
                     $state.go('app.projects');
                 })
             })

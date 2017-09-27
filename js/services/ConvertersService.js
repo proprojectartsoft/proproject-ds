@@ -141,6 +141,7 @@ function ConvertersService($http, $rootScope, $filter) {
     }
 
     function remove_task_for_subcontractor(task, subcontractors, assignee_id) {
+        console.log(subcontractors);
         //search the old assignee having the id 'assignee_id' through the subcontractors list
         var subcontr = $filter('filter')(subcontractors, {
             id: assignee_id
@@ -155,6 +156,8 @@ function ConvertersService($http, $rootScope, $filter) {
             decrease_nr_tasks(subcontr, task.status_name);
             subcontr.isModified = true;
         }
+        console.log(subcontractors);
+        return subcontractors;
     }
 
     function clear_id(defect) {

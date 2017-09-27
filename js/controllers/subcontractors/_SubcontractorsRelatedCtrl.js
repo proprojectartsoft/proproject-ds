@@ -49,6 +49,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             vm.settings.subHeader = item.name;
             SettingsService.set_settings(vm.settings);
             $rootScope.currentDefect = item;
+            $rootScope.currentDraw = item.drawing;
             $state.go('app.defects', {
                 id: item.id
             })
@@ -79,7 +80,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             vm.modal.hide();
             $rootScope.currentSubcontr.isModified = true;
             $rootScope.currentSubcontr.modified = true;
-            $rootScope.currentSubcontr.nr_of_defects++; 
+            $rootScope.currentSubcontr.nr_of_defects++;
             related.assignee_id = vm.subcontractor.id;
             related.assignee_name = vm.subcontractor.first_name + " " + vm.subcontractor.last_name;
             ColorService.get_colors().then(function(colorList) {

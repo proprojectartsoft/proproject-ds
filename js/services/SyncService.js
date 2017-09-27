@@ -109,7 +109,7 @@ dsApp.service('SyncService', [
                 })
             } else {
                 var savedCredentials = localStorage.getObject('dsremember');
-                SettingService.show_message_popup("You are offline", "<center>You can sync your data when online</center>");
+                SettingsService.show_message_popup("You are offline", "<center>You can sync your data when online</center>");
             }
 
             function getme() {
@@ -201,7 +201,7 @@ dsApp.service('SyncService', [
                                         }
                                     }]
                                 });
-                                // SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again");
+                                SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again");
                             } else {
                                 angular.forEach(projects, function(proj) {
                                     if (!proj.value.drawings || proj.value.drawings && !proj.value.drawings.length) {
@@ -228,7 +228,7 @@ dsApp.service('SyncService', [
                                                         }
                                                     }]
                                                 });
-                                                // SettingsService.show_message_popup("Download stopped", "<center>Not enough space to download all files</center>");
+                                                SettingsService.show_message_popup("Download stopped", "<center>Not enough space to download all files</center>");
                                             } else {
                                                 draw.pdfPath = downloadRes;
                                                 //all pdfs have been downloaded

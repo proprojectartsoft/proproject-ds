@@ -90,14 +90,16 @@ dsApp.controller('TabCtrl', [
 
         function storeModifiedDefect(proj) {
             var defect = $rootScope.currentDefect;
+            var subc = null;
             if (defect.assignee_id != $rootScope.backupDefect.assignee_id) {
                 // assignee changes
-                ConvertersService.remove_task_for_subcontractor(defect, proj.subcontractors, $rootScope.backupDefect.assignee_id);
-                ConvertersService.add_task_for_subcontractor(defect, proj.subcontractors);
+                subc = ConvertersService.remove_task_for_subcontractor(defect, proj.subcontractors, $rootScope.backupDefect.assignee_id);
+                subc = ConvertersService.add_task_for_subcontractor(defect, proj.subcontractors);
             } else {
                 //no initial assignee
-                ConvertersService.add_task_for_subcontractor(defect, proj.subcontractors);
+                subc = ConvertersService.add_task_for_subcontractor(defect, proj.subcontractors);
             }
+            proj.subcontractors = subc;
 
             if (defect.drawing) {
                 //get the drawing for the new defect
