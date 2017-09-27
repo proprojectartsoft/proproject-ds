@@ -174,6 +174,7 @@ dsApp.service('SyncService', [
                     });
                     def.resolve(projectsArray);
                 }).error(function(err) {
+                    def.resolve([]);
                     console.log(err);
                 });
                 return def.promise;
@@ -203,8 +204,11 @@ dsApp.service('SyncService', [
                                 // SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again");
                             } else {
                                 angular.forEach(projects, function(proj) {
+                                    if (!proj.value.drawings || proj.value.drawings && !proj.value.drawings.length) {
+                                        def.resolve(projects);
+                                    }
                                     //order drawings by date
-                                    var orderedDraws = orderBy(proj.drawings, 'draw.drawing_date', true);
+                                    var orderedDraws = orderBy(proj.value.drawings, 'draw.drawing_date', true);
                                     //download the pdf for every drawing
                                     angular.forEach(orderedDraws, function(draw) {
                                         DownloadsService.downloadPdf(draw, path).then(function(downloadRes) {
@@ -353,7 +357,7 @@ dsApp.service('SyncService', [
                         }
                     }
                     //update defect id for related tasks of the defect to be added
-                    angular.forEach(defects, function(defToAdd) { 
+                    angular.forEach(defects, function(defToAdd) {
                         if (defToAdd.related_tasks.length != 0 && oldId != defToAdd.id) {
                             for (var i = 0; i < defToAdd.related_tasks.length; i++) {
                                 if (defToAdd.related_tasks[i].id == oldId) {
