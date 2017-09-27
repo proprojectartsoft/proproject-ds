@@ -108,8 +108,8 @@ dsApp.service('SyncService', [
                     }
                 })
             } else {
+                deferred.resolve();
                 var savedCredentials = localStorage.getObject('dsremember');
-                SettingsService.show_message_popup("You are offline", "<center>You can sync your data when online</center>");
             }
 
             function getme() {
