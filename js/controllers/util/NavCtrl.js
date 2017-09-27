@@ -72,7 +72,6 @@ dsApp.controller('NavCtrl', [
                         type: 'button-positive',
                         onTap: function(e) {
                             popup.close();
-                            location.reload();
                         }
                     }]
                 });
