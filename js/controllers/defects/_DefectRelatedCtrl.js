@@ -6,10 +6,8 @@ dsApp.controller('_DefectRelatedCtrl', [
     'SettingsService',
     '$timeout',
     '$ionicModal',
-    '$indexedDB',
-    'ColorService',
     '$filter',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $indexedDB, ColorService, $filter) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $filter) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -31,7 +29,7 @@ dsApp.controller('_DefectRelatedCtrl', [
         vm.local.poplist = $rootScope.defects;
         //set the background and foreground colors
         if (vm.defect) {
-            ColorService.get_colors().then(function(colorList) {
+            SettingsService.get_colors().then(function(colorList) {
                 var colorsLength = Object.keys(colorList).length;
                 angular.forEach(vm.defect.related_tasks, function(relTask) {
                     //assign the collor corresponding to user id and customer id

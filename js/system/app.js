@@ -26,26 +26,11 @@ Storage.prototype.getObject = function(key) {
 var dsApp = angular.module($APP.name, [
     'ionic',
     'ion-datetime-picker',
-    'indexedDB',
     'ngCordova',
 ]).run(function($rootScope) {}).config([
     '$stateProvider',
     '$urlRouterProvider',
-    // '$indexedDBProvider',
-    function($stateProvider, $urlRouterProvider) { //$indexedDBProvider
-        //        angular.extend(CacheFactoryProvider.defaults, {maxAge: 15 * 60 * 1000});
-        // $indexedDBProvider
-        //     .connection('DefectsAndSnagging')
-        //     .upgradeDatabase(1, function(event, db, tx) {
-        //         var objStore = db.createObjectStore('projects', {
-        //             keyPath: 'id',
-        //             autoIncrement: true
-        //         });
-        //         objStore.createIndex('id_idx', 'id', {
-        //             unique: true
-        //         });
-        //     });
-
+    function($stateProvider, $urlRouterProvider) { 
         $stateProvider
             .state('app', {
                 url: "/",

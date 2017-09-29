@@ -8,8 +8,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
     '$ionicModal',
     '$filter',
     'ConvertersService',
-    'ColorService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $filter, ConvertersService, ColorService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $filter, ConvertersService) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -35,7 +34,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
         //     }
         // }
         //get the colors from json
-        ColorService.get_colors().then(function(colorList) {
+        SettingsService.get_colors().then(function(colorList) {
             var colorsLength = Object.keys(colorList).length;
             angular.forEach(vm.local.list, function(relTask) {
                 //assign the collor corresponding to user id and customer id
@@ -83,7 +82,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             $rootScope.currentSubcontr.nr_of_defects++;
             related.assignee_id = vm.subcontractor.id;
             related.assignee_name = vm.subcontractor.first_name + " " + vm.subcontractor.last_name;
-            ColorService.get_colors().then(function(colorList) {
+            SettingsService.get_colors().then(function(colorList) {
                 var colorsLength = Object.keys(colorList).length;
                 //assign the collor corresponding to user id and customer id
                 var colorId = (parseInt($rootScope.customer_id + "" + related.assignee_id)) % colorsLength;

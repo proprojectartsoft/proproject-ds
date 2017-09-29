@@ -7,11 +7,10 @@ dsApp.controller('TabCtrl', [
     '$ionicPopup',
     'SubcontractorsService',
     '$timeout',
-    'ColorService',
     'SyncService',
     'ConvertersService',
     '$filter',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, SubcontractorsService, $timeout, ColorService, SyncService, ConvertersService, $filter) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, SubcontractorsService, $timeout, SyncService, ConvertersService, $filter) {
         var vm = this;
         vm.tabSelect = tabSelect;
         vm.reload = reload;
@@ -152,7 +151,7 @@ dsApp.controller('TabCtrl', [
             //store the modified subcontractor
             for (var i = 0; i < proj.subcontractors.length; i++) {
                 if (proj.subcontractors[i].id == $rootScope.currentSubcontr.id) {
-                    proj.subcontractors[i].tasks = $rootScope.currentSubcontr.tasks;
+                    proj.subcontractors[i] = $rootScope.currentSubcontr;
                     return;
                 }
             }
@@ -186,7 +185,7 @@ dsApp.controller('TabCtrl', [
                     vm.project = result;
                     $rootScope.users = result.value.users;
                     $rootScope.defects = result.value.defects;
-                    ColorService.get_colors().then(function(colorList) {
+                    SettingsService.get_colors().then(function(colorList) {
                         var colorsLength = Object.keys(colorList).length;
                         angular.forEach($rootScope.defects, function(defect) {
                             defect.icon = SettingsService.get_initials(defect.assignee_name);
@@ -211,7 +210,7 @@ dsApp.controller('TabCtrl', [
                     vm.settings.loaded = true;
                     break;
                 case 'subcontractors':
-                    ColorService.get_colors().then(function(colorList) {
+                    SettingsService.get_colors().then(function(colorList) {
                         var colorsLength = Object.keys(colorList).length;
                         angular.forEach(vm.project.value.subcontractors, function(subcontr) {
                             //assign the collor corresponding to user id and customer id

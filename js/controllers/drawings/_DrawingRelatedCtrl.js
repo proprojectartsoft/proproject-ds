@@ -7,8 +7,7 @@ dsApp.controller('_DrawingRelatedCtrl', [
     '$timeout',
     '$filter',
     'DrawingsService',
-    'ColorService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DrawingsService, ColorService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DrawingsService) {
         $scope.settings = {};
         $scope.settings.project = parseInt($rootScope.projId);
         $rootScope.routeback = {
@@ -25,12 +24,12 @@ dsApp.controller('_DrawingRelatedCtrl', [
         $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentDraw.title;
         $scope.local.list = $rootScope.currentDraw.defects;
 
-        ColorService.get_colors().then(function(colorList) {
+        SettingsService.get_colors().then(function(colorList) {
             $scope.local.loaded = true;
             var colorsLength = Object.keys(colorList).length;
             angular.forEach($scope.local.list, function(relTask) {
                 // assign the collor corresponding to user id and customer id
-                var colorId = (parseInt($rootScope.customer_id || 0 + "" + relTask.assignee_id)) % colorsLength; 
+                var colorId = (parseInt($rootScope.customer_id || 0 + "" + relTask.assignee_id)) % colorsLength;
                 relTask.backgroundColor = colorList[colorId].backColor;
                 relTask.foregroundColor = colorList[colorId].foreColor;
             })
