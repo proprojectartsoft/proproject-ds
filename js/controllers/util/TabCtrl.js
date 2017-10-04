@@ -249,6 +249,9 @@ dsApp.controller('TabCtrl', [
             // vm.settings.subHeader = item.name;
             switch ($rootScope.currentTab) {
                 case 'defects':
+                    //copy all attachments into pictures field
+                    if (!item.photos.pictures)
+                        item.photos.pictures = angular.copy(item.photos);
                     $rootScope.currentDefect = item;
                     $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                     break;

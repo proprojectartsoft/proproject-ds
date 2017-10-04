@@ -5,18 +5,24 @@ dsApp.controller('_DefectAttachmentsCtrl', [
     'SettingsService',
     '$timeout',
     '$ionicScrollDelegate',
-    function($rootScope, $stateParams, $state, SettingsService, $timeout, $ionicScrollDelegate) {
+    '$ionicPopup',
+    function($rootScope, $stateParams, $state, SettingsService, $timeout, $ionicScrollDelegate, $ionicPopup) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');
         vm.settings.tabActive = $rootScope.currentTab;
         vm.settings.entityId = $stateParams.id;
-        vm.addPicture = addPicture;
         vm.takePicture = takePicture;
+        vm.addPicture = addPicture;
+        vm.removePicture = removePicture;
+        vm.testPicture = testPicture;
         vm.local = {};
         vm.dataToDelete = [];
         vm.dataToUpdate = [];
-        vm.pictures = $rootScope.currentDefect.photos;
+        vm.pictures = $rootScope.currentDefect.photos.pictures;
+        vm.substate = 'gallery';
+        var backupPic = null;
+
         //set the title for this page
         if ($stateParams.id === '0') {
             vm.settings.subHeader = 'New defect'
@@ -37,14 +43,21 @@ dsApp.controller('_DefectAttachmentsCtrl', [
         pullDown();
         goToTop();
 
-        $timeout(function() {
-            $('.ds-attachments').find('img').each(function() {
-                var aux = {};
-                var imgStyle = (this.width / this.height > 1) ? 'height' : 'width';
-                aux[imgStyle] = '100%'
-                $(this).css(aux);
-            })
-        });
+        // $timeout(function() {
+        //     $('.ds-attachments').find('img').each(function() {
+        //         var aux = {};
+        //         var imgStyle = (this.width / this.height > 1) ? 'height' : 'width';
+        //         aux[imgStyle] = '100%'
+        //         $(this).css(aux);
+        //     })
+        // });
+
+        function testPicture(pic) {
+            vm.substate = 'pic';
+            backupPic = angular.copy(pic);
+            vm.currentPhoto = pic;
+            goToTop();
+        }
 
         function takePicture() {
             if (!Camera) return false;
@@ -104,7 +117,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             }, function(err) {});
         }
 
-        vm.removePicture = function(pic) {
+        function removePicture(pic) {
             //TODO:
             // delete_photos: function(dataIn) {
             //     return $http({
@@ -117,28 +130,64 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             //         }
             //     );
             // },
-            if (pic.id) {
-                var idPic = {
-                    id: pic.id
-                };
-                vm.dataToDelete.push(idPic);
-            }
-            vm.pictures.splice(index, 1);
-            pullDown();
-        }
-
-        vm.back = function() {
-            $state.go('app.defects', {
-                id: $stateParams.id
-            })
-        }
-
-        vm.go = function(item) {
-            $rootScope.currentPhoto = item;
-            $state.go('app.photo', {
-                id: $stateParams.id,
-                photo: item.id
+            var popup = $ionicPopup.alert({
+                title: "Are you sure",
+                template: "<center>you want to delete it?</center>",
+                content: "",
+                buttons: [{
+                        text: 'Ok',
+                        type: 'button-positive',
+                        onTap: function(e) {
+                            if (pic.id) {
+                                var idPic = {
+                                    id: pic.id
+                                };
+                                vm.dataToDelete.push(idPic);
+                            }
+                            vm.pictures.splice(index, 1);
+                            pullDown();
+                            popup.close();
+                        }
+                    },
+                    {
+                        text: 'Cancel',
+                        onTap: function(e) {
+                            popup.close();
+                        }
+                    }
+                ]
             });
+        }
+
+        function returnToGallery() {
+            goToTop();
+            pullDown();
+            if ((backupPic.comment != vm.currentPhoto.comment || backupPic.title != vm.currentPhoto.title) && vm.dataToUpdate.indexOf(vm.currentPhoto) == -1) {
+                vm.dataToUpdate.push(vm.currentPhoto);
+            }
+            vm.substate = 'gallery';
+        }
+
+        vm.go = function(predicate, item) {
+            $rootScope.currentDefect.photos = {
+                pictures: vm.pictures,
+                toBeDeleted: vm.dataToDelete,
+                toBeUpdated: vm.dataToUpdate
+            };
+            if (vm.substate === 'pic') {
+                //go back from view full picture
+                returnToGallery();
+            } else if (vm.diaryId) {
+                //go back for existing diary
+                $state.go('app.' + predicate, {
+                    id: vm.diaryId
+                });
+            } else {
+                //go back for a new diary
+                $state.go('app.' + predicate, {
+                    id: item
+                });
+            }
         }
 
         function pullDown() {

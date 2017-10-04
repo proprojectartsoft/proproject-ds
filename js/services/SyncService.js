@@ -266,7 +266,9 @@ dsApp.service('SyncService', [
                         defectsToAdd: [],
                         defectsToUpd: [],
                         drawingsToUpd: [],
-                        attachmentsToAdd: []
+                        attachmentsToAdd: [],
+                        attachmentsToUpd: [],
+                        attachmentsToDelete: []
                     };
                     if (project.isModified) {
                         //sync all data for modified projects
@@ -334,13 +336,18 @@ dsApp.service('SyncService', [
                         })
 
                         //store new attachments
-                        angular.forEach(defect.photos, function(pic) {
+                        angular.forEach(defect.photos.pictures, function(pic) {
                             //store new attachments to be synced
                             if (!pic.id) {
                                 changes.attachmentsToAdd.push(pic);
                             }
                         })
 
+                        //TODO:
+                        //add photos to be updated
+                        // changes.attachmentsToUpd
+                        //add photos to be deleted
+                        // changes.attachmentsToDelete
                         //store all modified defects for this project
                         changes.defectsToUpd.push(defect);
                     }

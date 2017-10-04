@@ -30,7 +30,7 @@ var dsApp = angular.module($APP.name, [
 ]).run(function($rootScope) {}).config([
     '$stateProvider',
     '$urlRouterProvider',
-    function($stateProvider, $urlRouterProvider) { 
+    function($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('app', {
                 url: "/",
@@ -194,19 +194,6 @@ var dsApp = angular.module($APP.name, [
                     'menuContent': {
                         templateUrl: "templates/util/fullscreen.html",
                         controller: 'FullscreenCtrl'
-                    }
-                }
-            })
-            .state('app.photo', {
-                url: "photo=:id&:photo",
-                params: {
-                    id: null,
-                    photo: null
-                },
-                views: {
-                    'menuContent': {
-                        templateUrl: "templates/util/photo.html",
-                        controller: 'PhotoCtrl as vm'
                     }
                 }
             })
