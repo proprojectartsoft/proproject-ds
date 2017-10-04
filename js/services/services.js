@@ -231,13 +231,6 @@ dsApp.service('SettingsService', [
         self.put_settings = function(predicate, value) {
             $APP.settings[predicate] = value;
         };
-        self.my_account = function() {
-            return $http.get($APP.server + '/api/user/profileds', {}).then(
-                function(payload) {
-                    return payload.data;
-                }
-            );
-        };
         self.show_message_popup = function(title, template) {
             var popup = $ionicPopup.alert({
                 title: title,

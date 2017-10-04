@@ -5,10 +5,10 @@ dsApp.controller('NavCtrl', [
     '$ionicSideMenuDelegate',
     '$timeout',
     '$ionicPopup',
-    'SettingsService',
+    'PostService',
     'AuthService',
     'SyncService',
-    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, SettingsService, AuthService, SyncService) {
+    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, PostService, AuthService, SyncService) {
         $scope.disconnectDesignValue = true;
         $scope.settings = {};
         $scope.editMode = false;
@@ -21,8 +21,14 @@ dsApp.controller('NavCtrl', [
         $scope.toggleLeft = function($event) {
             $ionicSideMenuDelegate.toggleLeft();
         };
-        SettingsService.my_account().then(function(result) {
-            var aux = localStorage.getObject('ds.user')
+
+        PostService.post({
+            method: 'GET',
+            url: 'user/profileds',
+            data: {}
+        }, function(result) {
+            console.log(result.data);
+            var aux = result.data || localStorage.getObject('ds.user')
             switch (aux.role) {
                 case 1:
                     aux.role_title = 'Site Manager'
@@ -35,7 +41,9 @@ dsApp.controller('NavCtrl', [
                     break;
             }
             $rootScope.currentUser = aux;
-            $rootScope.currentUser.username = result.first_name + ' ' + result.last_name;
+            $rootScope.currentUser.username = result.data.first_name + ' ' + result.data.last_name;
+        }, function(error) {
+
         })
         $scope.redirect = function(predicate) {
             $state.go('app.' + predicate);

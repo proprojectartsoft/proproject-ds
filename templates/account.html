@@ -28,15 +28,15 @@
                 </ion-item>
                 <ion-item>
                     Zip Code:
-                    <span class="account-item">{{currentUser.zip}}</span>
+                    <span class="account-item">{{currentUser.zip_code}}</span>
                 </ion-item>
                 <ion-item>
                     Registration Number:
-                    <span class="account-item">{{currentUser.reg_number}}</span>
+                    <span class="account-item">{{currentUser.registration_number}}</span>
                 </ion-item>
                 <ion-item>
                     Phone:
-                    <span class="account-item">{{currentUser.phone}}</span>
+                    <span class="account-item">{{currentUser.phone_number}}</span>
                 </ion-item>
                 <button class="button button-block" ng-click="editCurrentUser()">
                     Edit
@@ -65,15 +65,15 @@
                 </ion-item>
                 <ion-item>
                     Zip Code:
-                    <input class="account-item" ng-model="currentUser.zip">
+                    <input class="account-item" ng-model="currentUser.zip_code">
                 </ion-item>
                 <ion-item>
                     Registration Number:
-                    <input class="account-item" ng-model="currentUser.reg_number">
+                    <input class="account-item" ng-model="currentUser.registration_number">
                 </ion-item>
                 <ion-item>
                     Phone:
-                    <input type="tel" class="account-item" ng-model="currentUser.phone">
+                    <input type="tel" class="account-item" ng-model="currentUser.phone_number">
                 </ion-item>
                 <button class="button button-block" ng-click="update()">
                     Update
