@@ -5,12 +5,11 @@ dsApp.controller('NavCtrl', [
     '$ionicSideMenuDelegate',
     '$timeout',
     '$http',
-    '$indexedDB',
     '$ionicPopup',
     'SettingsService',
     'AuthService',
     'SyncService',
-    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $http, $indexedDB, $ionicPopup, SettingsService, AuthService, SyncService) {
+    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $http, $ionicPopup, SettingsService, AuthService, SyncService) {
         $scope.disconnectDesignValue = true;
         $scope.settings = {};
         $scope.editMode = false;
@@ -49,9 +48,6 @@ dsApp.controller('NavCtrl', [
             if (navigator.onLine) {
                 localStorage.removeItem('ds.user');
                 localStorage.removeItem('dsremember');
-                $indexedDB.openStore('projects', function(store) {
-                    store.clear();
-                })
                 $state.go('login');
                 AuthService.logout().then(function(result) {})
             } else {

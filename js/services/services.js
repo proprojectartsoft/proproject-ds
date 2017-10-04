@@ -29,8 +29,6 @@ dsApp.service('PostService', [
          * @param {Object} [popup] - optional popup object to be closed
          */
         service.post = function(params, success, error, popup) {
-            console.log('Post parameters', params, success, error, popup);
-
             if (['POST', 'PUT', 'GET', 'DELETE'].indexOf(params.method) < 0) {
                 return error({
                     error: 500,
@@ -46,8 +44,6 @@ dsApp.service('PostService', [
             self.errorId = 0;
             self.errorStatus = "Unrecognized error";
 
-            console.log('Post params - this holds whatever we\'ll send to the server:', params);
-
             /**
              * Method to run on success
              *
@@ -55,8 +51,6 @@ dsApp.service('PostService', [
              * @returns {Object} - error | success object
              */
             self.successCallback = function(response) {
-                console.log('This is the server response: ', response);
-
                 if (popup) popup.close();
 
                 // This is the success (200)
@@ -81,8 +75,6 @@ dsApp.service('PostService', [
              * @returns {Object} - error object
              */
             self.errorCallback = function(response) {
-                console.log('Server responded with an error: ', response);
-
                 if (popup) popup.close();
 
                 // forced stop querying
@@ -98,8 +90,6 @@ dsApp.service('PostService', [
                 }
 
                 if ([401, 403].indexOf(response.status) > -1) {
-                    console.log("Got 'Not authorized'");
-
                     $rootScope.stopQuerying = true;
                     pendingRequests.cancelAll();
                     sessionStorage.removeItem('isLoggedIn');
@@ -179,7 +169,6 @@ dsApp.service('PostService', [
                         self.errorCallback
                     );
                 } catch (err) {
-                    console.log('Error firing request: ', err);
                     return self.errorCallback({
                         statusText: 'Unknown server error: ' + err,
                         status: 500
@@ -394,38 +383,36 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
             //search the new assignee having the id 'assignee_id' through the subcontractors list
             var subcontr = $filter('filter')(subcontractors, {
                 id: task.assignee_id
-            })[0];
+            });
             //if the new assignee is a subcontractor, add the task to his tasks list
-            if (subcontr) {
-                subcontr.isModified = true;
-                increase_nr_tasks(subcontr, task.status_name);
+            if (subcontr && subcontr.length) {
+                subcontr[0].isModified = true;
+                self.increase_nr_tasks(subcontr[0], task.status_name);
                 //keep all tasks except for the new task given by id, if it is already in that list
-                subcontr.tasks = $filter('filter')(subcontr.tasks, {
+                subcontr[0].tasks = $filter('filter')(subcontr[0].tasks, {
                     id: ('!' + task.id)
                 }) || [];
                 //add the new task
-                subcontr.tasks.push(task);
+                subcontr[0].tasks.push(task);
             }
         }
     }
 
     self.remove_task_for_subcontractor = function(task, subcontractors, assignee_id) {
-        console.log(subcontractors);
         //search the old assignee having the id 'assignee_id' through the subcontractors list
         var subcontr = $filter('filter')(subcontractors, {
             id: assignee_id
-        })[0];
+        });
         //if the old assignee is a subcontractor, remove the task from his tasks list
-        if (subcontr) {
+        if (subcontr && subcontr.length) {
             // remove from old assignee related list
-            subcontr.tasks = $filter('filter')(subcontr.related, {
+            subcontr[0].tasks = $filter('filter')(subcontr[0].related, {
                 id: ('!' + task.id)
             });
             //derease the number of tasks corresponding to task's status
-            decrease_nr_tasks(subcontr, task.status_name);
-            subcontr.isModified = true;
+            self.decrease_nr_tasks(subcontr, task.status_name);
+            subcontr[0].isModified = true;
         }
-        console.log(subcontractors);
         return subcontractors;
     }
 
@@ -493,9 +480,12 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
         }
 
         angular.forEach(defect.related_tasks, function(rel) {
-            def.related_tasks.push({
-                id: rel.id
-            })
+            //if the related task is aldready on server, add it to list
+            var str = rel.id.toString();
+            if (str.indexOf('new') == -1)
+                def.related_tasks.push({
+                    id: rel.id
+                })
         })
         return def;
     }

@@ -4,11 +4,10 @@ dsApp.controller('_DefectAttachmentsCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    '$indexedDB',
     '$filter',
     'DefectsService',
     '$ionicScrollDelegate',
-    function($rootScope, $stateParams, $state, SettingsService, $timeout, $indexedDB, $filter, DefectsService, $ionicScrollDelegate) {
+    function($rootScope, $stateParams, $state, SettingsService, $timeout, $filter, DefectsService, $ionicScrollDelegate) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');

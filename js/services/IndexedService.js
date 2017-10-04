@@ -45,8 +45,6 @@ dsApp.service('IndexedService', ['$q', function($q) {
             return false;
         }
     };
-    //console.log('Launching service');
-
 
     service.runCommands = function(e, callback) {
         var params = e.data,
@@ -119,10 +117,8 @@ dsApp.service('IndexedService', ['$q', function($q) {
     };
 
     service.setProjects = function(data, callback) {
-        //console.log('Setting projects', data);
         var insertData = function(data) {
                 // now try to insert
-                //console.log('Data to be inserted', data);
                 try {
                     // insert or update the db
                     dsDb.insertOrReplace()
@@ -155,20 +151,17 @@ dsApp.service('IndexedService', ['$q', function($q) {
     };
 
     service.getProjects = function(callback) {
-        //console.log('Getting projects');
         dsDb
             .select()
             .from(projects)
             .exec()
             .then(
                 function(res) {
-                    console.log('Result of getting projects', res);
                     callback(res);
                 });
     };
 
     service.getProject = function(param, callback) {
-        //console.log('Getting project', param);
         dsDb
             .select()
             .from(projects)
