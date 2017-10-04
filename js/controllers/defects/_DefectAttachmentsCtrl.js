@@ -11,6 +11,8 @@ dsApp.controller('_DefectAttachmentsCtrl', [
         vm.settings.subHeader = SettingsService.get_settings('subHeader');
         vm.settings.tabActive = $rootScope.currentTab;
         vm.settings.entityId = $stateParams.id;
+        vm.addPicture = addPicture;
+        vm.takePicture = takePicture;
         vm.local = {};
         vm.dataToDelete = [];
         vm.dataToUpdate = [];
