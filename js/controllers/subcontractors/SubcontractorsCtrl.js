@@ -2,12 +2,8 @@ dsApp.controller('SubcontractorsCtrl', [
     '$rootScope',
     '$stateParams',
     '$state',
-    '$filter',
-    '$ionicPopup',
     'SettingsService',
-    'SubcontractorsService',
-    'ConvertersService',
-    function($rootScope, $stateParams, $state, $filter, $ionicPopup, SettingsService, SubcontractorsService, ConvertersService) {
+    function($rootScope, $stateParams, $state, SettingsService) {
         var vm = this;
         vm.settings = {};
         vm.local = {};

@@ -6,8 +6,7 @@ dsApp.controller('_DefectDetailsCtrl', [
     'SettingsService',
     '$timeout',
     '$ionicModal',
-    'ProjectService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, ProjectService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');

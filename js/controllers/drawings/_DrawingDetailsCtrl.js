@@ -3,9 +3,8 @@ dsApp.controller('_DrawingDetailsCtrl', [
     '$scope',
     '$stateParams',
     '$state',
-    'SettingsService',
     '$timeout',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout) {
+    function($rootScope, $scope, $stateParams, $state, $timeout) {
         $scope.settings = {};
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;

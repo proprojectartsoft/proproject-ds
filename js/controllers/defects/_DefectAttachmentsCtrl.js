@@ -4,10 +4,8 @@ dsApp.controller('_DefectAttachmentsCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    '$filter',
-    'DefectsService',
     '$ionicScrollDelegate',
-    function($rootScope, $stateParams, $state, SettingsService, $timeout, $filter, DefectsService, $ionicScrollDelegate) {
+    function($rootScope, $stateParams, $state, SettingsService, $timeout, $ionicScrollDelegate) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -105,6 +103,18 @@ dsApp.controller('_DefectAttachmentsCtrl', [
         }
 
         vm.removePicture = function(pic) {
+            //TODO:
+            // delete_photos: function(dataIn) {
+            //     return $http({
+            //         method: 'POST',
+            //         url: $APP.server + 'api/defectphoto',
+            //         data: dataIn
+            //     }).then(
+            //         function(payload) {
+            //             return payload.data;
+            //         }
+            //     );
+            // },
             if (pic.id) {
                 var idPic = {
                     id: pic.id

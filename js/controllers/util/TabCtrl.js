@@ -5,12 +5,12 @@ dsApp.controller('TabCtrl', [
     '$state',
     'SettingsService',
     '$ionicPopup',
-    'SubcontractorsService',
     '$timeout',
     'SyncService',
     'ConvertersService',
     '$filter',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, SubcontractorsService, $timeout, SyncService, ConvertersService, $filter) {
+    'PostService',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, $timeout, SyncService, ConvertersService, $filter, PostService) {
         var vm = this;
         vm.tabSelect = tabSelect;
         vm.reload = reload;
@@ -297,7 +297,14 @@ dsApp.controller('TabCtrl', [
                     }]
                 }).then(function(res) {
                     if (res !== 'close') {
-                        SubcontractorsService.invite(res).then(function(result) {})
+                        PostService.post({
+                            method: 'POST',
+                            url: 'invite/subcontractor',
+                            params: {
+                                email: res,
+                                projectId: $rootScope.projId
+                            }
+                        }, function(succ) {}, function(error) {})
                     }
                 }, function(err) {
                     console.log('Err:', err);

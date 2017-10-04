@@ -4,12 +4,11 @@ dsApp.controller('NavCtrl', [
     '$scope',
     '$ionicSideMenuDelegate',
     '$timeout',
-    '$http',
     '$ionicPopup',
     'SettingsService',
     'AuthService',
     'SyncService',
-    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $http, $ionicPopup, SettingsService, AuthService, SyncService) {
+    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, SettingsService, AuthService, SyncService) {
         $scope.disconnectDesignValue = true;
         $scope.settings = {};
         $scope.editMode = false;

@@ -2,16 +2,12 @@ dsApp.controller('ProjectsCtrl', [
     '$rootScope',
     '$scope',
     '$state',
-    '$ionicSideMenuDelegate',
     '$timeout',
     '$ionicPopup',
-    '$ionicModal',
     '$filter',
-    'ProjectService',
-    'SubcontractorsService',
     'SyncService',
 
-    function($rootScope, $scope, $state, $ionicSideMenuDelegate, $timeout, $ionicPopup, $ionicModal, $filter, ProjectService, SubcontractorsService, SyncService) {
+    function($rootScope, $scope, $state, $timeout, $ionicPopup, $filter, SyncService) {
         var vm = this;
         $rootScope.navTitle = 'Choose a project';
         $rootScope.currentTab = 'drawings';
@@ -114,36 +110,7 @@ dsApp.controller('ProjectsCtrl', [
                         res.defects = [];
                         res.isNew = true;
                         if (navigator.onLine) {
-                            ProjectService.create(res).then(function(result) {
-                                delete vm.local.createProject;
-                                //copy the previously created project into local DB
-                                ProjectService.list().then(function(projects) {
-                                    var proj = $filter('filter')(projects, {
-                                        id: result
-                                    })[0];
-                                    proj.light_drawings = [];
-                                    proj.defects = [];
-                                    ProjectService.users(result).then(function(usr) {
-                                        proj.users = usr;
-                                        SubcontractorsService.list(result).then(function(subcontractors) {
-                                            proj.subcontractors = subcontractors;
-                                            if (proj.subcontractors.length == 0) {
-                                                //NOT IMPLEMENTED YET
-                                                //store the new project locally (in indexedDB)
-                                            }
-                                            angular.forEach(proj.subcontractors, function(subcontr) {
-                                                SubcontractorsService.list_defects(result, subcontr.id).then(function(rel) {
-                                                    subcontr.related = rel;
-                                                    if (proj.subcontractors[proj.subcontractors.length - 1] === subcontr) {
-                                                        //NOT IMPLEMENTED YET
-                                                        //store the new project locally (in indexedDB)
-                                                    }
-                                                })
-                                            })
-                                        })
-                                    })
-                                })
-                            })
+                            //create project
                         } else {
                             $ionicPopup.show({
                                 title: 'Offline',

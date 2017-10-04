@@ -1,9 +1,8 @@
 dsApp.controller('PhotoCtrl', [
     '$rootScope',
     '$state',
-    'SettingsService',
-    function($rootScope, $state, SettingsService) {
-      var vm = this;
+    function($rootScope, $state) {
+        var vm = this;
         vm.settings = {};
         if ($rootScope.currentDefect.id === '0') {
             vm.settings.subHeader = 'New defect'
@@ -19,6 +18,7 @@ dsApp.controller('PhotoCtrl', [
         vm.local.data = $rootScope.currentPhoto;
         vm.local.data.url_original = $APP.server + 'pub/defectPhotos/' + vm.local.data.base_64_string.replace("resized", "original");
         vm.back = function() {
+            //TODO: save changes
             $state.go('app.defectattachments', {
                 id: $rootScope.currentDefect.id
             })

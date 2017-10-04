@@ -5,14 +5,11 @@ dsApp.controller('DefectsCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    '$filter',
-    'DefectsService',
     'ConvertersService',
     '$ionicViewSwitcher',
     '$ionicModal',
-    'DrawingsService',
     '$ionicPopup',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DefectsService, ConvertersService, $ionicViewSwitcher, $ionicModal, DrawingsService, $ionicPopup) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, ConvertersService, $ionicViewSwitcher, $ionicModal, $ionicPopup) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');

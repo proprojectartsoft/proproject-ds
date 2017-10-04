@@ -5,8 +5,8 @@ dsApp.factory('DownloadsService', [
     '$cordovaFile',
     '$cordovaFileTransfer',
     '$q',
-    'DrawingsService',
-    function($http, $rootScope, $ionicPlatform, $cordovaFile, $cordovaFileTransfer, $q, DrawingsService) {
+    'PostService',
+    function($http, $rootScope, $ionicPlatform, $cordovaFile, $cordovaFileTransfer, $q, PostService) {
         return {
             downloadPdf: function(drawing, dir) {
                 var def = $q.defer();
@@ -27,8 +27,14 @@ dsApp.factory('DownloadsService', [
                                     function() {},
                                     "File", "getFreeDiskSpace", []);
 
-                                DrawingsService.get_pdf_size(drawing.id).then(function(res) {
-                                    if (res > deviceSpace - 500) {
+                                PostService.post({
+                                    method: 'GET',
+                                    url: 'drawing/size',
+                                    params: {
+                                        id: drawing.id
+                                    }
+                                }, function(res) {
+                                    if (res.data > deviceSpace - 500) {
                                         def.resolve("");
                                         return;
                                     }
@@ -42,6 +48,8 @@ dsApp.factory('DownloadsService', [
                                             def.resolve("");
                                         }
                                     );
+                                }, function(error) {
+                                  console.log("Error getting the size of pdf from server.");
                                 })
                             },
                             false);

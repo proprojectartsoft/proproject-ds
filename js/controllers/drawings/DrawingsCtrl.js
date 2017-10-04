@@ -6,10 +6,7 @@ dsApp.controller('DrawingsCtrl', [
     'SettingsService',
     '$timeout',
     '$filter',
-    '$ionicPopup',
-    'DrawingsService',
-    'SyncService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, $ionicPopup, DrawingsService, SyncService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter) {
         $scope.settings = {};
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.entityId = $stateParams.id;

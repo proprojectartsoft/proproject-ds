@@ -5,11 +5,8 @@ dsApp.controller('FullscreenCtrl', [
     '$state',
     'SettingsService',
     '$timeout',
-    '$filter',
-    'DrawingsService',
-    '$ionicScrollDelegate',
     'ConvertersService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter, DrawingsService, $ionicScrollDelegate, ConvertersService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, ConvertersService) {
         $scope.settings = {};
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = $rootScope.currentTab;
