@@ -37,7 +37,6 @@ dsApp.controller('_DefectAttachmentsCtrl', [
         pullDown();
         goToTop();
 
-        //TODO:check if needed
         $timeout(function() {
             $('.ds-attachments').find('img').each(function() {
                 var aux = {};

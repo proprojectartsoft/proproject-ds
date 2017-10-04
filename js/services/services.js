@@ -514,4 +514,18 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
         })
         return def;
     }
+
+    self.get_drawing_for_update = function(drawing) {
+        return {
+            id: drawing.id,
+            title: drawing.title,
+            code: drawing.code,
+            revision: drawing.revision,
+            markers: drawing.markers,
+            project_id: drawing.project_id,
+            project_name: drawing.project_name,
+            drawing_date: drawing.drawing_date,
+            file_name: drawing.file_name
+        }
+    }
 }]);

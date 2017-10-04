@@ -99,6 +99,9 @@ dsApp.controller('DrawingsCtrl', [
         }
         $scope.go = function(predicate, item) {
             //TODO: set $rootScope.currentDefect
+            $rootScope.currentDefect = $filter('filter')($rootScope.currentDraw.defects, {
+                id: item
+            });
             $state.go('app.' + predicate, {
                 id: item
             });

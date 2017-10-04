@@ -32,7 +32,8 @@ dsApp.controller('_DefectCommentsCtrl', [
                     "user_id": userInfo && userInfo.length && userInfo[0].id || 0,
                     "user_name": userInfo && userInfo.length && (userInfo[0].first_name + " " + userInfo[0].last_name) || "Super Admin",
                     "defect_id": $stateParams.id,
-                    "date": Date.now()
+                    "date": Date.now(),
+                    "isNew": true
                 };
                 if (typeof $scope.defect.isNew == 'undefined') {
                     $scope.defect.modified = true;

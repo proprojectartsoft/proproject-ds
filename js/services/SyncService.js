@@ -90,7 +90,6 @@ dsApp.service('SyncService', [
                                 service.clearDb(function() {
                                     buildData(function() {
                                         deferred.resolve('sync_done');
-                                        // $state.go('app.projects');
                                     })
                                 })
                             }).error(function(data, status) {
@@ -189,7 +188,6 @@ dsApp.service('SyncService', [
                         DownloadsService.createDirectory("ds-downloads").then(function(path) {
                             if (path == 'fail') {
                                 def.resolve(projects);
-                                //TODO: call $rootScope.go('reload') and use SettingsService.show_msg_popup
                                 var popup = $ionicPopup.alert({
                                     title: "Error",
                                     template: "Could not create directory to download the files. Please try again",
@@ -214,9 +212,8 @@ dsApp.service('SyncService', [
                                     angular.forEach(orderedDraws, function(draw) {
                                         DownloadsService.downloadPdf(draw, path).then(function(downloadRes) {
                                             if (downloadRes == "") {
-                                                //not enpugh space to download all pdfs; stop download
+                                                //not enough space to download all pdfs; stop download
                                                 def.resolve(projects);
-                                                //TODO: call $rootScope.go('reload') and use SettingsService.show_msg_popup
                                                 var popup = $ionicPopup.alert({
                                                     title: "Download stopped",
                                                     template: "<center>Not enough space to download all files</center>",
@@ -262,21 +259,40 @@ dsApp.service('SyncService', [
                     def.resolve();
                 }
                 angular.forEach(projects, function(p) {
+                    var project = p.value;
                     //remove all data to add or update for this project
                     changes = {
                         commentsToAdd: [],
                         defectsToAdd: [],
                         defectsToUpd: [],
                         drawingsToUpd: [],
-                        changedDefects: [],
                         attachmentsToAdd: []
                     };
-                    if (p.value.isModified) {
+                    if (project.isModified) {
                         //sync all data for modified projects
-                        syncProject(p.value, changes).then(function(s) {
-                            count++;
-                            if (count >= projects.length)
-                                def.resolve();
+                        //method to store in changes all drawings that have to be updated
+                        getModifiedDrawings(project);
+                        //method to store in changes all defects that have to be added or updated
+                        getModifiedDefects(project);
+                        delete project.isModified;
+
+                        var subcontr = project.subcontractors || [];
+                        syncDefects(changes).then(function(res) {
+                            var updDefectsPrm = updateDefects(res),
+                                updDrawsPrm = updateDrawings(res),
+                                saveComments = syncComments(res.commentsToAdd),
+                                saveAttachments = syncAttachments(res.attachmentsToAdd),
+                                saveSubcontr = syncSubcontractors(subcontr); //TODO: check is subcontr ok
+
+                            Promise.all([updDefectsPrm, updDrawsPrm, saveComments, saveAttachments]).then(function(s) {
+                                count++;
+                                if (count >= projects.length)
+                                    def.resolve();
+                            }, function(e) {
+                                count++;
+                                if (count >= projects.length)
+                                    def.resolve();
+                            })
                         }, function(e) {
                             count++;
                             if (count >= projects.length)
@@ -297,7 +313,16 @@ dsApp.service('SyncService', [
                     if (typeof defect.isNew != 'undefined') {
                         delete defect.isNew;
                         changes.defectsToAdd.push(defect);
+
+                        angular.forEach(defect.photos, function(pic) {
+                            console.log(pic);
+                            //store new attachments to be synced
+                            if (!pic.id) {
+                                changes.attachmentsToAdd.push(pic);
+                            }
+                        })
                     }
+
                     if (typeof defect.isModified != 'undefined') {
                         //store new comments for the defect
                         angular.forEach(defect.comments, function(comment) {
@@ -307,6 +332,15 @@ dsApp.service('SyncService', [
                                 changes.commentsToAdd.push(comment);
                             }
                         })
+
+                        //store new attachments
+                        angular.forEach(defect.photos, function(pic) {
+                            //store new attachments to be synced
+                            if (!pic.id) {
+                                changes.attachmentsToAdd.push(pic);
+                            }
+                        })
+
                         //store all modified defects for this project
                         changes.defectsToUpd.push(defect);
                     }
@@ -385,22 +419,21 @@ dsApp.service('SyncService', [
 
             function syncAttachments(attachments) {
                 var defer = $q.defer();
-                // if (comments.length == 0) {
-                //     defer.resolve();
-                // }
-                // angular.forEach(attachmentsToAdd, function(attachment) {
-                //     //add new attachment for already existing defect
-                //     PostService.post({
-                //         method: 'POST',
-                //         url: 'defectcomment',
-                //         data: attachment
-                //     }, function(result) {
-                //         console.log(result);
-                //     }, function(error) {
-                //         console.log(error);
-                //     })
-                // })
-                // attachmentsToAdd = [];
+                if (attachments.length == 0) {
+                    defer.resolve();
+                }
+                angular.forEach(attachments, function(attachment) {
+                    //add new attachment for already existing defect
+                    PostService.post({
+                        method: 'POST',
+                        url: 'defectphoto/uploadfile',
+                        data: attachment
+                    }, function(result) {
+                        console.log(result);
+                    }, function(error) {
+                        console.log(error);
+                    })
+                })
                 return defer.promise;
             }
 
@@ -425,20 +458,26 @@ dsApp.service('SyncService', [
                             i = defect.related_tasks.length;
                         }
                     }
-                    //TODO:verify the flow and update all subsections with the new id
-                    //update defect id for related tasks of the defect to be added
-                    angular.forEach(changes.defectsToUpd, function(d) {
-                        //search through all other defects' related tasks the new defect
-                        if (d.related_tasks.length != 0 && oldDefect.id != d.id) {
-                            for (var i = 0; i < d.related_tasks.length; i++) {
-                                if (d.related_tasks[i].id == oldDefect.id) {
-                                    //set the new assigne id for the related task
-                                    d.related_tasks[i].id = res.data;
-                                    delete d.related_tasks[i].isNew;
+
+                    var setRelatedTaskId = function(defects, oldId, newId) {
+                        angular.forEach(defects, function(d) {
+                            //search through all other defects' related tasks the new defect
+                            if (d.related_tasks.length != 0 && oldId != d.id) {
+                                for (var i = 0; i < d.related_tasks.length; i++) {
+                                    if (d.related_tasks[i].id == oldId) {
+                                        //set the new assigne id for the related task
+                                        d.related_tasks[i].id = newId;
+                                        delete d.related_tasks[i].isNew;
+                                    }
                                 }
                             }
-                        }
-                    })
+                        })
+                    }
+
+                    //if there is an updated defect having the current defect as related, update its id
+                    setRelatedTaskId(changes.defectsToUpd, oldDefect.id, res.data);
+                    //if there is a new defect having the current defect as related, update its id
+                    setRelatedTaskId(changes.defectsToAdd, oldDefect.id, res.data);
 
                     if (oldDefect.drawing) {
                         //get the drawing of the new added defect from the array of drawings to be updated
@@ -464,20 +503,18 @@ dsApp.service('SyncService', [
                         }
                     }
 
-                    changes.changedDefects.push({ //TODO: check if needed
-                        old: oldDefect.id,
-                        new: res.data
+                    //set the new id of the added defect as defect_id for all its attachments
+                    angular.forEach(changes.attachmentsToAdd, function(pic) {
+                        pic.defect_id = res.data;
                     })
 
-                    //TODO: addAttachments; Promise.all -> resolve
-
-                    //set the id of the new defect as defect_id for all its comments
-                    angular.forEach(changes.commentsToAdd, function(comment) { //oldDefect.comments
+                    //set the new id of the added defect as defect_id for all its comments
+                    angular.forEach(changes.commentsToAdd, function(comment) {
                         comment.defect_id = res.data;
                     })
-                    defer.resolve();
+                    defer.resolve(changes);
                 }, function(error) {
-                    defer.resolve();
+                    defer.resolve(changes); //TODO: reject
                     console.log(error);
                 })
                 return defer.promise;
@@ -486,8 +523,7 @@ dsApp.service('SyncService', [
             function syncDefects(changes) {
                 var defer = $q.defer();
                 if (changes.defectsToAdd == null || changes.defectsToAdd.length == 0) {
-                    changes.changedDefects = [];
-                    defer.resolve();
+                    defer.resolve(changes); //TODO: reject
                     return defer.promise;
                 }
                 var count = 0;
@@ -496,12 +532,12 @@ dsApp.service('SyncService', [
                     addDefect(defect, changes).then(function(res) {
                         count++;
                         if (count >= changes.defectsToAdd.length) {
-                            defer.resolve();
+                            defer.resolve(res);
                         }
                     }, function(error) {
                         count++;
                         if (count >= changes.defectsToAdd.length) {
-                            defer.resolve();
+                            defer.resolve(error); //TODO: reject
                         }
                     })
                 })
@@ -517,7 +553,7 @@ dsApp.service('SyncService', [
                     PostService.post({
                         method: 'PUT',
                         url: 'drawing',
-                        data: draw
+                        data: ConvertersService.get_drawing_for_update(draw)
                     }, function(result) {
                         count++;
                         if (count >= changes.drawingsToUpd.length)
@@ -537,70 +573,59 @@ dsApp.service('SyncService', [
                 if (!changes.defectsToUpd.length)
                     defer.resolve();
 
-                var updateRelatedDefectsId = function(defects) {
-                    angular.forEach(defects, function(defect) {
-                        if (defect.related_tasks.length != 0 && changes.changedDefects.length != 0) {
-                            for (var i = 0; i < defect.related_tasks.length; i++) {
-                                for (var j = 0; j < changes.changedDefects.length; j++) {
-                                    if (defect.related_tasks[i].id == changes.changedDefects[j].old) {
-                                        defect.related_tasks[i].id = changes.changedDefects[j].new;
-                                        j = changes.changedDefects.length;
-                                    }
-                                }
-                            }
-                        }
-                    })
-                    changes.changedDefects = [];
-                }
                 var defects = changes.defectsToUpd;
-                updateRelatedDefectsId(defects);
+                // updateRelatedDefectsId(defects);
                 angular.forEach(defects, function(defect) {
                     defect = ConvertersService.get_defect_for_update(defect);
-                    PostService.post({
-                        method: 'PUT',
-                        url: 'defect',
-                        data: defect
-                    }, function(result) {
-                        count++;
-                        if (count >= defects.length)
-                            defer.resolve();
-                    }, function(error) {
-                        count++;
-                        if (count >= defects.length)
-                            defer.resolve();
-                    })
-                })
-                return defer.promise;
-            }
-
-            function syncProject(project, changesObj) {
-                var defer = $q.defer();
-                //method to store in changesObj all drawings that have to be updated
-                getModifiedDrawings(project);
-                //method to store in changesObj all defects that have to be added or updated
-                getModifiedDefects(project);
-                delete project.isModified;
-
-                var saveSubcontr = syncSubcontractors(project.subcontractors || []),
-                    saveDefects = syncDefects(changesObj);
-                Promise.all([saveDefects, saveSubcontr]).then(function(res) {
-                    console.log(changesObj);
-                    var updDefectsPrm = updateDefects(changesObj),
-                        updDrawsPrm = updateDrawings(changesObj),
-                        saveComments = syncComments(changesObj.commentsToAdd),
-                        saveAttachments = '', //syncAttachments(attachmentsToAdd),
-
-                        Promise.all([updDefectsPrm, updDrawsPrm, saveComments, saveAttachments]).then(function(s) {
-                            defer.resolve();
-                        }, function(e) {
-                            defer.resolve();
+                    //if the defect to be updated was added on server during this sync, it has no reporter set
+                    //get the defect from server and set the reporter_id, then update it
+                    if (!defect.reporter_id || !defect.assignee_id) {
+                        PostService.post({
+                            method: 'GET',
+                            url: 'defect',
+                            params: {
+                                id: defect.id
+                            }
+                        }, function(result) {
+                            defect.reporter_id = result.data.reporter_id;
+                            defect.assignee_id = result.data.assignee_id;
+                            PostService.post({
+                                method: 'PUT',
+                                url: 'defect',
+                                data: defect
+                            }, function(result) {
+                                count++;
+                                if (count >= defects.length)
+                                    defer.resolve();
+                            }, function(error) {
+                                count++;
+                                if (count >= defects.length)
+                                    defer.resolve();
+                            })
+                        }, function(error) {
+                            count++;
+                            //TODO: reject could not update defect
+                            if (count >= defects.length)
+                                defer.resolve();
                         })
-                }, function(e) {
-                    defer.resolve();
+                    } else {
+                        PostService.post({
+                            method: 'PUT',
+                            url: 'defect',
+                            data: defect
+                        }, function(result) {
+                            count++;
+                            if (count >= defects.length)
+                                defer.resolve();
+                        }, function(error) {
+                            count++;
+                            if (count >= defects.length)
+                                defer.resolve();
+                        })
+                    }
                 })
                 return defer.promise;
             }
-
             return def.promise;
         }
     }

@@ -81,7 +81,6 @@ dsApp.controller('NavCtrl', [
             });
             SyncService.syncData().then(function(res) {
                 SyncService.sync().then(function(res) {
-                    //TODO: check if error or sync_done and go to corresponding page
                     syncPopup.close();
                     $state.go('app.projects');
                 })
