@@ -18,7 +18,9 @@
                 </div>
                 <div class="col col-50" ng-if="$index + 1 < vm.pictures.length">
                     <div class="pull-down" style="max-height: 50vw;overflow: hidden;">
-                        <img ng-src="{{vm.pictures[$index+1].url}}" ng-click="vm.testPicture(vm.pictures[$index + 1])" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
+                        <img ng-src="{{vm.pictures[$index+1].url}}" ng-click="vm.testPicture(vm.pictures[$index + 1])" ng-if="vm.pictures[$index + 1].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
+                        <img data-ng-src="data:image/png;base64,{{vm.pictures[$index+1].base_64_string}}" ng-click="vm.testPicture(vm.pictures[$index + 1])" ng-if="!vm.pictures[$index + 1].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);"
+                        />
                     </div>
                     <div>
                         <button class="button button-assertive remove_attach_btn" style="margin:0!important" ng-if="!disableedit" ng-click='vm.removePicture(vm.pictures[$index + 1],$index + 1)'>Remove</button>
