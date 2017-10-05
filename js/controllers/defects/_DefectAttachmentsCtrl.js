@@ -20,7 +20,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
         vm.local = {};
         vm.dataToDelete = [];
         vm.dataToUpdate = [];
-        vm.pictures = $rootScope.currentDefect.photos.pictures;
+        vm.pictures = $rootScope.currentDefect.photos.pictures || [];
         vm.substate = 'gallery';
         var backupPic = null;
 
