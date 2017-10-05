@@ -8,7 +8,9 @@
             <div class="row" ng-repeat="item in vm.pictures track by $index" ng-if="$index % 2 === 0">
                 <div class="col col-50" ng-if="$index < vm.pictures.length">
                     <div class="pull-down" style="max-height: 50vw;overflow: hidden;">
-                        <img ng-src="{{vm.pictures[$index].url}}" ng-click="vm.testPicture(vm.pictures[$index])" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
+                        <img ng-src="{{vm.pictures[$index].url}}" ng-click="vm.testPicture(vm.pictures[$index])" ng-if="vm.pictures[$index].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
+                        <img data-ng-src="data:image/png;base64,{{vm.pictures[$index].base_64_string}}" ng-click="vm.testPicture(vm.pictures[$index])" ng-if="!vm.pictures[$index].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);"
+                        />
                     </div>
                     <div>
                         <button class="button button-assertive" ng-if="!disableedit" ng-click='vm.removePicture(local.list[$index],$index)' style=" min-height: auto;line-height: 30px;font-size: 15px;width: 100%;margin-top: 5px; padding: 0px;">Remove</button>
@@ -31,7 +33,9 @@
 
         <div ng-show="vm.substate === 'pic'" class="ds-photo">
             <div style="padding-bottom: 45px">
-                <img class="ds-img" ng-src="{{vm.currentPhoto.url}}" ng-click="vm.returnToGallery()" style="-webkit-user-drag: inherit; width: 100%">
+                <img class="ds-img" ng-if="vm.currentPhoto.id" ng-src="{{vm.currentPhoto.url}}" ng-click="vm.returnToGallery()" style="-webkit-user-drag: inherit; width: 100%">
+                <img ng-if="!vm.currentPhoto.id" data-ng-src="data:image/png;base64,{{vm.currentPhoto.base_64_string}}" ng-click="vm.returnToGallery()" style="-webkit-user-drag: inherit;" class='attached-photo'>
+
                 <label class="ds-title">
                   <span>Title</span>
                   <input type="text" ng-readonly="disableedit" ng-model="vm.photo.title">
