@@ -85,6 +85,10 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                         title: "",
                     };
                     vm.pictures.push(pic);
+                    if (typeof $scope.defect.isNew == 'undefined') {
+                        $rootScope.currentDefect.modified = true;
+                        $rootScope.currentDefect.isModified = true;
+                    }
                     pullDown();
                 });
             }, function(err) {});
@@ -113,6 +117,10 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                         title: "",
                     };
                     vm.pictures.push(pic);
+                    if (typeof $scope.defect.isNew == 'undefined') {
+                        $rootScope.currentDefect.modified = true;
+                        $rootScope.currentDefect.isModified = true;
+                    }
                     pullDown();
                 });
             }, function(err) {});
@@ -146,6 +154,10 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                                 vm.dataToDelete.push(idPic);
                             }
                             vm.pictures.splice(index, 1);
+                            if (typeof $scope.defect.isNew == 'undefined') {
+                                $rootScope.currentDefect.modified = true;
+                                $rootScope.currentDefect.isModified = true;
+                            }
                             pullDown();
                             popup.close();
                         }
@@ -165,6 +177,10 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             pullDown();
             if ((backupPic.comment != vm.currentPhoto.comment || backupPic.title != vm.currentPhoto.title) && vm.dataToUpdate.indexOf(vm.currentPhoto) == -1) {
                 vm.dataToUpdate.push(vm.currentPhoto);
+                if (typeof $scope.defect.isNew == 'undefined') {
+                    $rootScope.currentDefect.modified = true;
+                    $rootScope.currentDefect.isModified = true;
+                }
             }
             vm.substate = 'gallery';
         }

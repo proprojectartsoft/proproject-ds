@@ -425,7 +425,8 @@ dsApp.service('SyncService', [
             }
 
             function syncAttachments(attachments) {
-                var defer = $q.defer();
+                var defer = $q.defer(),
+                    count = 0;
                 if (attachments.length == 0) {
                     defer.resolve();
                 }
@@ -436,8 +437,14 @@ dsApp.service('SyncService', [
                         url: 'defectphoto/uploadfile',
                         data: attachment
                     }, function(result) {
+                        count++;
+                        if (count >= comments.length)
+                            defer.resolve();
                         console.log(result);
                     }, function(error) {
+                        count++;
+                        if (count >= comments.length)
+                            defer.resolve();
                         console.log(error);
                     })
                 })
