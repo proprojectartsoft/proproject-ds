@@ -438,12 +438,12 @@ dsApp.service('SyncService', [
                         data: attachment
                     }, function(result) {
                         count++;
-                        if (count >= comments.length)
+                        if (count >= attachments.length)
                             defer.resolve();
                         console.log(result);
                     }, function(error) {
                         count++;
-                        if (count >= comments.length)
+                        if (count >= attachments.length)
                             defer.resolve();
                         console.log(error);
                     })
