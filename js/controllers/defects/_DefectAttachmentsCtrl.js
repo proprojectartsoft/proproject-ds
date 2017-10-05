@@ -71,7 +71,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                         comment: null,
                         defect_id: $rootScope.currentDefect.id,
                         file_name: "",
-                        project_id: vm.projectId,
+                        project_id: $rootScope.currentDefect.project_id,
                         tags: null,
                         title: ""
                     };
@@ -105,7 +105,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                         comment: null,
                         defect_id: $rootScope.currentDefect.id,
                         file_name: "",
-                        project_id: vm.projectId,
+                        project_id: $rootScope.currentDefect.project_id,
                         tags: null,
                         title: ""
                     };
