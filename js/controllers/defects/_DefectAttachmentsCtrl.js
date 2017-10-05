@@ -187,16 +187,19 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             if (vm.substate === 'pic') {
                 //go back from view full picture
                 returnToGallery();
-            } else if ($rootScope.currentDefect.id) {
-                //go back for existing diary
-                $state.go('app.' + predicate, {
-                    id: $rootScope.currentDefect.id
-                });
             } else {
-                //go back for a new diary
-                $state.go('app.' + predicate, {
-                    id: item
-                });
+                var str = $rootScope.currentDefect.id.toString();
+                if (str.indexOf('new') == -1) {
+                    //go back for existing diary
+                    $state.go('app.' + predicate, {
+                        id: $rootScope.currentDefect.id
+                    });
+                } else {
+                    //go back for a new diary
+                    $state.go('app.' + predicate, {
+                        id: '0'
+                    });
+                }
             }
         }
 

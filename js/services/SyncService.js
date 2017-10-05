@@ -318,7 +318,7 @@ dsApp.service('SyncService', [
                         delete defect.isNew;
                         changes.defectsToAdd.push(defect);
 
-                        angular.forEach(defect.photos, function(pic) {
+                        angular.forEach(defect.photos.pictures, function(pic) {
                             console.log(pic);
                             //store new attachments to be synced
                             if (!pic.id) {
