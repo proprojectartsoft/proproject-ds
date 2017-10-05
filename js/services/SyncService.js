@@ -286,7 +286,7 @@ dsApp.service('SyncService', [
                                 updDrawsPrm = updateDrawings(res),
                                 saveComments = syncComments(res.commentsToAdd),
                                 saveAttachments = syncAttachments(res.attachments),
-                                saveSubcontr = syncSubcontractors(subcontr); //TODO: check is subcontr ok
+                                saveSubcontr = syncSubcontractors(subcontr);
 
                             Promise.all([updDefectsPrm, updDrawsPrm, saveComments, saveAttachments]).then(function(s) {
                                 count++;
@@ -337,13 +337,15 @@ dsApp.service('SyncService', [
                             }
                         })
 
-                        //store new attachments
-                        angular.forEach(defect.photos.pictures, function(pic) {
-                            //store new attachments to be synced
-                            if (!pic.id) {
-                                changes.attachments.toAdd.push(pic);
-                            }
-                        })
+                        if (typeof defect.isNew != 'undefined') {
+                            //store new attachments
+                            angular.forEach(defect.photos.pictures, function(pic) {
+                                //store new attachments to be synced
+                                if (!pic.id) {
+                                    changes.attachments.toAdd.push(pic);
+                                }
+                            })
+                        }
 
                         //add photos to be updated
                         angular.extend(changes.attachments.toUpd, defect.photos.toBeUpdated);
