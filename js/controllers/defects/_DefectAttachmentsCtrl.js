@@ -6,7 +6,8 @@ dsApp.controller('_DefectAttachmentsCtrl', [
     '$timeout',
     '$ionicScrollDelegate',
     '$ionicPopup',
-    function($rootScope, $stateParams, $state, SettingsService, $timeout, $ionicScrollDelegate, $ionicPopup) {
+    '$cordovaCamera',
+    function($rootScope, $stateParams, $state, SettingsService, $timeout, $ionicScrollDelegate, $ionicPopup, $cordovaCamera) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');
