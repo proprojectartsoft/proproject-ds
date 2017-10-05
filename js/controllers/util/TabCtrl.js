@@ -314,6 +314,7 @@ dsApp.controller('TabCtrl', [
             };
             if ($rootScope.currentTab === 'defects') {
                 $rootScope.currentDefect = ConvertersService.getEmptyDefect("new" + vm.project.value.defects.length);
+                $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                 vm.go('defects', 0);
             };
         }
