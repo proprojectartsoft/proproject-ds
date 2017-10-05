@@ -225,44 +225,8 @@ Author     : buchi
 }
 
 .ds-attachments {
-    bottom: 25px;
-
-    .item {
-        padding: 8px;
-        background-color: #e6e7e6;
-        border-color: #fff;
-    }
-
-    h3 {
-        vertical-align: top !important;
-
-        .ds-tags {
-            color: #a9a8a8;
-            font-size: 14px !important;
-        }
-
-        div:first-child {
-            color: #818282;
-        }
-
-        div:last-child {
-            font-weight: 100;
-            max-width: calc(100% - 100px);
-            max-height: 48px;
-            white-space: pre-wrap;
-            color: #a9a8a8;
-            font-size: 14px !important;
-        }
-    }
-
-    .ds-img {
-        position: relative;
-        overflow: hidden;
-        vertical-align: middle;
-        display: inline-block;
-        width: 90px;
-        height: 90px;
-    }
+    bottom: 0;
+    padding: 6px 5px;
 }
 
 .ds-comments {
@@ -336,64 +300,6 @@ Author     : buchi
 
         i {
             margin-right: 3px;
-        }
-    }
-}
-
-.ds-photo {
-    .ds-img {
-        margin-bottom: -4px;
-
-        img {
-            width: 100%;
-            -webkit-user-select: all;
-            /* Chrome 49+ */
-            -moz-user-select: all;
-            /* Firefox 43+ */
-            -ms-user-select: all;
-            /* No support yet */
-            user-select: all;
-            /* Likely future */
-        }
-    }
-
-    label {
-        span {
-            display: block;
-            width: 100%;
-            background-color: #fff;
-            padding: 5px 10px 0;
-        }
-
-        input {
-            padding: 0 10px;
-            font-size: 15px !important;
-            font-weight: 100;
-        }
-
-        textarea {
-            width: 100%;
-            resize: none;
-            min-height: 100px;
-            padding: 0 10px;
-            font-size: 15px !important;
-            font-weight: 100;
-        }
-    }
-
-    .ds-description span {
-        border-top: 1px solid #dedede;
-    }
-
-    .ds-title {
-        span {
-            background-color: #35bdee;
-            color: #fff;
-        }
-
-        input {
-            background-color: #35bdee;
-            color: #fff;
         }
     }
 }

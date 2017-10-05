@@ -3,7 +3,7 @@
         <button class="button ion-ios-arrow-left"></button>
         <h1 class="title">{{vm.settings.subHeader}}</h1>
     </ion-header-bar>
-    <ion-content class="has-header ds-blackscroll ds-page ds-tabslist ds-attachments" delegate-handle="mainScroll">
+    <ion-content class="has-header ds-blackscroll ds-page ds-attachments" delegate-handle="mainScroll">
         <div ng-if="vm.substate === 'gallery'">
             <div class="row" ng-repeat="item in vm.pictures track by $index" ng-if="$index % 2 === 0">
                 <div class="col col-50" ng-if="$index < vm.pictures.length">
@@ -13,7 +13,7 @@
                         />
                     </div>
                     <div>
-                        <button class="button button-assertive remove_attach_btn" ng-if="!disableedit" ng-click='vm.removePicture(local.list[$index],$index)'>Remove</button>
+                        <button class="button button-assertive remove_attach_btn" style="margin:0!important" ng-if="!disableedit" ng-click='vm.removePicture(vm.pictures[$index],$index)'>Remove</button>
                     </div>
                 </div>
                 <div class="col col-50" ng-if="$index + 1 < vm.pictures.length">
@@ -21,7 +21,7 @@
                         <img ng-src="{{vm.pictures[$index+1].url}}" ng-click="vm.testPicture(vm.pictures[$index + 1])" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
                     </div>
                     <div>
-                        <button class="button button-assertive remove_attach_btn" ng-if="!disableedit" ng-click='vm.removePicture(local.list[$index + 1],$index + 1)'>Remove</button>
+                        <button class="button button-assertive remove_attach_btn" style="margin:0!important" ng-if="!disableedit" ng-click='vm.removePicture(vm.pictures[$index + 1],$index + 1)'>Remove</button>
                     </div>
                 </div>
             </div>
@@ -31,19 +31,20 @@
             </div>
         </div>
 
-        <div ng-show="vm.substate === 'pic'" class="ds-photo">
+        <div ng-show="vm.substate === 'pic'">
             <div style="padding-bottom: 45px">
-                <img class="ds-img" ng-if="vm.currentPhoto.id" ng-src="{{vm.currentPhoto.url}}" ng-click="vm.returnToGallery()" class='attached-photo'>
-                <img ng-if="!vm.currentPhoto.id" data-ng-src="data:image/png;base64,{{vm.currentPhoto.base_64_string}}" ng-click="vm.returnToGallery()" class='attached-photo'>
-
-                <label class="ds-title item item-input item-stacked-label" style="background-color: #11C1F3">
-                  <span>Title</span>
-                  <input type="text" ng-readonly="disableedit" ng-model="vm.photo.title" style="background-color: #11C1F3; color:#fff;">
-                </label>
-                <label class="item item-input item-stacked-label" style="border-bottom: 1px solid #aaa; background-color:#fff;">
-                  <span style="color: #121d21;">Comment</span>
-                  <textarea ng-readonly="disableedit" ng-auto-expand ng-model="vm.photo.comment"></textarea>
-                </label>
+                <div class="list" style="padding:1px 0">
+                    <img class="attached-photo" ng-if="vm.currentPhoto.id" ng-src="{{vm.currentPhoto.url}}" ng-click="vm.returnToGallery()">
+                    <img ng-if="!vm.currentPhoto.id" data-ng-src="data:image/png;base64,{{vm.currentPhoto.base_64_string}}" ng-click="vm.returnToGallery()" class='attached-photo'>
+                    <label class="item item-input item-stacked-label attach-title">
+                      <span>Title</span>
+                      <input type="text" ng-readonly="disableedit" ng-model="vm.currentPhoto.title">
+                    </label>
+                    <label class="item item-input item-stacked-label attach-comm">
+                      <span>Comment</span>
+                      <textarea ng-readonly="disableedit" ng-auto-expand ng-model="vm.currentPhoto.comment"></textarea>
+                    </label>
+                </div>
             </div>
         </div>
     </ion-content>

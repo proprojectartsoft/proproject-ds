@@ -63,7 +63,7 @@ dsApp.controller('DefectsCtrl', [
                         })
                     });
                 });
-            });
+            }, 100);
         }
         var showEmpty = function() {
             $timeout(function() {

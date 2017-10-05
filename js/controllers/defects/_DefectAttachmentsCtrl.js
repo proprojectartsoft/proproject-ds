@@ -44,15 +44,6 @@ dsApp.controller('_DefectAttachmentsCtrl', [
         pullDown();
         goToTop();
 
-        // $timeout(function() {
-        //     $('.ds-attachments').find('img').each(function() {
-        //         var aux = {};
-        //         var imgStyle = (this.width / this.height > 1) ? 'height' : 'width';
-        //         aux[imgStyle] = '100%'
-        //         $(this).css(aux);
-        //     })
-        // });
-
         function testPicture(pic) {
             vm.substate = 'pic';
             backupPic = angular.copy(pic);
@@ -78,15 +69,17 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     var pic = {
                         base_64_string: imageData,
                         comment: null,
-                        defect_id: vm.diaryId,
+                        defect_id: $rootScope.currentDefect.id,
                         file_name: "",
                         project_id: vm.projectId,
                         tags: null,
-                        title: "",
+                        title: ""
                     };
                     vm.pictures.push(pic);
+                    //indicate that the defect needs to be modified in local db
+                    $rootScope.currentDefect.modified = true;
                     if (typeof $scope.defect.isNew == 'undefined') {
-                        $rootScope.currentDefect.modified = true;
+                        //indicate that the defect needs to be modified on server
                         $rootScope.currentDefect.isModified = true;
                     }
                     pullDown();
@@ -110,15 +103,17 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     var pic = {
                         base_64_string: imageData,
                         comment: null,
-                        defect_id: vm.diaryId,
+                        defect_id: $rootScope.currentDefect.id,
                         file_name: "",
                         project_id: vm.projectId,
                         tags: null,
-                        title: "",
+                        title: ""
                     };
                     vm.pictures.push(pic);
+                    //indicate that the defect needs to be modified in local db
+                    $rootScope.currentDefect.modified = true;
                     if (typeof $scope.defect.isNew == 'undefined') {
-                        $rootScope.currentDefect.modified = true;
+                        //indicate that the defect needs to be modified on server
                         $rootScope.currentDefect.isModified = true;
                     }
                     pullDown();
@@ -126,19 +121,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             }, function(err) {});
         }
 
-        function removePicture(pic) {
-            //TODO:
-            // delete_photos: function(dataIn) {
-            //     return $http({
-            //         method: 'POST',
-            //         url: $APP.server + 'api/defectphoto',
-            //         data: dataIn
-            //     }).then(
-            //         function(payload) {
-            //             return payload.data;
-            //         }
-            //     );
-            // },
+        function removePicture(pic, index) {
             var popup = $ionicPopup.alert({
                 title: "Are you sure",
                 template: "<center>you want to delete it?</center>",
@@ -147,15 +130,19 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                         text: 'Ok',
                         type: 'button-positive',
                         onTap: function(e) {
+                            vm.pictures.splice(index, 1);
+                            //indicate that the defect needs to be modified in local db
+                            $rootScope.currentDefect.modified = true;
+                            //if not a new photo, add it to dataToDelete
                             if (pic.id) {
                                 var idPic = {
                                     id: pic.id
                                 };
-                                vm.dataToDelete.push(idPic);
-                            }
-                            vm.pictures.splice(index, 1);
-                            if (typeof $scope.defect.isNew == 'undefined') {
-                                $rootScope.currentDefect.modified = true;
+                                vm.dataToDelete.push(pic);
+                                //remove the photo from the list of photos to be updated on server
+                                vm.dataToUpdate = vm.dataToUpdate.filter(function(obj) {
+                                    return obj.id !== pic.id;
+                                });
                                 $rootScope.currentDefect.isModified = true;
                             }
                             pullDown();
@@ -176,9 +163,11 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             goToTop();
             pullDown();
             if ((backupPic.comment != vm.currentPhoto.comment || backupPic.title != vm.currentPhoto.title) && vm.dataToUpdate.indexOf(vm.currentPhoto) == -1) {
-                vm.dataToUpdate.push(vm.currentPhoto);
-                if (typeof $scope.defect.isNew == 'undefined') {
-                    $rootScope.currentDefect.modified = true;
+                //indicate that the defect needs to be modified in local db
+                $rootScope.currentDefect.modified = true;
+                if (vm.currentPhoto.id) {
+                    //if not a new photo, add it to dataToUpdate
+                    vm.dataToUpdate.push(vm.currentPhoto);
                     $rootScope.currentDefect.isModified = true;
                 }
             }
@@ -194,10 +183,10 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             if (vm.substate === 'pic') {
                 //go back from view full picture
                 returnToGallery();
-            } else if (vm.diaryId) {
+            } else if ($rootScope.currentDefect.id) {
                 //go back for existing diary
                 $state.go('app.' + predicate, {
-                    id: vm.diaryId
+                    id: $rootScope.currentDefect.id
                 });
             } else {
                 //go back for a new diary

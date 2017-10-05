@@ -266,9 +266,11 @@ dsApp.service('SyncService', [
                         defectsToAdd: [],
                         defectsToUpd: [],
                         drawingsToUpd: [],
-                        attachmentsToAdd: [],
-                        attachmentsToUpd: [],
-                        attachmentsToDelete: []
+                        attachments: {
+                            toAdd: [],
+                            toUpd: [],
+                            toDelete: []
+                        }
                     };
                     if (project.isModified) {
                         //sync all data for modified projects
@@ -283,7 +285,7 @@ dsApp.service('SyncService', [
                             var updDefectsPrm = updateDefects(res),
                                 updDrawsPrm = updateDrawings(res),
                                 saveComments = syncComments(res.commentsToAdd),
-                                saveAttachments = syncAttachments(res.attachmentsToAdd),
+                                saveAttachments = syncAttachments(res.attachments),
                                 saveSubcontr = syncSubcontractors(subcontr); //TODO: check is subcontr ok
 
                             Promise.all([updDefectsPrm, updDrawsPrm, saveComments, saveAttachments]).then(function(s) {
@@ -320,7 +322,7 @@ dsApp.service('SyncService', [
                             console.log(pic);
                             //store new attachments to be synced
                             if (!pic.id) {
-                                changes.attachmentsToAdd.push(pic);
+                                changes.attachments.toAdd.push(pic);
                             }
                         })
                     }
@@ -339,15 +341,14 @@ dsApp.service('SyncService', [
                         angular.forEach(defect.photos.pictures, function(pic) {
                             //store new attachments to be synced
                             if (!pic.id) {
-                                changes.attachmentsToAdd.push(pic);
+                                changes.attachments.toAdd.push(pic);
                             }
                         })
 
-                        //TODO:
                         //add photos to be updated
-                        // changes.attachmentsToUpd
+                        angular.extend(changes.attachments.toUpd, defect.photos.toBeUpdated);
                         //add photos to be deleted
-                        // changes.attachmentsToDelete
+                        angular.extend(changes.attachments.toDelete, defect.photos.toBeDeleted);
                         //store all modified defects for this project
                         changes.defectsToUpd.push(defect);
                     }
@@ -425,28 +426,45 @@ dsApp.service('SyncService', [
             }
 
             function syncAttachments(attachments) {
-                var defer = $q.defer(),
-                    count = 0;
-                if (attachments.length == 0) {
-                    defer.resolve();
-                }
-                angular.forEach(attachments, function(attachment) {
-                    //add new attachment for already existing defect
-                    PostService.post({
-                        method: 'POST',
-                        url: 'defectphoto/uploadfile',
-                        data: attachment
-                    }, function(result) {
-                        count++;
-                        if (count >= attachments.length)
-                            defer.resolve();
-                        console.log(result);
-                    }, function(error) {
-                        count++;
-                        if (count >= attachments.length)
-                            defer.resolve();
-                        console.log(error);
+                var defer = $q.defer();
+
+                var doPost = function(attachments, url, method) {
+                    var def = $q.defer(),
+                        count = 0;
+                    if (attachments.length == 0) {
+                        def.resolve();
+                    }
+                    angular.forEach(attachments, function(attachment) {
+                        //add new attachment or update an existing one for already existing defect
+                        PostService.post({
+                            method: method,
+                            url: url,
+                            data: attachment
+                        }, function(result) {
+                            count++;
+                            if (count >= attachments.length)
+                                def.resolve();
+                        }, function(error) {
+                            count++;
+                            if (count >= attachments.length)
+                                def.resolve();
+                        })
                     })
+                    return def.promise;
+                };
+
+                var addPrm = doPost(attachments.toAdd, 'defectphoto/uploadfile', 'POST'),
+                    updatePrm = doPost(attachments.toUpd, 'defectphoto', 'PUT'),
+                    deletePrm = '';
+                if (attachments.toDelete.length) {
+                    deletePrm = PostService.post({
+                        method: 'POST',
+                        url: 'defectphoto',
+                        data: attachments.toDelete
+                    }, function(result) {}, function(error) {});
+                }
+                Promise.all([addPrm, updatePrm, deletePrm]).then(function(res) {
+                    defer.resolve();
                 })
                 return defer.promise;
             }
@@ -517,8 +535,8 @@ dsApp.service('SyncService', [
                         }
                     }
 
-                    //set the new id of the added defect as defect_id for all its attachments
-                    angular.forEach(changes.attachmentsToAdd, function(pic) {
+                    //set the new id of the added defect as defect_id for all its new attachments
+                    angular.forEach(changes.attachments.toAdd, function(pic) {
                         pic.defect_id = res.data;
                     })
 
