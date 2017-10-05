@@ -60,9 +60,6 @@ dsApp.controller('TabCtrl', [
 
         function storeNewDefect(proj) {
             var newDef = $rootScope.currentDefect;
-            // assign an id
-            var nextId = "new" + proj.defects.length;
-            newDef.id = nextId;
             proj.defects.push(newDef);
             proj.isModified = true;
             ConvertersService.add_task_for_subcontractor(newDef, proj.subcontractors);
@@ -316,7 +313,7 @@ dsApp.controller('TabCtrl', [
                 });
             };
             if ($rootScope.currentTab === 'defects') {
-                $rootScope.currentDefect = ConvertersService.getEmptyDefect();
+                $rootScope.currentDefect = ConvertersService.getEmptyDefect("new" + vm.project.value.defects.length);
                 vm.go('defects', 0);
             };
         }
