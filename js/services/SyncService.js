@@ -337,7 +337,7 @@ dsApp.service('SyncService', [
                             }
                         })
 
-                        if (typeof defect.isNew != 'undefined') {
+                        if (typeof defect.isNew == 'undefined') {
                             //store new attachments
                             angular.forEach(defect.photos.pictures, function(pic) {
                                 //store new attachments to be synced
