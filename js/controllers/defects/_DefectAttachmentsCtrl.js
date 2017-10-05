@@ -77,7 +77,8 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     };
                     vm.pictures.push(pic);
                     //indicate that the defect needs to be modified in local db
-                    $rootScope.currentDefect.modified = true;
+                    if (!$rootScope.currentDefect.isNew)
+                        $rootScope.currentDefect.modified = true;
                     if (typeof $rootScope.currentDefect.isNew == 'undefined') {
                         //indicate that the defect needs to be modified on server
                         $rootScope.currentDefect.isModified = true;
@@ -111,7 +112,8 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     };
                     vm.pictures.push(pic);
                     //indicate that the defect needs to be modified in local db
-                    $rootScope.currentDefect.modified = true;
+                    if (!$rootScope.currentDefect.isNew)
+                        $rootScope.currentDefect.modified = true;
                     if (typeof $rootScope.currentDefect.isNew == 'undefined') {
                         //indicate that the defect needs to be modified on server
                         $rootScope.currentDefect.isModified = true;
@@ -132,7 +134,8 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                         onTap: function(e) {
                             vm.pictures.splice(index, 1);
                             //indicate that the defect needs to be modified in local db
-                            $rootScope.currentDefect.modified = true;
+                            if (!$rootScope.currentDefect.isNew)
+                                $rootScope.currentDefect.modified = true;
                             //if not a new photo, add it to dataToDelete
                             if (pic.id) {
                                 var idPic = {
@@ -164,7 +167,8 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             pullDown();
             if ((backupPic.comment != vm.currentPhoto.comment || backupPic.title != vm.currentPhoto.title) && vm.dataToUpdate.indexOf(vm.currentPhoto) == -1) {
                 //indicate that the defect needs to be modified in local db
-                $rootScope.currentDefect.modified = true;
+                if (!$rootScope.currentDefect.isNew)
+                    $rootScope.currentDefect.modified = true;
                 if (vm.currentPhoto.id) {
                     //if not a new photo, add it to dataToUpdate
                     vm.dataToUpdate.push(vm.currentPhoto);

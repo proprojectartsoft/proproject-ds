@@ -76,7 +76,7 @@ dsApp.controller('TabCtrl', [
                 //store the marker for the new defect
                 if (newDef.drawing.markers && newDef.drawing.markers.length) {
                     aux = angular.copy(newDef.drawing.markers[0])
-                    aux.defect_id = nextId + 1;
+                    aux.defect_id = newDef.id;
                     aux.position_x = aux.xInit;
                     aux.position_y = aux.yInit;
                     drawing.markers.push(aux);
