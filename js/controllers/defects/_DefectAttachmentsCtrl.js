@@ -78,7 +78,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     vm.pictures.push(pic);
                     //indicate that the defect needs to be modified in local db
                     $rootScope.currentDefect.modified = true;
-                    if (typeof $scope.defect.isNew == 'undefined') {
+                    if (typeof $rootScope.currentDefect.isNew == 'undefined') {
                         //indicate that the defect needs to be modified on server
                         $rootScope.currentDefect.isModified = true;
                     }
@@ -112,7 +112,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     vm.pictures.push(pic);
                     //indicate that the defect needs to be modified in local db
                     $rootScope.currentDefect.modified = true;
-                    if (typeof $scope.defect.isNew == 'undefined') {
+                    if (typeof $rootScope.currentDefect.isNew == 'undefined') {
                         //indicate that the defect needs to be modified on server
                         $rootScope.currentDefect.isModified = true;
                     }

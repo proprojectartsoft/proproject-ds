@@ -27,7 +27,6 @@ dsApp.controller('NavCtrl', [
             url: 'user/profileds',
             data: {}
         }, function(result) {
-            console.log(result.data);
             var aux = result.data || localStorage.getObject('ds.user')
             switch (aux.role) {
                 case 1:
