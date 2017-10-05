@@ -187,6 +187,8 @@ dsApp.controller('DefectsCtrl', [
             // }
         }
         vm.go = function(predicate, item) {
+            if (predicate == 'fullscreen')
+                $rootScope.currentDraw = $rootScope.currentDefect.drawing;
             $state.go('app.' + predicate, {
                 id: item
             });

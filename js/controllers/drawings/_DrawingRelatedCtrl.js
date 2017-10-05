@@ -37,6 +37,11 @@ dsApp.controller('_DrawingRelatedCtrl', [
             $scope.settings.subHeader = item.title;
             SettingsService.set_settings($scope.settings);
             //store the new item (defect) to be displayed
+            //TODO: get the entire defect
+            item.drawing = $rootScope.currentDraw;
+            item.photos = [];
+            item.comments = [];
+            item.related_tasks = [];
             $rootScope.currentDefect = item;
             $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
             $state.go('app.defects', {

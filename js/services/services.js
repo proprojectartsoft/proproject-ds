@@ -415,9 +415,9 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
         return def;
     }
 
-    self.getEmptyDefect = function(id) {
+    self.getEmptyDefect = function() {
         var defect = {};
-        defect.id = id;
+        defect.id = 0;
         defect.active = true;
         defect.project_id = $rootScope.projId;
         defect.defect_id = 0;

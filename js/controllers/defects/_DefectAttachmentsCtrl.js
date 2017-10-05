@@ -77,11 +77,12 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     };
                     vm.pictures.push(pic);
                     //indicate that the defect needs to be modified in local db
-                    if (!$rootScope.currentDefect.isNew)
+                    if ($rootScope.currentDefect.id != 0) {
                         $rootScope.currentDefect.modified = true;
-                    if (typeof $rootScope.currentDefect.isNew == 'undefined') {
-                        //indicate that the defect needs to be modified on server
-                        $rootScope.currentDefect.isModified = true;
+                        if (typeof $rootScope.currentDefect.isNew == 'undefined') {
+                            //indicate that the defect needs to be modified on server
+                            $rootScope.currentDefect.isModified = true;
+                        }
                     }
                     pullDown();
                 });
@@ -112,11 +113,12 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     };
                     vm.pictures.push(pic);
                     //indicate that the defect needs to be modified in local db
-                    if (!$rootScope.currentDefect.isNew)
+                    if ($rootScope.currentDefect.id != 0) {
                         $rootScope.currentDefect.modified = true;
-                    if (typeof $rootScope.currentDefect.isNew == 'undefined') {
-                        //indicate that the defect needs to be modified on server
-                        $rootScope.currentDefect.isModified = true;
+                        if (typeof $rootScope.currentDefect.isNew == 'undefined') {
+                            //indicate that the defect needs to be modified on server
+                            $rootScope.currentDefect.isModified = true;
+                        }
                     }
                     pullDown();
                 });
@@ -134,19 +136,20 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                         onTap: function(e) {
                             vm.pictures.splice(index, 1);
                             //indicate that the defect needs to be modified in local db
-                            if (!$rootScope.currentDefect.isNew)
+                            if ($rootScope.currentDefect.id != 0) {
                                 $rootScope.currentDefect.modified = true;
-                            //if not a new photo, add it to dataToDelete
-                            if (pic.id) {
-                                var idPic = {
-                                    id: pic.id
-                                };
-                                vm.dataToDelete.push(pic);
-                                //remove the photo from the list of photos to be updated on server
-                                vm.dataToUpdate = vm.dataToUpdate.filter(function(obj) {
-                                    return obj.id !== pic.id;
-                                });
-                                $rootScope.currentDefect.isModified = true;
+                                //if not a new photo, add it to dataToDelete
+                                if (typeof $rootScope.currentDefect.isNew == 'undefined' && pic.id) {
+                                    var idPic = {
+                                        id: pic.id
+                                    };
+                                    vm.dataToDelete.push(pic);
+                                    //remove the photo from the list of photos to be updated on server
+                                    vm.dataToUpdate = vm.dataToUpdate.filter(function(obj) {
+                                        return obj.id !== pic.id;
+                                    });
+                                    $rootScope.currentDefect.isModified = true;
+                                }
                             }
                             pullDown();
                             popup.close();
@@ -167,12 +170,13 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             pullDown();
             if ((backupPic.comment != vm.currentPhoto.comment || backupPic.title != vm.currentPhoto.title) && vm.dataToUpdate.indexOf(vm.currentPhoto) == -1) {
                 //indicate that the defect needs to be modified in local db
-                if (!$rootScope.currentDefect.isNew)
+                if ($rootScope.currentDefect.id != 0) {
                     $rootScope.currentDefect.modified = true;
-                if (vm.currentPhoto.id) {
-                    //if not a new photo, add it to dataToUpdate
-                    vm.dataToUpdate.push(vm.currentPhoto);
-                    $rootScope.currentDefect.isModified = true;
+                    if (vm.currentPhoto.id) {
+                        //if not a new photo, add it to dataToUpdate
+                        vm.dataToUpdate.push(vm.currentPhoto);
+                        $rootScope.currentDefect.isModified = true;
+                    }
                 }
             }
             vm.substate = 'gallery';
@@ -187,20 +191,11 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             if (vm.substate === 'pic') {
                 //go back from view full picture
                 returnToGallery();
-            } else {
-                var str = $rootScope.currentDefect.id.toString();
-                if (str.indexOf('new') == -1) {
-                    //go back for existing diary
-                    $state.go('app.' + predicate, {
-                        id: $rootScope.currentDefect.id
-                    });
-                } else {
-                    //go back for a new diary
-                    $state.go('app.' + predicate, {
-                        id: '0'
-                    });
-                }
-            }
+            } else
+                //go back to a diary
+                $state.go('app.' + predicate, {
+                    id: $rootScope.currentDefect.id
+                });
         }
 
         function pullDown() {

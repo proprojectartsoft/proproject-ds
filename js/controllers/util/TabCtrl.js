@@ -60,6 +60,9 @@ dsApp.controller('TabCtrl', [
 
         function storeNewDefect(proj) {
             var newDef = $rootScope.currentDefect;
+            // assign an id
+            var nextId = "new" + proj.defects.length;
+            newDef.id = nextId;
             proj.defects.push(newDef);
             proj.isModified = true;
             ConvertersService.add_task_for_subcontractor(newDef, proj.subcontractors);
@@ -76,7 +79,7 @@ dsApp.controller('TabCtrl', [
                 //store the marker for the new defect
                 if (newDef.drawing.markers && newDef.drawing.markers.length) {
                     aux = angular.copy(newDef.drawing.markers[0])
-                    aux.defect_id = newDef.id;
+                    aux.defect_id = nextId;
                     aux.position_x = aux.xInit;
                     aux.position_y = aux.yInit;
                     drawing.markers.push(aux);
@@ -313,7 +316,7 @@ dsApp.controller('TabCtrl', [
                 });
             };
             if ($rootScope.currentTab === 'defects') {
-                $rootScope.currentDefect = ConvertersService.getEmptyDefect("new" + vm.project.value.defects.length);
+                $rootScope.currentDefect = ConvertersService.getEmptyDefect();
                 $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                 vm.go('defects', 0);
             };
