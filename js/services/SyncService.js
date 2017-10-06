@@ -238,7 +238,7 @@ dsApp.service('SyncService', [
                                                 count++;
                                                 draw.pdfPath = downloadRes;
                                                 //all pdfs have been downloaded
-                                                if (countProj >= projects.length && count >= orderedDraws.length)
+                                                if (countProj >= projects.length && count >= proj.value.drawings.length)
                                                     def.resolve(projects);
                                             }
                                         })
