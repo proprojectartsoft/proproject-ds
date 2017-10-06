@@ -256,6 +256,108 @@ dsApp.service('SyncService', [
             return deferred.promise;
         };
 
+        service.syncAttachments = function(attachments) {
+            var defer = $q.defer();
+
+            var doPost = function(attachments, url, method) {
+                var def = $q.defer(),
+                    count = 0;
+                if (attachments.length == 0) {
+                    def.resolve();
+                }
+                angular.forEach(attachments, function(attachment) {
+                    //add new attachment or update an existing one for already existing defect
+                    PostService.post({
+                        method: method,
+                        url: url,
+                        data: attachment
+                    }, function(result) {
+                        count++;
+                        if (count >= attachments.length)
+                            def.resolve();
+                    }, function(error) {
+                        count++;
+                        if (count >= attachments.length)
+                            def.resolve();
+                    })
+                })
+                return def.promise;
+            };
+
+            var addPrm = doPost(attachments.toAdd, 'defectphoto/uploadfile', 'POST'),
+                updatePrm = doPost(attachments.toUpd, 'defectphoto', 'PUT'),
+                deletePrm = '';
+            if (attachments.toDelete.length) {
+                deletePrm = PostService.post({
+                    method: 'POST',
+                    url: 'defectphoto',
+                    data: attachments.toDelete
+                }, function(result) {}, function(error) {});
+            }
+            Promise.all([addPrm, updatePrm, deletePrm]).then(function(res) {
+                defer.resolve();
+            })
+            return defer.promise;
+        }
+
+        service.syncComments = function(comments) {
+            var defer = $q.defer(),
+                count = 0;
+            if (!comments.length)
+                defer.resolve();
+            angular.forEach(comments, function(comment) {
+                //add new comment for already existing defect
+                PostService.post({
+                    method: 'POST',
+                    url: 'defectcomment',
+                    data: comment
+                }, function(result) {
+                    count++;
+                    if (count >= comments.length) {
+                        defer.resolve();
+                    }
+                }, function(error) {
+                    count++;
+                    if (count >= comments.length) {
+                        defer.resolve();
+                    }
+                })
+            })
+            return defer.promise;
+        }
+
+        service.syncSubcontractors = function(subcontractors) {
+            var defer = $q.defer(),
+                count = 0;
+            if (!subcontractors.length)
+                defer.resolve();
+            angular.forEach(subcontractors, function(subcontr) {
+                //store modified subcontractors to server
+                if (typeof subcontr.isModified != 'undefined') {
+                    PostService.post({
+                        method: 'PUT',
+                        url: 'subcontractor',
+                        data: subcontr
+                    }, function(result) {
+                        count++;
+                        delete subcontr.isModified;
+                        if (count >= subcontractors.length)
+                            defer.resolve();
+                    }, function(error) {
+                        count++;
+                        delete subcontr.isModified;
+                        if (count >= subcontractors.length)
+                            defer.resolve();
+                    })
+                } else {
+                    count++;
+                    if (count >= subcontractors.length)
+                        defer.resolve();
+                }
+            })
+            return defer.promise;
+        }
+
         service.syncData = function() {
             var def = $q.defer(),
                 count = 0,
@@ -375,108 +477,6 @@ dsApp.service('SyncService', [
                         changes.drawingsToUpd.push(draw);
                     }
                 })
-            }
-
-            function syncSubcontractors(subcontractors) {
-                var defer = $q.defer(),
-                    count = 0;
-                if (!subcontractors.length)
-                    defer.resolve();
-                angular.forEach(subcontractors, function(subcontr) {
-                    //store modified subcontractors to server
-                    if (typeof subcontr.isModified != 'undefined') {
-                        PostService.post({
-                            method: 'PUT',
-                            url: 'subcontractor',
-                            data: subcontr
-                        }, function(result) {
-                            count++;
-                            delete subcontr.isModified;
-                            if (count >= subcontractors.length)
-                                defer.resolve();
-                        }, function(error) {
-                            count++;
-                            delete subcontr.isModified;
-                            if (count >= subcontractors.length)
-                                defer.resolve();
-                        })
-                    } else {
-                        count++;
-                        if (count >= subcontractors.length)
-                            defer.resolve();
-                    }
-                })
-                return defer.promise;
-            }
-
-            function syncComments(comments) {
-                var defer = $q.defer(),
-                    count = 0;
-                if (!comments.length)
-                    defer.resolve();
-                angular.forEach(comments, function(comment) {
-                    //add new comment for already existing defect
-                    PostService.post({
-                        method: 'POST',
-                        url: 'defectcomment',
-                        data: comment
-                    }, function(result) {
-                        count++;
-                        if (count >= comments.length) {
-                            defer.resolve();
-                        }
-                    }, function(error) {
-                        count++;
-                        if (count >= comments.length) {
-                            defer.resolve();
-                        }
-                    })
-                })
-                return defer.promise;
-            }
-
-            function syncAttachments(attachments) {
-                var defer = $q.defer();
-
-                var doPost = function(attachments, url, method) {
-                    var def = $q.defer(),
-                        count = 0;
-                    if (attachments.length == 0) {
-                        def.resolve();
-                    }
-                    angular.forEach(attachments, function(attachment) {
-                        //add new attachment or update an existing one for already existing defect
-                        PostService.post({
-                            method: method,
-                            url: url,
-                            data: attachment
-                        }, function(result) {
-                            count++;
-                            if (count >= attachments.length)
-                                def.resolve();
-                        }, function(error) {
-                            count++;
-                            if (count >= attachments.length)
-                                def.resolve();
-                        })
-                    })
-                    return def.promise;
-                };
-
-                var addPrm = doPost(attachments.toAdd, 'defectphoto/uploadfile', 'POST'),
-                    updatePrm = doPost(attachments.toUpd, 'defectphoto', 'PUT'),
-                    deletePrm = '';
-                if (attachments.toDelete.length) {
-                    deletePrm = PostService.post({
-                        method: 'POST',
-                        url: 'defectphoto',
-                        data: attachments.toDelete
-                    }, function(result) {}, function(error) {});
-                }
-                Promise.all([addPrm, updatePrm, deletePrm]).then(function(res) {
-                    defer.resolve();
-                })
-                return defer.promise;
             }
 
             function addDefect(oldDefect, changes) {

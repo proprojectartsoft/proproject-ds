@@ -246,6 +246,14 @@ dsApp.service('SettingsService', [
             });
             return popup;
         };
+        self.show_loading_popup = function(title) {
+            return $ionicPopup.show({
+                title: title,
+                template: "<center><ion-spinner icon='android'></ion-spinner></center>",
+                content: "",
+                buttons: []
+            });
+        };
         self.get_initials = function(str) {
             if (str) {
                 var aux = str.split(" ");
@@ -387,8 +395,10 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
                 }) || [];
                 //add the new task
                 subcontr[0].tasks.push(task);
+                return subcontr[0];
             }
         }
+        return false;
     }
 
     self.remove_task_for_subcontractor = function(task, subcontractors, assignee_id) {

@@ -178,14 +178,8 @@ dsApp.controller('DefectsCtrl', [
             $rootScope.disableedit = true;
             $ionicViewSwitcher.nextDirection('back');
             $state.go('app.tab');
-            // if ($rootScope.routeback) {
-            //     $state.go($rootScope.routeback.state, {
-            //         id: $rootScope.routeback.id
-            //     });
-            // } else {
-            //     $state.go('app.tab')
-            // }
         }
+
         vm.go = function(predicate, item) {
             if (predicate == 'fullscreen')
                 $rootScope.currentDraw = $rootScope.currentDefect.drawing;

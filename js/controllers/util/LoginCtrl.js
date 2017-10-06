@@ -7,6 +7,13 @@ dsApp.controller('LoginCtrl', [
     'SyncService',
     function($rootScope, $scope, $state, $ionicPopup, AuthService, SyncService) {
         $scope.user = {};
+        //indicate if there is a defect/drawing or subcontractor added in offline mode
+        $rootScope.offline = {
+            defects: false,
+            drawings: false,
+            subcontractors: false
+        }
+        
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')

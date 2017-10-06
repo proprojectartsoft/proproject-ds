@@ -32,14 +32,16 @@ dsApp.controller('_DefectCommentsCtrl', [
                     "date": Date.now(),
                     "isNew": true
                 };
-                if (typeof $scope.defect.isNew == 'undefined') {
-                    $scope.defect.modified = true;
-                    $scope.defect.isModified = true;
-                    request.isNew = true;
-                }
+                //TODO: check if OK
+                //indicate that the defect will be modified locally
+                $scope.defect.modified = true;
+                request.isNew = true;
                 $scope.defect.comments.push(request);
                 $scope.local.comment = '';
                 $scope.local.list = $scope.defect.comments;
+                if (typeof $scope.defect.isNew == 'undefined') {
+                    $scope.defect.isModified = true;
+                }
             }
         }
 
