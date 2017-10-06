@@ -202,16 +202,22 @@ dsApp.service('SyncService', [
                                     }]
                                 });
                             } else {
+                                var countProj = 0;
                                 angular.forEach(projects, function(proj) {
+                                    countProj++;
                                     if (!proj.value.drawings || proj.value.drawings && !proj.value.drawings.length) {
-                                        def.resolve(projects);
+                                        if (countProj >= projects.length)
+                                            def.resolve(projects);
                                     }
+
                                     //order drawings by date
-                                    var orderedDraws = orderBy(proj.value.drawings, 'draw.drawing_date', true);
+                                    proj.value.drawings = orderBy(proj.value.drawings, 'draw.drawing_date', true);
+                                    var count = 0;
                                     //download the pdf for every drawing
-                                    angular.forEach(orderedDraws, function(draw) {
+                                    angular.forEach(proj.value.drawings, function(draw) {
                                         DownloadsService.downloadPdf(draw, path).then(function(downloadRes) {
                                             if (downloadRes == "") {
+                                                count++;
                                                 //not enough space to download all pdfs; stop download
                                                 def.resolve(projects);
                                                 var popup = $ionicPopup.alert({
@@ -227,10 +233,12 @@ dsApp.service('SyncService', [
                                                         }
                                                     }]
                                                 });
+                                                return;
                                             } else {
+                                                count++;
                                                 draw.pdfPath = downloadRes;
                                                 //all pdfs have been downloaded
-                                                if (orderedDraws[orderedDraws.length - 1] === draw)
+                                                if (countProj >= projects.length && count >= orderedDraws.length)
                                                     def.resolve(projects);
                                             }
                                         })
