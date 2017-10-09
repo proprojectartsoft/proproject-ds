@@ -11,7 +11,8 @@ dsApp.controller('TabCtrl', [
     '$filter',
     '$q',
     'PostService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, $timeout, SyncService, ConvertersService, $filter, $q, PostService) {
+    'orderByFilter',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicPopup, $timeout, SyncService, ConvertersService, $filter, $q, PostService, orderBy) {
         var vm = this;
         vm.tabSelect = tabSelect;
         vm.reload = reload;
@@ -475,7 +476,7 @@ dsApp.controller('TabCtrl', [
                     vm.settings.loaded = true;
                     break;
                 case 'defects':
-                    vm.list = $rootScope.defects;
+                    vm.list = orderBy($rootScope.defects, 'draw.drawing_date', true);
                     vm.settings.loaded = true;
                     break;
             }
