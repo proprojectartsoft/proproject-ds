@@ -330,6 +330,7 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
     }
 
     self.increase_nr_tasks = function(subcontr, task) {
+        subcontr.nr_of_defects++;
         switch (task) {
             case "Complete":
                 subcontr.completed_tasks++;
@@ -355,6 +356,7 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
     }
 
     self.decrease_nr_tasks = function(subcontr, task) {
+        subcontr.nr_of_defects--;
         switch (task) {
             case "Complete":
                 subcontr.completed_tasks--;
@@ -395,10 +397,10 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
                 }) || [];
                 //add the new task
                 subcontr[0].tasks.push(task);
-                return subcontr[0];
+                return subcontractors;
             }
         }
-        return false;
+        return subcontractors;
     }
 
     self.remove_task_for_subcontractor = function(task, subcontractors, assignee_id) {
@@ -409,12 +411,13 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
         //if the old assignee is a subcontractor, remove the task from his tasks list
         if (subcontr && subcontr.length) {
             // remove from old assignee related list
-            subcontr[0].tasks = $filter('filter')(subcontr[0].related, {
+            subcontr[0].tasks = $filter('filter')(subcontr[0].tasks, {
                 id: ('!' + task.id)
             });
             //derease the number of tasks corresponding to task's status
-            self.decrease_nr_tasks(subcontr, task.status_name);
+            self.decrease_nr_tasks(subcontr[0], task.status_name);
             subcontr[0].isModified = true;
+            return subcontractors;
         }
         return subcontractors;
     }
@@ -434,6 +437,7 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
         defect.related_tasks = [];
         defect.due_date = 0;
         defect.drawing = null;
+        defect.description = "";
         defect.photos = [];
         defect.comments = [];
         defect.status_obj = {

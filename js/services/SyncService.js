@@ -394,9 +394,9 @@ dsApp.service('SyncService', [
                         syncDefects(changes).then(function(res) {
                             var updDefectsPrm = updateDefects(res),
                                 updDrawsPrm = updateDrawings(res),
-                                saveComments = syncComments(res.commentsToAdd),
-                                saveAttachments = syncAttachments(res.attachments),
-                                saveSubcontr = syncSubcontractors(subcontr);
+                                saveComments = service.syncComments(res.commentsToAdd),
+                                saveAttachments = service.syncAttachments(res.attachments),
+                                saveSubcontr = service.syncSubcontractors(subcontr);
 
                             Promise.all([updDefectsPrm, updDrawsPrm, saveComments, saveAttachments]).then(function(s) {
                                 count++;
