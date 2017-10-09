@@ -54,7 +54,7 @@ dsApp.controller('_DefectCommentsCtrl', [
             return SettingsService.get_initials(str);
         }
         $scope.back = function() {
-            $state.go('app.defects', {
+            $rootScope.go('app.defects', {
                 id: $stateParams.id
             })
         }

@@ -193,7 +193,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                 returnToGallery();
             } else
                 //go back to a diary
-                $state.go('app.' + predicate, {
+                $rootScope.go('app.' + predicate, {
                     id: $rootScope.currentDefect.id
                 });
         }

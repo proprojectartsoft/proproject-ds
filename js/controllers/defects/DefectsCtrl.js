@@ -161,7 +161,7 @@ dsApp.controller('DefectsCtrl', [
                 $rootScope.disableedit = true;
                 $rootScope.currentDefect.isNew = true;
                 $rootScope.currentDefect.new = true;
-                vm.back();
+                vm.go('back');
             } else {
                 var alertPopup = $ionicPopup.show({
                     title: 'Error',
@@ -174,18 +174,18 @@ dsApp.controller('DefectsCtrl', [
             }
         }
 
-        vm.back = function() {
-            $rootScope.disableedit = true;
-            $ionicViewSwitcher.nextDirection('back');
-            $state.go('app.tab');
-        }
-
         vm.go = function(predicate, item) {
-            if (predicate == 'fullscreen')
-                $rootScope.currentDraw = $rootScope.currentDefect.drawing;
-            $state.go('app.' + predicate, {
-                id: item
-            });
+            if (predicate == 'back') {
+                $rootScope.disableedit = true;
+                $ionicViewSwitcher.nextDirection('back');
+                $rootScope.go('app.tab');
+            } else {
+                if (predicate == 'fullscreen')
+                    $rootScope.currentDraw = $rootScope.currentDefect.drawing;
+                $rootScope.go('app.' + predicate, {
+                    id: item
+                });
+            }
         }
     }
 ]);

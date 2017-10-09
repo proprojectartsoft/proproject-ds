@@ -65,7 +65,7 @@ dsApp.controller('_DefectDetailsCtrl', [
 
         vm.back = function() {
             vm.objtofields();
-            $state.go('app.defects', {
+            $rootScope.go('app.defects', {
                 id: $stateParams.id
             })
         }

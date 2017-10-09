@@ -44,19 +44,13 @@ dsApp.controller('_DrawingRelatedCtrl', [
             item.related_tasks = [];
             $rootScope.currentDefect = item;
             $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
-            $state.go('app.defects', {
+            $rootScope.go('app.defects', {
                 id: item.id
             })
         }
 
         $scope.getInitials = function(str) {
             return SettingsService.get_initials(str);
-        }
-
-        $scope.back = function() {
-            $state.go('app.drawings', {
-                id: $stateParams.id
-            })
         }
     }
 ]);

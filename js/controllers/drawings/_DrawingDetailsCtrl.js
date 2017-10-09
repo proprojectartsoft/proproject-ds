@@ -16,7 +16,7 @@ dsApp.controller('_DrawingDetailsCtrl', [
             }, 200);
         }
         $scope.back = function() {
-            $state.go('app.drawings', {
+            $rootScope.go('app.drawings', {
                 id: $stateParams.id
             })
         }

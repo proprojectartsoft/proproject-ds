@@ -40,7 +40,7 @@ dsApp.controller('_DefectRelatedCtrl', [
         }
 
         vm.back = function() {
-            $state.go('app.defects', {
+            $rootScope.go('app.defects', {
                 id: $stateParams.id
             })
         }
