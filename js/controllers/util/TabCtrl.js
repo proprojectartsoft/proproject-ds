@@ -227,19 +227,14 @@ dsApp.controller('TabCtrl', [
                     id: related.id
                 })[0];
                 //remember old assignee and use it to remove the task from his list
-                var oldAssignee = defect.assignee_id;
+                var oldAssignee = angular.copy(defect.assignee_id);
                 //store new assignee for defect
                 defect.assignee_id = subcontr.id;
                 defect.assignee_name = subcontr.name;
                 defect.isModified = true;
-                //remove task from old assignee's list
-                proj.subcontractors = ConvertersService.remove_task_for_subcontractor(related, proj.subcontractors, oldAssignee);
-                //store the modified subcontractor
-                for (var i = 0; i < proj.subcontractors.length; i++) {
-                    if (proj.subcontractors[i].id == subcontr.id) {
-                        proj.subcontractors[i] = subcontr;
-                        i = proj.subcontractors.length;
-                    }
+                if (related.assignee_id != oldAssignee) {
+                    //remove task from old assignee's list
+                    proj.subcontractors = ConvertersService.remove_task_for_subcontractor(related, proj.subcontractors, oldAssignee);
                 }
                 //call updateDefect
                 if (!offline) {
@@ -250,20 +245,39 @@ dsApp.controller('TabCtrl', [
                             data: ConvertersService.get_defect_for_update(defect)
                         }, function(res) {
                             cnt++;
-                            if (cnt >= subcontr.newTasks.length)
+                            if (cnt >= subcontr.newTasks.length) {
+                                subcontr.newTasks = [];
+                                replaceSubcontractor(proj.subcontractors, subcontr);
                                 prm.resolve();
+                            }
                         }, function(err) {
                             cnt++;
-                            if (cnt >= subcontr.newTasks.length)
+                            if (cnt >= subcontr.newTasks.length) {
+                                subcontr.newTasks = [];
+                                replaceSubcontractor(proj.subcontractors, subcontr);
                                 prm.resolve();
+                            }
                         })
                     })
                 } else {
                     cnt++;
-                    if (cnt >= subcontr.newTasks.length)
+                    if (cnt >= subcontr.newTasks.length) {
+                        subcontr.newTasks = [];
+                        replaceSubcontractor(proj.subcontractors, subcontr);
                         prm.resolve();
+                    }
                 }
             })
+
+            var replaceSubcontractor = function(subcontractors, subcontr) {
+                //store the modified subcontractor
+                for (var i = 0; i < subcontractors.length; i++) {
+                    if (subcontractors[i].id == subcontr.id) {
+                        subcontractors[i] = subcontr;
+                        i = subcontractors.length;
+                    }
+                }
+            }
             return prm.promise;
         }
 
@@ -279,8 +293,8 @@ dsApp.controller('TabCtrl', [
                     id: defect.id
                 }
             }, function(result) {
-                defect.reporter_id = result.data.reporter_id;
-                defect.assignee_id = result.data.assignee_id;
+                defect.reporter_id = defect.reporter_id || result.data.reporter_id;
+                defect.assignee_id = defect.assignee_id || result.data.assignee_id;
                 def.resolve();
             }, function(err) {
                 SettingsService.show_message_popup('Please notice', 'An unexpected error occured and defect could not be updated.');
@@ -451,7 +465,7 @@ dsApp.controller('TabCtrl', [
                             var colorId = (parseInt(vm.project.value.customer_id + "" + subcontr.id)) % colorsLength;
                             subcontr.name = subcontr.last_name + " " + subcontr.first_name;
                             subcontr.description = subcontr.company;
-                            subcontr.icon = SettingsService.get_initials(subcontr.last_name + " " + subcontr.first_name);
+                            subcontr.icon = SettingsService.get_initials(subcontr.name);
                             subcontr.backgroundColor = colorList[colorId].backColor;
                             subcontr.foregroundColor = colorList[colorId].foreColor;
                             subcontr.nr_of_defects = subcontr.completed_tasks + subcontr.contested_tasks + subcontr.delayed_tasks + subcontr.incomplete_tasks + subcontr.partially_completed_tasks + subcontr.closed_out_tasks;

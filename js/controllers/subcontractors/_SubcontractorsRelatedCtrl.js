@@ -20,19 +20,15 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
         vm.settings.subHeader = 'Subcontractor - ' + vm.subcontractor.last_name + ' ' + vm.subcontractor.first_name;
 
         vm.local.list = vm.subcontractor.tasks || [];
-        vm.local.poplist = $rootScope.defects;
+        vm.local.poplist = [];
         //fill the list of possible related defects
-        // for (var i = 0; i < res.defects.length; i++) {
-        //     var sw = true;
-        //     for (var j = 0; j < subcontr.related.length; j++) {
-        //         if (res.defects[i].id === subcontr.related[j].id) {
-        //             sw = false;
-        //         }
-        //     }
-        //     if (sw) {
-        //         vm.local.poplist.push(res.defects[i]);
-        //     }
-        // }
+        angular.forEach($rootScope.defects, function(def) {
+            if (!$filter('filter')(vm.local.list, {
+                    id: def.id
+                }).length) {
+                vm.local.poplist.push(def);
+            }
+        })
         //get the colors from json
         SettingsService.get_colors().then(function(colorList) {
             var colorsLength = Object.keys(colorList).length;
@@ -93,21 +89,8 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
                 $rootScope.currentSubcontr.newTasks.push(related);
                 vm.local.list.push(related);
                 ConvertersService.increase_nr_tasks($rootScope.currentSubcontr, related.status_name);
+                $state.go('app.tab');
             })
-
-            // var defects = angular.copy(vm.local.poplist);
-            // vm.local.poplist = [];
-            // for (var i = 0; i < defects.length; i++) {
-            //     var sw = true;
-            //     for (var j = 0; j < subcontr.length; j++) {
-            //         if (defects[i].id === result[j].id) {
-            //             sw = false;
-            //         }
-            //     }
-            //     if (sw) {
-            //         vm.local.poplist.push(defects[i]);
-            //     }
-            // }
         }
     }
 ]);

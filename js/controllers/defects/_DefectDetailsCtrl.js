@@ -70,7 +70,7 @@ dsApp.controller('_DefectDetailsCtrl', [
             })
         }
 
-        $scope.$watch('vm.defect.status_obj', function(value) {
+        $scope.$watch('vm.defect.status_obj', function(value) { //TODO: undefined after cancel edit and enter again to details => add timeout
             var drawing = $rootScope.currentDefect.drawing;
             if (drawing && drawing.markers && drawing.markers.length) {
                 var img = '';
