@@ -33,7 +33,7 @@ dsApp.controller('ProjectsCtrl', [
             $rootScope.navTitle = item.name;
             $rootScope.customer_id = item.customer_id;
             $rootScope.drawingsLight = getLightDrawings(item);
-            $state.go('app.tab', {
+            $rootScope.go('app.tab', {
                 page: 'drawings'
             });
         }

@@ -514,13 +514,13 @@ dsApp.controller('TabCtrl', [
                 default:
             }
             SettingsService.set_settings(vm.settings)
-            $state.go('app.' + $rootScope.currentTab, {
+            $rootScope.go('app.' + $rootScope.currentTab, {
                 id: item.id
             })
         }
 
         function go(predicate, item) {
-            $state.go('app.' + predicate, {
+            $rootScope.go('app.' + predicate, {
                 id: item
             });
         }

@@ -45,7 +45,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             SettingsService.set_settings(vm.settings);
             $rootScope.currentDefect = item;
             $rootScope.currentDraw = item.drawing;
-            $state.go('app.defects', {
+            $rootScope.go('app.defects', {
                 id: item.id
             })
         }
@@ -53,7 +53,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             return SettingsService.get_initials(str);
         }
         vm.back = function() {
-            $state.go('app.subcontractors', {
+            $rootScope.go('app.subcontractors', {
                 id: $stateParams.id
             })
         }
@@ -89,7 +89,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
                 $rootScope.currentSubcontr.newTasks.push(related);
                 vm.local.list.push(related);
                 ConvertersService.increase_nr_tasks($rootScope.currentSubcontr, related.status_name);
-                $state.go('app.tab');
+                $rootScope.go('app.tab');
             })
         }
     }

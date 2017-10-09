@@ -115,7 +115,7 @@ dsApp.controller('FullscreenCtrl', [
                                         $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
                                         //keep only the marker of the new defect
                                         $rootScope.currentDefect.drawing.markers = [newMarker];
-                                        $state.go('app.defects', {
+                                        $rootScope.go('app.defects', {
                                             id: 0
                                         })
                                     }
@@ -143,7 +143,7 @@ dsApp.controller('FullscreenCtrl', [
                                         $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
                                         //keep only the marker of the new defect
                                         $rootScope.currentDefect.drawing.markers = [newMarker];
-                                        $state.go('app.defects', {
+                                        $rootScope.go('app.defects', {
                                             id: 0
                                         })
                                     }
@@ -326,16 +326,16 @@ dsApp.controller('FullscreenCtrl', [
         $scope.back = function() {
             var routeback = sessionStorage.getObject('ds.fullscreen.back')
             if (routeback) {
-                $state.go(routeback.state, {
+                $rootScope.go(routeback.state, {
                     id: routeback.id
                 });
             } else {
-                $state.go('app.tab')
+                $rootScope.go('app.tab')
             }
         }
         $scope.go = function(predicate, id) {
             if (id) {
-                $state.go('app.' + predicate, {
+                $rootScope.go('app.' + predicate, {
                     id: id
                 });
             }

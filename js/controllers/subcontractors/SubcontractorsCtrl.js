@@ -36,14 +36,14 @@ dsApp.controller('SubcontractorsCtrl', [
         }
 
         vm.go = function(predicate, item) {
-            $state.go('app.' + predicate, {
+            $rootScope.go('app.' + predicate, {
                 id: item
             });
         }
         vm.back = function() {
             $rootScope.disableedit = true;
             $rootScope.routeback = null;
-            $state.go('app.tab')
+            $rootScope.go('app.tab')
         }
     }
 ]);

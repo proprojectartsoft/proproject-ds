@@ -86,20 +86,20 @@ dsApp.controller('DrawingsCtrl', [
             $rootScope.currentDraw.drawing_date = new Date($rootScope.currentDraw.drawing_date).getTime();
             $rootScope.currentDraw.isModified = true;
             $rootScope.currentDraw.modified = true;
-            $state.go('app.tab')
+            $rootScope.go('app.tab')
         }
 
         $scope.back = function() {
             $rootScope.routeback = null;
             $rootScope.disableedit = true;
-            $state.go('app.tab')
+            $rootScope.go('app.tab');
         }
         $scope.go = function(predicate, item) {
             //TODO: set $rootScope.currentDefect
             $rootScope.currentDefect = $filter('filter')($rootScope.currentDraw.defects, {
                 id: item
             });
-            $state.go('app.' + predicate, {
+            $rootScope.go('app.' + predicate, {
                 id: item
             });
         }

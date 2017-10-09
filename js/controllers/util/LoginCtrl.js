@@ -13,7 +13,7 @@ dsApp.controller('LoginCtrl', [
             drawings: false,
             subcontractors: false
         }
-        
+
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -38,7 +38,7 @@ dsApp.controller('LoginCtrl', [
                             name: result.data.username
                         });
                         loginPopup.close();
-                        $state.go('app.projects');
+                        $rootScope.go('app.projects');
                     })
                 });
             }).error(function(response, status) {
@@ -63,7 +63,7 @@ dsApp.controller('LoginCtrl', [
                                     }
                                 }]
                             });
-                            $state.go('app.projects');
+                            $rootScope.go('app.projects');
                         })
                     });
                 }
@@ -103,7 +103,7 @@ dsApp.controller('LoginCtrl', [
                     if (result.data) {
                         SyncService.sync().then(function(res) {
                             loginPopup.close();
-                            $state.go('app.projects');
+                            $rootScope.go('app.projects');
                         })
                         //store data for currently logged user
                         localStorage.setObject('ds.user', {

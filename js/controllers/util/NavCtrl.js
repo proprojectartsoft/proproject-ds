@@ -45,7 +45,7 @@ dsApp.controller('NavCtrl', [
 
         })
         $scope.redirect = function(predicate) {
-            $state.go('app.' + predicate);
+            $rootScope.go('app.' + predicate);
         }
         $scope.editCurrentUser = function() {
             $scope.editMode = !$scope.editMode;
@@ -54,7 +54,7 @@ dsApp.controller('NavCtrl', [
             if (navigator.onLine) {
                 localStorage.removeItem('ds.user');
                 localStorage.removeItem('dsremember');
-                $state.go('login');
+                $rootScope.go('login');
                 AuthService.logout().then(function(result) {})
             } else {
                 var alertPopup = $ionicPopup.alert({
@@ -88,7 +88,7 @@ dsApp.controller('NavCtrl', [
             SyncService.syncData().then(function(res) {
                 SyncService.sync().then(function(res) {
                     syncPopup.close();
-                    $state.go('app.projects');
+                    $rootScope.go('app.projects');
                 })
             })
         }
