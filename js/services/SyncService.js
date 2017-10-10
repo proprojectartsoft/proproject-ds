@@ -376,7 +376,254 @@ dsApp.service('SyncService', [
                             def.resolve();
                             return;
                         }
-                        var changes = {};
+                        var changes = {},
+                            //method to store in changes all defects that have to be added or updated
+                            getModifiedDefects = function(project) {
+                                angular.forEach(project.defects, function(defect) {
+                                    //store all new defects for this project
+                                    if (typeof defect.isNew != 'undefined') {
+                                        delete defect.isNew;
+                                        changes.defectsToAdd.push(defect);
+
+                                        angular.forEach(defect.photos.pictures, function(pic) {
+                                            console.log(pic);
+                                            //store new attachments to be synced
+                                            if (!pic.id) {
+                                                changes.attachments.toAdd.push(pic);
+                                            }
+                                        })
+                                    }
+
+                                    if (typeof defect.isModified != 'undefined') {
+                                        //store new comments for the defect
+                                        angular.forEach(defect.comments, function(comment) {
+                                            //store new comments to be synced
+                                            if (typeof comment.isNew != 'undefined') {
+                                                delete comment.isNew;
+                                                changes.commentsToAdd.push(comment);
+                                            }
+                                        })
+
+                                        if (typeof defect.isNew == 'undefined') {
+                                            //store new attachments
+                                            angular.forEach(defect.photos.pictures, function(pic) {
+                                                //store new attachments to be synced
+                                                if (!pic.id) {
+                                                    changes.attachments.toAdd.push(pic);
+                                                }
+                                            })
+                                        }
+
+                                        //add photos to be updated
+                                        angular.extend(changes.attachments.toUpd, defect.photos.toBeUpdated);
+                                        //add photos to be deleted
+                                        angular.extend(changes.attachments.toDelete, defect.photos.toBeDeleted);
+                                        //store all modified defects for this project
+                                        changes.defectsToUpd.push(defect);
+                                    }
+                                    delete defect.isNew;
+                                    delete defect.isModified;
+                                })
+                            },
+                            //method to store in changes all drawings that have to be updated
+                            getModifiedDrawings = function(project) {
+                                angular.forEach(project.drawings, function(draw) {
+                                    //store modified drawings
+                                    if (typeof draw.isModified != 'undefined') {
+                                        delete draw.isModified;
+                                        changes.drawingsToUpd.push(draw);
+                                    }
+                                })
+                            },
+                            //method to add a given defect to server, and keep data to be synced
+                            // (subcontractors, attachments, comments, drawing)
+                            addDefect = function(oldDefect, changes) {
+                                var defer = $q.defer(),
+                                    defect = ConvertersService.get_defect_for_create(oldDefect);
+                                //save defect on server
+                                PostService.post({
+                                    method: 'POST',
+                                    url: 'defect',
+                                    data: defect
+                                }, function(res) {
+                                    //set for the new added defect the id stored on server
+                                    defect.id = res.data;
+
+                                    //if the created defect has related defects that are not added yet to the server,
+                                    //add it to defectsToUpd list and update it after the related defects get on server
+                                    for (var i = 0; i < oldDefect.related_tasks.length; i++) {
+                                        if (oldDefect.related_tasks[i].isNew) {
+                                            defect.related_tasks = oldDefect.related_tasks;
+                                            changes.defectsToUpd.push(defect);
+                                            i = defect.related_tasks.length;
+                                        }
+                                    }
+
+                                    var setRelatedTaskId = function(defects, oldId, newId) {
+                                        angular.forEach(defects, function(d) {
+                                            //search through all other defects' related tasks the new defect
+                                            if (d.related_tasks.length != 0 && oldId != d.id) {
+                                                for (var i = 0; i < d.related_tasks.length; i++) {
+                                                    if (d.related_tasks[i].id == oldId) {
+                                                        //set the new assigne id for the related task
+                                                        d.related_tasks[i].id = newId;
+                                                        delete d.related_tasks[i].isNew;
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+
+                                    //if there is an updated defect having the current defect as related, update its id
+                                    setRelatedTaskId(changes.defectsToUpd, oldDefect.id, res.data);
+                                    //if there is a new defect having the current defect as related, update its id
+                                    setRelatedTaskId(changes.defectsToAdd, oldDefect.id, res.data);
+
+                                    if (oldDefect.drawing) {
+                                        //get the drawing of the new added defect from the array of drawings to be updated
+                                        var d = $filter('filter')(changes.drawingsToUpd, {
+                                            id: oldDefect.drawing.id
+                                        });
+                                        if (d && d.length) {
+                                            draw = d[0];
+                                            //update marker's defect id
+                                            var mark = $filter('filter')(draw.markers, {
+                                                defect_id: oldDefect.id
+                                            });
+                                            if (mark && mark.length) {
+                                                mark[0].defect_id = res.data;
+                                            }
+                                            //update defect's id
+                                            var def1 = $filter('filter')(draw.defects, {
+                                                id: oldDefect.id
+                                            });
+                                            if (def1 && def1.length) {
+                                                def1[0].id = res.data;
+                                            }
+                                        }
+                                    }
+
+                                    //set the new id of the added defect as defect_id for all its new attachments
+                                    angular.forEach(changes.attachments.toAdd, function(pic) {
+                                        pic.defect_id = res.data;
+                                    })
+
+                                    //set the new id of the added defect as defect_id for all its comments
+                                    angular.forEach(changes.commentsToAdd, function(comment) {
+                                        comment.defect_id = res.data;
+                                    })
+                                    defer.resolve(changes);
+                                }, function(error) {
+                                    defer.resolve(changes);
+                                })
+                                return defer.promise;
+                            },
+                            //method to sync all defects for the given project
+                            syncDefects = function(changes) {
+                                var defer = $q.defer();
+                                if (changes.defectsToAdd == null || changes.defectsToAdd.length == 0) {
+                                    defer.resolve(changes);
+                                    return defer.promise;
+                                }
+                                var count = 0;
+
+                                angular.forEach(changes.defectsToAdd, function(defect) {
+                                    addDefect(defect, changes).then(function(res) {
+                                        count++;
+                                        if (count >= changes.defectsToAdd.length) {
+                                            defer.resolve(res);
+                                        }
+                                    }, function(res) {
+                                        count++;
+                                        if (count >= changes.defectsToAdd.length) {
+                                            defer.resolve(res);
+                                        }
+                                    })
+                                })
+                                return defer.promise;
+                            },
+                            //method to update the drawings
+                            updateDrawings = function(changes) {
+                                var defer = $q.defer(),
+                                    count = 0;
+                                if (!changes.drawingsToUpd.length)
+                                    defer.resolve();
+                                angular.forEach(changes.drawingsToUpd, function(draw) {
+                                    PostService.post({
+                                        method: 'PUT',
+                                        url: 'drawing',
+                                        data: ConvertersService.get_drawing_for_update(draw)
+                                    }, function(result) {
+                                        count++;
+                                        if (count >= changes.drawingsToUpd.length)
+                                            defer.resolve();
+                                    }, function(error) {
+                                        count++;
+                                        if (count >= changes.drawingsToUpd.length)
+                                            defer.resolve();
+                                    })
+                                })
+                                return defer.promise;
+                            },
+                            //method to update the defects
+                            updateDefects = function(changes) {
+                                var defer = $q.defer(),
+                                    count = 0;
+                                if (!changes.defectsToUpd.length)
+                                    defer.resolve();
+
+                                var defects = changes.defectsToUpd;
+                                // updateRelatedDefectsId(defects);
+                                angular.forEach(defects, function(defect) {
+                                    defect = ConvertersService.get_defect_for_update(defect);
+                                    //if the defect to be updated was added on server during this sync, it has no reporter set
+                                    //get the defect from server and set the reporter_id, then update it
+                                    if (!defect.reporter_id || !defect.assignee_id) {
+                                        PostService.post({
+                                            method: 'GET',
+                                            url: 'defect',
+                                            params: {
+                                                id: defect.id
+                                            }
+                                        }, function(result) {
+                                            defect.reporter_id = result.data.reporter_id;
+                                            defect.assignee_id = result.data.assignee_id;
+                                            PostService.post({
+                                                method: 'PUT',
+                                                url: 'defect',
+                                                data: defect
+                                            }, function(result) {
+                                                count++;
+                                                if (count >= defects.length)
+                                                    defer.resolve();
+                                            }, function(error) {
+                                                count++;
+                                                if (count >= defects.length)
+                                                    defer.resolve();
+                                            })
+                                        }, function(error) {
+                                            count++;
+                                            if (count >= defects.length)
+                                                defer.resolve();
+                                        })
+                                    } else {
+                                        PostService.post({
+                                            method: 'PUT',
+                                            url: 'defect',
+                                            data: defect
+                                        }, function(result) {
+                                            count++;
+                                            if (count >= defects.length)
+                                                defer.resolve();
+                                        }, function(error) {
+                                            count++;
+                                            if (count >= defects.length)
+                                                defer.resolve();
+                                        })
+                                    }
+                                })
+                                return defer.promise;
+                            };
 
                         angular.forEach(projects, function(p) {
                             var project = p.value;
@@ -394,9 +641,7 @@ dsApp.service('SyncService', [
                             };
                             if (project.isModified) {
                                 //sync all data for modified projects
-                                //method to store in changes all drawings that have to be updated
                                 getModifiedDrawings(project);
-                                //method to store in changes all defects that have to be added or updated
                                 getModifiedDefects(project);
                                 delete project.isModified;
 
@@ -425,251 +670,6 @@ dsApp.service('SyncService', [
                             }
                         })
 
-                        var getModifiedDefects = function(project) {
-                            angular.forEach(project.defects, function(defect) {
-                                //store all new defects for this project
-                                if (typeof defect.isNew != 'undefined') {
-                                    delete defect.isNew;
-                                    changes.defectsToAdd.push(defect);
-
-                                    angular.forEach(defect.photos.pictures, function(pic) {
-                                        console.log(pic);
-                                        //store new attachments to be synced
-                                        if (!pic.id) {
-                                            changes.attachments.toAdd.push(pic);
-                                        }
-                                    })
-                                }
-
-                                if (typeof defect.isModified != 'undefined') {
-                                    //store new comments for the defect
-                                    angular.forEach(defect.comments, function(comment) {
-                                        //store new comments to be synced
-                                        if (typeof comment.isNew != 'undefined') {
-                                            delete comment.isNew;
-                                            changes.commentsToAdd.push(comment);
-                                        }
-                                    })
-
-                                    if (typeof defect.isNew == 'undefined') {
-                                        //store new attachments
-                                        angular.forEach(defect.photos.pictures, function(pic) {
-                                            //store new attachments to be synced
-                                            if (!pic.id) {
-                                                changes.attachments.toAdd.push(pic);
-                                            }
-                                        })
-                                    }
-
-                                    //add photos to be updated
-                                    angular.extend(changes.attachments.toUpd, defect.photos.toBeUpdated);
-                                    //add photos to be deleted
-                                    angular.extend(changes.attachments.toDelete, defect.photos.toBeDeleted);
-                                    //store all modified defects for this project
-                                    changes.defectsToUpd.push(defect);
-                                }
-                                delete defect.isNew;
-                                delete defect.isModified;
-                            })
-                        }
-
-                        var getModifiedDrawings = function(project) {
-                            angular.forEach(project.drawings, function(draw) {
-                                //store modified drawings
-                                if (typeof draw.isModified != 'undefined') {
-                                    delete draw.isModified;
-                                    changes.drawingsToUpd.push(draw);
-                                }
-                            })
-                        }
-
-                        var addDefect = function(oldDefect, changes) {
-                            var defer = $q.defer(),
-                                defect = ConvertersService.get_defect_for_create(oldDefect);
-                            //save defect on server
-                            PostService.post({
-                                method: 'POST',
-                                url: 'defect',
-                                data: defect
-                            }, function(res) {
-                                //set for the new added defect the id stored on server
-                                defect.id = res.data;
-
-                                //if the created defect has related defects that are not added yet to the server,
-                                //add it to defectsToUpd list and update it after the related defects get on server
-                                for (var i = 0; i < oldDefect.related_tasks.length; i++) {
-                                    if (oldDefect.related_tasks[i].isNew) {
-                                        defect.related_tasks = oldDefect.related_tasks;
-                                        changes.defectsToUpd.push(defect);
-                                        i = defect.related_tasks.length;
-                                    }
-                                }
-
-                                var setRelatedTaskId = function(defects, oldId, newId) {
-                                    angular.forEach(defects, function(d) {
-                                        //search through all other defects' related tasks the new defect
-                                        if (d.related_tasks.length != 0 && oldId != d.id) {
-                                            for (var i = 0; i < d.related_tasks.length; i++) {
-                                                if (d.related_tasks[i].id == oldId) {
-                                                    //set the new assigne id for the related task
-                                                    d.related_tasks[i].id = newId;
-                                                    delete d.related_tasks[i].isNew;
-                                                }
-                                            }
-                                        }
-                                    })
-                                }
-
-                                //if there is an updated defect having the current defect as related, update its id
-                                setRelatedTaskId(changes.defectsToUpd, oldDefect.id, res.data);
-                                //if there is a new defect having the current defect as related, update its id
-                                setRelatedTaskId(changes.defectsToAdd, oldDefect.id, res.data);
-
-                                if (oldDefect.drawing) {
-                                    //get the drawing of the new added defect from the array of drawings to be updated
-                                    var d = $filter('filter')(changes.drawingsToUpd, {
-                                        id: oldDefect.drawing.id
-                                    });
-                                    if (d && d.length) {
-                                        draw = d[0];
-                                        //update marker's defect id
-                                        var mark = $filter('filter')(draw.markers, {
-                                            defect_id: oldDefect.id
-                                        });
-                                        if (mark && mark.length) {
-                                            mark[0].defect_id = res.data;
-                                        }
-                                        //update defect's id
-                                        var def1 = $filter('filter')(draw.defects, {
-                                            id: oldDefect.id
-                                        });
-                                        if (def1 && def1.length) {
-                                            def1[0].id = res.data;
-                                        }
-                                    }
-                                }
-
-                                //set the new id of the added defect as defect_id for all its new attachments
-                                angular.forEach(changes.attachments.toAdd, function(pic) {
-                                    pic.defect_id = res.data;
-                                })
-
-                                //set the new id of the added defect as defect_id for all its comments
-                                angular.forEach(changes.commentsToAdd, function(comment) {
-                                    comment.defect_id = res.data;
-                                })
-                                defer.resolve(changes);
-                            }, function(error) {
-                                defer.resolve(changes);
-                            })
-                            return defer.promise;
-                        }
-
-                        var syncDefects = function(changes) {
-                            var defer = $q.defer();
-                            if (changes.defectsToAdd == null || changes.defectsToAdd.length == 0) {
-                                defer.resolve(changes);
-                                return defer.promise;
-                            }
-                            var count = 0;
-
-                            angular.forEach(changes.defectsToAdd, function(defect) {
-                                addDefect(defect, changes).then(function(res) {
-                                    count++;
-                                    if (count >= changes.defectsToAdd.length) {
-                                        defer.resolve(res);
-                                    }
-                                }, function(res) {
-                                    count++;
-                                    if (count >= changes.defectsToAdd.length) {
-                                        defer.resolve(res);
-                                    }
-                                })
-                            })
-                            return defer.promise;
-                        }
-
-                        var updateDrawings = function(changes) {
-                            var defer = $q.defer(),
-                                count = 0;
-                            if (!changes.drawingsToUpd.length)
-                                defer.resolve();
-                            angular.forEach(changes.drawingsToUpd, function(draw) {
-                                PostService.post({
-                                    method: 'PUT',
-                                    url: 'drawing',
-                                    data: ConvertersService.get_drawing_for_update(draw)
-                                }, function(result) {
-                                    count++;
-                                    if (count >= changes.drawingsToUpd.length)
-                                        defer.resolve();
-                                }, function(error) {
-                                    count++;
-                                    if (count >= changes.drawingsToUpd.length)
-                                        defer.resolve();
-                                })
-                            })
-                            return defer.promise;
-                        }
-
-                        var updateDefects = function(changes) {
-                            var defer = $q.defer(),
-                                count = 0;
-                            if (!changes.defectsToUpd.length)
-                                defer.resolve();
-
-                            var defects = changes.defectsToUpd;
-                            // updateRelatedDefectsId(defects);
-                            angular.forEach(defects, function(defect) {
-                                defect = ConvertersService.get_defect_for_update(defect);
-                                //if the defect to be updated was added on server during this sync, it has no reporter set
-                                //get the defect from server and set the reporter_id, then update it
-                                if (!defect.reporter_id || !defect.assignee_id) {
-                                    PostService.post({
-                                        method: 'GET',
-                                        url: 'defect',
-                                        params: {
-                                            id: defect.id
-                                        }
-                                    }, function(result) {
-                                        defect.reporter_id = result.data.reporter_id;
-                                        defect.assignee_id = result.data.assignee_id;
-                                        PostService.post({
-                                            method: 'PUT',
-                                            url: 'defect',
-                                            data: defect
-                                        }, function(result) {
-                                            count++;
-                                            if (count >= defects.length)
-                                                defer.resolve();
-                                        }, function(error) {
-                                            count++;
-                                            if (count >= defects.length)
-                                                defer.resolve();
-                                        })
-                                    }, function(error) {
-                                        count++;
-                                        if (count >= defects.length)
-                                            defer.resolve();
-                                    })
-                                } else {
-                                    PostService.post({
-                                        method: 'PUT',
-                                        url: 'defect',
-                                        data: defect
-                                    }, function(result) {
-                                        count++;
-                                        if (count >= defects.length)
-                                            defer.resolve();
-                                    }, function(error) {
-                                        count++;
-                                        if (count >= defects.length)
-                                            defer.resolve();
-                                    })
-                                }
-                            })
-                            return defer.promise;
-                        }
                     }, function(err) {
                         def.resolve();
                     })

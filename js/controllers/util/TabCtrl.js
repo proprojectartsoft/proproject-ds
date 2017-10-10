@@ -510,16 +510,13 @@ dsApp.controller('TabCtrl', [
                     if (!item.photos.pictures)
                         item.photos.pictures = angular.copy(item.photos);
                     $rootScope.currentDefect = item;
-                    $rootScope.defects = null;
                     $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                     break;
                 case 'drawings':
-                    $rootScope.defects = vm.project.value.defects;
                     $rootScope.currentDraw = item;
                     $rootScope.backupDraw = angular.copy($rootScope.currentDraw);
                     break;
                 case 'subcontractors':
-                    $rootScope.defects = null;
                     $rootScope.currentSubcontr = item;
                     break;
                 default:
