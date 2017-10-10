@@ -15,7 +15,8 @@ dsApp.controller('FullscreenCtrl', [
         $scope.disableZoomOut = true;
         $scope.addingMarker = false;
 
-        var index = 0;
+        var index = 0,
+            hasMarker = false;
         $scope.width = $("#canvasCointainer").width();
         $scope.index = 720;
 
@@ -82,6 +83,7 @@ dsApp.controller('FullscreenCtrl', [
                         canvas.width = usedViewport.width;
                         canvas.onclick = function(event) {
                             if ($scope.addingMarker) {
+                                hasMarker = true;
                                 $scope.addingMarker = false;
                                 var newstatus = 'Incomplete';
                                 var img = 'img/incomplete.png';
@@ -111,15 +113,15 @@ dsApp.controller('FullscreenCtrl', [
                                     } else {
                                         //add new defect for the current drawing
                                         $rootScope.currentDefect = ConvertersService.getEmptyDefect();
-                                        $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                                         //set the current drawing as drawing for the new defect
                                         $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
                                         //keep only the marker of the new defect
                                         $rootScope.currentDefect.drawing.markers = [newMarker];
-                                        $rootScope.go('app.defects', {
-                                            id: 0
-                                        })
+                                        $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                                     }
+                                    $rootScope.go('app.defects', {
+                                        id: 0
+                                    })
                                     renderPoints(index, false);
                                 } else {
                                     var x = Math.floor(event.offsetX) - 6;
@@ -137,6 +139,7 @@ dsApp.controller('FullscreenCtrl', [
                                     if ($scope.local.singleMarker) {
                                         $scope.local.markers = [];
                                         $scope.local.markers.push(newMarker);
+
                                     } else {
                                         //add new defect for the current drawing
                                         $rootScope.currentDefect = ConvertersService.getEmptyDefect();
@@ -145,10 +148,10 @@ dsApp.controller('FullscreenCtrl', [
                                         $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
                                         //keep only the marker of the new defect
                                         $rootScope.currentDefect.drawing.markers = [newMarker];
-                                        $rootScope.go('app.defects', {
-                                            id: 0
-                                        })
                                     }
+                                    $rootScope.go('app.defects', {
+                                        id: 0
+                                    })
                                     renderPoints(index, false);
                                 }
                             }
@@ -328,6 +331,11 @@ dsApp.controller('FullscreenCtrl', [
         $scope.back = function() {
             var routeback = sessionStorage.getObject('ds.fullscreen.back')
             if (routeback) {
+                //make sure a marker is set for a new defect
+                if (routeback.id == "0" && routeback.state == "app.defects" && !hasMarker) {
+                    SettingsService.show_message_popup("Error", "<center>Please select a marker for the new defect.<center/>");
+                    return;
+                }
                 $rootScope.go(routeback.state, {
                     id: routeback.id
                 });

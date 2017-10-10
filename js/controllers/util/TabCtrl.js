@@ -24,6 +24,8 @@ dsApp.controller('TabCtrl', [
         // vm.settings.subHeader = SettingsService.get_settings('subHeader');
         vm.inviteemail = '';
         $rootScope.routeback = null;
+        var initOnce = false;
+
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -308,149 +310,152 @@ dsApp.controller('TabCtrl', [
         }
 
         function init() {
-            SyncService.getProject($rootScope.projId, function(result) {
-                var drawPrm = '',
-                    newDefectPrm = '',
-                    updDefectPrm = '',
-                    subcontrPrm = '';
-                //store drawing's changes
-                if ($rootScope.currentDraw && $rootScope.currentDraw.modified) {
-                    var syncPopup = SettingsService.show_loading_popup("Submitting");
-                    var syncedDraw = ConvertersService.get_drawing_for_update($rootScope.currentDraw);
-                    delete $rootScope.currentDraw.modified;
+            if (!initOnce) {
+                initOnce = true;
+                SyncService.getProject($rootScope.projId, function(result) {
+                    var drawPrm = '',
+                        newDefectPrm = '',
+                        updDefectPrm = '',
+                        subcontrPrm = '';
+                    //store drawing's changes
+                    if ($rootScope.currentDraw && $rootScope.currentDraw.modified) {
+                        var syncPopup = SettingsService.show_loading_popup("Submitting");
+                        var syncedDraw = ConvertersService.get_drawing_for_update($rootScope.currentDraw);
+                        delete $rootScope.currentDraw.modified;
 
-                    drawPrm = PostService.post({
-                        method: 'PUT',
-                        url: 'drawing',
-                        data: syncedDraw
-                    }, function(res) {
-                        storeModifiedDraw(result.value, $rootScope.currentDraw);
-                        syncPopup.close();
-                    }, function(err) {
-                        storeModifiedDraw(result.value, $rootScope.currentDraw);
-                        result.value.isModified = true;
-                        syncPopup.close();
-                        SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
-                    })
-                }
-
-                //store new defect
-                if ($rootScope.currentDefect && $rootScope.currentDefect.new) {
-                    var syncPopup = SettingsService.show_loading_popup("Submitting"),
-                        newDef = $rootScope.currentDefect,
-                        syncedDefect = ConvertersService.get_defect_for_create($rootScope.currentDefect);
-                    delete $rootScope.currentDefect.new;
-
-                    var addNew = function() {
-                        var d = $q.defer();
-                        PostService.post({
-                            method: 'POST',
-                            url: 'defect',
-                            data: syncedDefect
+                        drawPrm = PostService.post({
+                            method: 'PUT',
+                            url: 'drawing',
+                            data: syncedDraw
                         }, function(res) {
-                            newDef.id = res.data;
-                            setReporterId(newDef).then(function(data) {
-                                storeNewDefect(result.value, newDef).then(function(res) {
-                                    syncPopup.close();
-                                    d.resolve();
-                                })
-                            })
+                            storeModifiedDraw(result.value, $rootScope.currentDraw);
+                            syncPopup.close();
                         }, function(err) {
-                            //set id for local use
-                            newDef.id = "new" + result.value.defects.length;
-                            storeNewDefect(result.value, newDef, true).then(function(res) {
-                                syncPopup.close();
-                                SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
-                                d.resolve();
-                            })
+                            storeModifiedDraw(result.value, $rootScope.currentDraw);
+                            result.value.isModified = true;
+                            syncPopup.close();
+                            SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
                         })
-                        return d.promise;
                     }
-                    newDefectPrm = addNew();
-                }
 
-                //store defect's changes
-                if ($rootScope.currentDefect && $rootScope.currentDefect.modified) {
-                    var syncPopup = SettingsService.show_loading_popup("Submitting"),
-                        syncedDefect = ConvertersService.get_defect_for_update($rootScope.currentDefect);
-                    delete $rootScope.currentDefect.modified;
+                    //store new defect
+                    if ($rootScope.currentDefect && $rootScope.currentDefect.new) {
+                        var syncPopup = SettingsService.show_loading_popup("Submitting"),
+                            newDef = $rootScope.currentDefect,
+                            syncedDefect = ConvertersService.get_defect_for_create($rootScope.currentDefect);
+                        delete $rootScope.currentDefect.new;
 
-                    var update = function() {
-                        var d = $q.defer();
-                        setReporterId(syncedDefect).then(function(succ) {
+                        var addNew = function() {
+                            var d = $q.defer();
                             PostService.post({
-                                method: 'PUT',
+                                method: 'POST',
                                 url: 'defect',
                                 data: syncedDefect
                             }, function(res) {
-                                storeModifiedDefect(result.value, $rootScope.currentDefect).then(function(res) {
-                                    syncPopup.close();
-                                    d.resolve();
+                                newDef.id = res.data;
+                                setReporterId(newDef).then(function(data) {
+                                    storeNewDefect(result.value, newDef).then(function(res) {
+                                        syncPopup.close();
+                                        d.resolve();
+                                    })
                                 })
                             }, function(err) {
-                                storeModifiedDefect(result.value, $rootScope.currentDefect, true).then(function(res) {
+                                //set id for local use
+                                newDef.id = "new" + result.value.defects.length;
+                                storeNewDefect(result.value, newDef, true).then(function(res) {
                                     syncPopup.close();
                                     SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
                                     d.resolve();
                                 })
                             })
-                        })
-                        return d.promise;
+                            return d.promise;
+                        }
+                        newDefectPrm = addNew();
                     }
-                    updDefectPrm = update();
-                }
 
-                //store subcontractor's changes
-                if ($rootScope.currentSubcontr && $rootScope.currentSubcontr.modified) {
-                    var syncPopup = SettingsService.show_loading_popup("Submitting");
-                    delete $rootScope.currentSubcontr.modified;
+                    //store defect's changes
+                    if ($rootScope.currentDefect && $rootScope.currentDefect.modified) {
+                        var syncPopup = SettingsService.show_loading_popup("Submitting"),
+                            syncedDefect = ConvertersService.get_defect_for_update($rootScope.currentDefect);
+                        delete $rootScope.currentDefect.modified;
 
-                    var updSubcontr = function() {
-                        var d = $q.defer();
-                        PostService.post({
-                            method: 'PUT',
-                            url: 'subcontractor',
-                            data: $rootScope.currentSubcontr
-                        }, function(res) {
-                            storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr).then(function(res) {
-                                syncPopup.close();
-                                d.resolve();
+                        var update = function() {
+                            var d = $q.defer();
+                            setReporterId(syncedDefect).then(function(succ) {
+                                PostService.post({
+                                    method: 'PUT',
+                                    url: 'defect',
+                                    data: syncedDefect
+                                }, function(res) {
+                                    storeModifiedDefect(result.value, $rootScope.currentDefect).then(function(res) {
+                                        syncPopup.close();
+                                        d.resolve();
+                                    })
+                                }, function(err) {
+                                    storeModifiedDefect(result.value, $rootScope.currentDefect, true).then(function(res) {
+                                        syncPopup.close();
+                                        SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
+                                        d.resolve();
+                                    })
+                                })
                             })
-                        }, function(error) {
-                            result.value.isModified = true;
-                            storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr, true).then(function(res) {
-                                syncPopup.close();
-                                SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
-                                d.resolve();
-                            })
-                        })
-                        return d.promise;
+                            return d.promise;
+                        }
+                        updDefectPrm = update();
                     }
-                    subcontrPrm = updSubcontr();
-                }
 
-                Promise.all([drawPrm, newDefectPrm, updDefectPrm, subcontrPrm]).then(function(res) {
-                    //store changes to lacal db
-                    SyncService.setProjects([result], function() {
-                        //store local project
-                        vm.project = result;
-                        $rootScope.users = result.value.users;
-                        $rootScope.defects = result.value.defects;
-                        SettingsService.get_colors().then(function(colorList) {
-                            var colorsLength = Object.keys(colorList).length;
-                            angular.forEach($rootScope.defects, function(defect) {
-                                defect.icon = SettingsService.get_initials(defect.assignee_name);
-                                //assign the collor corresponding to user id and customer id
-                                var colorId = (parseInt(result.value.customer_id + "" + defect.assignee_id)) % colorsLength;
-                                defect.backgroundColor = colorList[colorId].backColor;
-                                defect.foregroundColor = colorList[colorId].foreColor;
-                            });
-                            //load page for the active tab
-                            vm.reload();
+                    //store subcontractor's changes
+                    if ($rootScope.currentSubcontr && $rootScope.currentSubcontr.modified) {
+                        var syncPopup = SettingsService.show_loading_popup("Submitting");
+                        delete $rootScope.currentSubcontr.modified;
+
+                        var updSubcontr = function() {
+                            var d = $q.defer();
+                            PostService.post({
+                                method: 'PUT',
+                                url: 'subcontractor',
+                                data: $rootScope.currentSubcontr
+                            }, function(res) {
+                                storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr).then(function(res) {
+                                    syncPopup.close();
+                                    d.resolve();
+                                })
+                            }, function(error) {
+                                result.value.isModified = true;
+                                storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr, true).then(function(res) {
+                                    syncPopup.close();
+                                    SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
+                                    d.resolve();
+                                })
+                            })
+                            return d.promise;
+                        }
+                        subcontrPrm = updSubcontr();
+                    }
+
+                    Promise.all([drawPrm, newDefectPrm, updDefectPrm, subcontrPrm]).then(function(res) {
+                        //store changes to lacal db
+                        SyncService.setProjects([result], function() {
+                            //store local project
+                            vm.project = result;
+                            $rootScope.users = result.value.users;
+                            $rootScope.defects = result.value.defects;
+                            SettingsService.get_colors().then(function(colorList) {
+                                var colorsLength = Object.keys(colorList).length;
+                                angular.forEach($rootScope.defects, function(defect) {
+                                    defect.icon = SettingsService.get_initials(defect.assignee_name);
+                                    //assign the collor corresponding to user id and customer id
+                                    var colorId = (parseInt(result.value.customer_id + "" + defect.assignee_id)) % colorsLength;
+                                    defect.backgroundColor = colorList[colorId].backColor;
+                                    defect.foregroundColor = colorList[colorId].foreColor;
+                                });
+                                //load page for the active tab
+                                vm.reload();
+                            })
                         })
                     })
                 })
-            })
+            }
         }
 
         function reload() {
