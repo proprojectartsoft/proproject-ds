@@ -332,7 +332,7 @@ dsApp.controller('FullscreenCtrl', [
             if ($rootScope.routeback) {
                 //make sure a marker is set for a new defect
                 if ($rootScope.routeback.id == "0" && $rootScope.routeback.state == "app.defects" && !hasMarker) {
-                    SettingsService.show_message_popup("Error", "<center>Please select a marker for the new defect.<center/>");
+                    SettingsService.show_message_popup("Error", "Please select a marker for the new defect.");
                     return;
                 }
                 $rootScope.go($rootScope.routeback.state, {

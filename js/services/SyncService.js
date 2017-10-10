@@ -175,19 +175,9 @@ dsApp.service('SyncService', [
                                         DownloadsService.createDirectory("ds-downloads").then(function(path) {
                                             if (path == 'fail') {
                                                 def.resolve(projects);
-                                                var popup = $ionicPopup.alert({
-                                                    title: "Error",
-                                                    template: "Could not create directory to download the files. Please try again.",
-                                                    content: "",
-                                                    buttons: [{
-                                                        text: 'Ok',
-                                                        type: 'button-positive',
-                                                        onTap: function(e) {
-                                                            popup.close();
-                                                            location.reload();
-                                                        }
-                                                    }]
-                                                });
+                                                SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again.").then(function(r) {
+                                                    location.reload();
+                                                })
                                             } else {
                                                 var countProj = 0;
                                                 angular.forEach(projects, function(proj) {
@@ -207,19 +197,9 @@ dsApp.service('SyncService', [
                                                                 count++;
                                                                 //not enough space to download all pdfs; stop download
                                                                 def.resolve(projects);
-                                                                var popup = $ionicPopup.alert({
-                                                                    title: "Download stopped",
-                                                                    template: "<center>Not enough space to download all files</center>",
-                                                                    content: "",
-                                                                    buttons: [{
-                                                                        text: 'Ok',
-                                                                        type: 'button-positive',
-                                                                        onTap: function(e) {
-                                                                            popup.close();
-                                                                            location.reload();
-                                                                        }
-                                                                    }]
-                                                                });
+                                                                SettingsService.show_message_popup("Download stopped", "Not enough space to download all files").then(function(r) {
+                                                                    location.reload();
+                                                                })
                                                                 return;
                                                             } else {
                                                                 count++;
@@ -245,7 +225,7 @@ dsApp.service('SyncService', [
                             deferred.resolve();
                             if (!navigator.onLine) {
                                 var loggedIn = localStorage.getObject('dsremember');
-                                SettingsService.show_message_popup("You are offline", "<center>You can sync your data when online</center>");
+                                SettingsService.show_message_popup("You are offline", "You can sync your data when online");
                             }
                         })
                     } else {

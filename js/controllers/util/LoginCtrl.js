@@ -2,10 +2,9 @@ dsApp.controller('LoginCtrl', [
     '$rootScope',
     '$scope',
     '$state',
-    '$ionicPopup',
     'AuthService',
     'SyncService',
-    function($rootScope, $scope, $state, $ionicPopup, AuthService, SyncService) {
+    function($rootScope, $scope, $state, AuthService, SyncService) {
         $scope.user = {};
         //indicate if there is a defect/drawing or subcontractor added in offline mode
         $rootScope.offline = {
@@ -24,12 +23,8 @@ dsApp.controller('LoginCtrl', [
             $scope.user.username = localStorage.getObject('dsremember').username;
             $scope.user.password = localStorage.getObject('dsremember').password;
             $scope.user.rememberMe = localStorage.getObject('dsremember').rememberMe;
-            var loginPopup = $ionicPopup.show({
-                title: "Sync",
-                template: "<center><ion-spinner icon='android'></ion-spinner></center>",
-                content: "",
-                buttons: []
-            });
+
+            var loginPopup = SettingsService.show_loading_popup("Sync");
             AuthService.login($scope.user).success(function(result) {
                 SyncService.syncData().then(function(res) {
                     SyncService.sync().then(function(res) {
@@ -41,83 +36,60 @@ dsApp.controller('LoginCtrl', [
                         $rootScope.go('app.projects');
                     }, function(reason) {
                         loginPopup.close();
+                        SettingsService.close_all_popups();
                         SettingsService.show_message_popup("Error", reason);
                         // $state.reload();
                     })
                 }, function(reason) {
                     loginPopup.close();
+                    SettingsService.close_all_popups();
                     SettingsService.show_message_popup("Error", reason);
                     // $state.reload();
                 });
             }).error(function(response, status) {
                 if (status === 0 || status === -1) {
-                    // SyncService.syncData().then(function(res) {
                     SyncService.sync().then(function(res) {
                         localStorage.setObject('ds.user', {
                             role: 0,
                             name: $scope.user.username
                         });
                         loginPopup.close();
-                        var popup = $ionicPopup.alert({
-                            title: "You are offline",
-                            template: "<center>You can sync your data when online</center>",
-                            content: "",
-                            buttons: [{
-                                text: 'Ok',
-                                type: 'button-positive',
-                                onTap: function(e) {
-                                    popup.close();
-                                    location.reload();
-                                }
-                            }]
+                        SettingsService.close_all_popups();
+                        SettingsService.show_message_popup("You are offline", "You can sync your data when online").then(function(res) {
+                            location.reload();
                         });
                         $rootScope.go('app.projects');
                     }, function(reason) {
                         loginPopup.close();
+                        SettingsService.close_all_popups();
                         SettingsService.show_message_popup("Error", reason);
                         // $state.reload();
                     });
-                    // });
                 }
                 if (status === 502) {
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Offline',
-                        template: "<center>Server offline</center>",
-                    });
-                    alertPopup.then(function(res) {});
+                    SettingsService.show_message_popup('Offline', "Server offline");
                 }
                 if (status === 400) {
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Error',
-                        template: "<center>Incorrect user data</center>",
-                    });
-                    alertPopup.then(function(res) {});
+                    SettingsService.show_message_popup('Error', "Incorrect user data");
                 }
                 if (status === 401) {
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Error',
-                        template: 'Your account has been de-activated. Contact your supervisor for further information',
-                    });
-                    alertPopup.then(function(res) {});
+                    SettingsService.show_message_popup('Error', "Your account has been de-activated. Contact your supervisor for further information");
                 }
             })
         }
 
         $scope.login = function() {
-            var loginPopup = $ionicPopup.show({
-                title: "Sync",
-                template: "<center><ion-spinner icon='android'></ion-spinner></center>",
-                content: "",
-                buttons: []
-            });
+            var loginPopup = SettingsService.show_loading_popup("Sync");
             if ($scope.user.username && $scope.user.password) {
                 AuthService.login($scope.user).success(function(result) {
                     if (result.data) {
                         SyncService.sync().then(function(res) {
                             loginPopup.close();
+                            SettingsService.close_all_popups();
                             $rootScope.go('app.projects');
                         }, function(reason) {
                             loginPopup.close();
+                            SettingsService.close_all_popups();
                             SettingsService.show_message_popup("Error", reason);
                             // $state.reload();
                             return;
@@ -135,35 +107,20 @@ dsApp.controller('LoginCtrl', [
                         }
                     } else {
                         loginPopup.close();
+                        SettingsService.close_all_popups();
                     }
                 }).error(function(response, status) {
                     if (status === 0 || status === -1) {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Offline',
-                            template: "<center>You are offline. Please check your internet connection and try again.</center>",
-                        });
-                        alertPopup.then(function(res) {});
+                        SettingsService.show_message_popup("You are offline", "Please check your internet connection and try again.");
                     }
                     if (status === 502) {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Offline',
-                            template: "<center>Server offline</center>",
-                        });
-                        alertPopup.then(function(res) {});
+                        SettingsService.show_message_popup('Offline', "Server offline");
                     }
                     if (status === 400) {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Error',
-                            template: "<center>Incorrect user data</center>",
-                        });
-                        alertPopup.then(function(res) {});
+                        SettingsService.show_message_popup('Error', "Incorrect user data");
                     }
                     if (status === 401) {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Error',
-                            template: 'Your account has been de-activated. Contact your supervisor for further information',
-                        });
-                        alertPopup.then(function(res) {});
+                        SettingsService.show_message_popup('Error', "Your account has been de-activated. Contact your supervisor for further information");
                     }
                 })
             }

@@ -8,8 +8,7 @@ dsApp.controller('DefectsCtrl', [
     'ConvertersService',
     '$ionicViewSwitcher',
     '$ionicModal',
-    '$ionicPopup',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, ConvertersService, $ionicViewSwitcher, $ionicModal, $ionicPopup) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, ConvertersService, $ionicViewSwitcher, $ionicModal) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');
@@ -162,14 +161,7 @@ dsApp.controller('DefectsCtrl', [
                 $rootScope.currentDefect.new = true;
                 vm.go('back');
             } else {
-                var alertPopup = $ionicPopup.show({
-                    title: 'Error',
-                    template: 'Make sure you have for your new defect a title.',
-                    buttons: [{
-                        text: 'Ok',
-                    }]
-                });
-                alertPopup.then(function(res) {});
+                SettingsService.show_message_popup('Error', 'Make sure you have for your new defect a title.').then(function(res) {});
             }
         }
 

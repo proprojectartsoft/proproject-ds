@@ -2,12 +2,11 @@ dsApp.service('PostService', [
     '$q',
     '$http',
     '$timeout',
-    '$ionicPopup',
     '$state',
     '$filter',
     'pendingRequests',
     '$rootScope',
-    function($q, $http, $timeout, $ionicPopup, $state, $filter, pendingRequests, $rootScope) {
+    function($q, $http, $timeout, $state, $filter, pendingRequests, $rootScope) {
 
         var service = this;
         /**
@@ -204,9 +203,9 @@ dsApp.service('pendingRequests', ['$filter', function($filter) {
 }]);
 
 dsApp.service('SettingsService', [
-    '$http', '$ionicPopup',
+    '$http', '$ionicPopup', '$ionicBackdrop', '$ionicBody', '$timeout',
 
-    function($http, $ionicPopup) {
+    function($http, $ionicPopup, $ionicBackdrop, $ionicBody, $timeout) {
         var self = this;
         self.get_settings = function(predicate) {
             var list = predicate.split(".");
@@ -232,19 +231,10 @@ dsApp.service('SettingsService', [
             $APP.settings[predicate] = value;
         };
         self.show_message_popup = function(title, template) {
-            var popup = $ionicPopup.alert({
+            return $ionicPopup.alert({
                 title: title,
-                template: template,
-                content: "",
-                buttons: [{
-                    text: 'Ok',
-                    type: 'button-positive',
-                    onTap: function(e) {
-                        popup.close();
-                    }
-                }]
+                template: "<center>" + template + "</center>",
             });
-            return popup;
         };
         self.show_loading_popup = function(title) {
             return $ionicPopup.show({
@@ -253,6 +243,29 @@ dsApp.service('SettingsService', [
                 content: "",
                 buttons: []
             });
+        };
+        self.close_all_popups = function() {
+            noop = angular.noop;
+            elevated = false;
+            var popupStack = $ionicPopup._popupStack;
+            if (popupStack.length > 0) {
+                popupStack.forEach(function(popup, index) {
+                    if (popup.isShown === true) {
+                        popup.remove();
+                        popupStack.pop();
+                    }
+                });
+            }
+
+            $ionicBackdrop.release();
+            //Remove popup-open & backdrop if this is last popup
+            $timeout(function() {
+                // wait to remove this due to a 300ms delay native
+                // click which would trigging whatever was underneath this
+                $ionicBody.removeClass('popup-open');
+                // $ionicPopup._popupStack.pop();
+            }, 400, false);
+            ($ionicPopup._backButtonActionDone || noop)();
         };
         self.get_initials = function(str) {
             if (str) {
@@ -293,40 +306,6 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
             };
         }
         return data;
-    }
-
-    self.save_defect = function(data) {
-        data.status_id = data.status_obj.id
-        data.status_name = data.status_obj.name
-        data.severity_id = data.severity_obj.id
-        data.severity_name = data.severity_obj.name
-        data.priority_id = data.priority_obj.id
-        data.priority_name = data.priority_obj.name
-        return data;
-    }
-
-    self.save_local = function(drawing) {
-        return {
-            "base64String": drawing.base64String,
-            "closed_out_defects": drawing.closed_out_defects,
-            "completed_defects": drawing.completed_defects,
-            "contested_defects": drawing.contested_defects,
-            "delayed_defects": drawing.delayed_defects,
-            "incomplete_defects": drawing.incomplete_defects,
-            "partially_completed_defects": drawing.partially_completed_defects,
-            "code": drawing.code,
-            "drawing_date": drawing.drawing_date,
-            "file_name": drawing.file_name,
-            "id": drawing.id,
-            "nr_of_defects": drawing.nr_of_defects + 1,
-            "pdfPath": drawing.pdfPath,
-            "project_id": drawing.project_id,
-            "resized_path": drawing.resized_path,
-            "revision": drawing.revision,
-            "title": drawing.title,
-            "relatedDefects": drawing.relatedDefects,
-            "markers": []
-        };
     }
 
     self.increase_nr_tasks = function(subcontr, task) {
@@ -420,12 +399,6 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
             return subcontractors;
         }
         return subcontractors;
-    }
-
-    self.clear_id = function(defect) {
-        var def = angular.copy(defect);
-        def.id = 0;
-        return def;
     }
 
     self.getEmptyDefect = function() {

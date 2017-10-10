@@ -3,11 +3,10 @@ dsApp.controller('ProjectsCtrl', [
     '$scope',
     '$state',
     '$timeout',
-    '$ionicPopup',
     '$filter',
     'SyncService',
 
-    function($rootScope, $scope, $state, $timeout, $ionicPopup, $filter, SyncService) {
+    function($rootScope, $scope, $state, $timeout, $filter, SyncService) {
         var vm = this;
         $rootScope.navTitle = 'Choose a project';
         $rootScope.currentTab = 'drawings';
@@ -72,63 +71,63 @@ dsApp.controller('ProjectsCtrl', [
         }
 
         //create new project; NOT NEEDED YET
-        vm.showPopup = function() {
-            $ionicPopup.show({
-                template: '',
-                title: 'Create project',
-                templateUrl: 'templates/projects/_create.html',
-                buttons: [{
-                    text: 'Cancel',
-                    onTap: function(e) {
-                        return 'close';
-                    }
-                }, {
-                    text: 'Create',
-                    onTap: function(e) {
-                        if (vm.local.createProject && vm.local.createProject.project_number && vm.local.createProject.name && vm.local.createProject.addr_firstline) {
-                            return vm.local.createProject;
-                        } else {
-                            return false;
-                        }
-                    }
-                }]
-            }).then(function(res) {
-                if (res == false) {
-                    $ionicPopup.show({
-                        template: '',
-                        title: 'Error',
-                        template: 'Make sure you have for your new project a number, a name and address line 1.',
-                        buttons: [{
-                            text: 'Ok',
-                        }]
-                    }).then(function(res) {
-                        vm.showPopup();
-                    })
-                } else {
-                    if (res.name) {
-                        res.drawings = [];
-                        res.subcontractors = [];
-                        res.defects = [];
-                        res.isNew = true;
-                        if (navigator.onLine) {
-                            //create project
-                        } else {
-                            $ionicPopup.show({
-                                title: 'Offline',
-                                template: 'You cannot create projects while offline. Please try again when online.',
-                                buttons: [{
-                                    text: 'OK',
-                                    onTap: function(e) {
-                                        return 'close';
-                                    }
-                                }]
-                            })
-                        }
-                    } else {
-                        delete vm.local.createProject;
-                    }
-                }
-            }, function(err) {}, function(msg) {});
-        };
+        // vm.showPopup = function() {
+        //     $ionicPopup.show({
+        //         template: '',
+        //         title: 'Create project',
+        //         templateUrl: 'templates/projects/_create.html',
+        //         buttons: [{
+        //             text: 'Cancel',
+        //             onTap: function(e) {
+        //                 return 'close';
+        //             }
+        //         }, {
+        //             text: 'Create',
+        //             onTap: function(e) {
+        //                 if (vm.local.createProject && vm.local.createProject.project_number && vm.local.createProject.name && vm.local.createProject.addr_firstline) {
+        //                     return vm.local.createProject;
+        //                 } else {
+        //                     return false;
+        //                 }
+        //             }
+        //         }]
+        //     }).then(function(res) {
+        //         if (res == false) {
+        //             $ionicPopup.show({
+        //                 template: '',
+        //                 title: 'Error',
+        //                 template: 'Make sure you have for your new project a number, a name and address line 1.',
+        //                 buttons: [{
+        //                     text: 'Ok',
+        //                 }]
+        //             }).then(function(res) {
+        //                 vm.showPopup();
+        //             })
+        //         } else {
+        //             if (res.name) {
+        //                 res.drawings = [];
+        //                 res.subcontractors = [];
+        //                 res.defects = [];
+        //                 res.isNew = true;
+        //                 if (navigator.onLine) {
+        //                     //create project
+        //                 } else {
+        //                     $ionicPopup.show({
+        //                         title: 'Offline',
+        //                         template: 'You cannot create projects while offline. Please try again when online.',
+        //                         buttons: [{
+        //                             text: 'OK',
+        //                             onTap: function(e) {
+        //                                 return 'close';
+        //                             }
+        //                         }]
+        //                     })
+        //                 }
+        //             } else {
+        //                 delete vm.local.createProject;
+        //             }
+        //         }
+        //     }, function(err) {}, function(msg) {});
+        // };
     }
 ]);

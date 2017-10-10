@@ -226,6 +226,16 @@ dsApp.controller('TabCtrl', [
             if (!subcontr.newTasks || subcontr.newTasks && !subcontr.newTasks.length) {
                 prm.resolve();
             }
+
+            var replaceSubcontractor = function(subcontractors, subcontr) {
+                //store the modified subcontractor
+                for (var i = 0; i < subcontractors.length; i++) {
+                    if (subcontractors[i].id == subcontr.id) {
+                        subcontractors[i] = subcontr;
+                        i = subcontractors.length;
+                    }
+                }
+            }
             //add to local db the new tasks added as related to current subcontractor
             angular.forEach(subcontr.newTasks, function(related) {
                 //change the assignee for the defect
@@ -274,16 +284,6 @@ dsApp.controller('TabCtrl', [
                     }
                 }
             })
-
-            var replaceSubcontractor = function(subcontractors, subcontr) {
-                //store the modified subcontractor
-                for (var i = 0; i < subcontractors.length; i++) {
-                    if (subcontractors[i].id == subcontr.id) {
-                        subcontractors[i] = subcontr;
-                        i = subcontractors.length;
-                    }
-                }
-            }
             return prm.promise;
         }
 
@@ -334,6 +334,7 @@ dsApp.controller('TabCtrl', [
                             storeModifiedDraw(result.value, $rootScope.currentDraw);
                             result.value.isModified = true;
                             syncPopup.close();
+                            SettingsService.close_all_popups();
                             SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
                         })
                     }
@@ -364,6 +365,7 @@ dsApp.controller('TabCtrl', [
                                 newDef.id = "new" + result.value.defects.length;
                                 storeNewDefect(result.value, newDef, true).then(function(res) {
                                     syncPopup.close();
+                                    SettingsService.close_all_popups();
                                     SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
                                     d.resolve();
                                 })
@@ -394,6 +396,7 @@ dsApp.controller('TabCtrl', [
                                 }, function(err) {
                                     storeModifiedDefect(result.value, $rootScope.currentDefect, true).then(function(res) {
                                         syncPopup.close();
+                                        SettingsService.close_all_popups();
                                         SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
                                         d.resolve();
                                     })
@@ -424,6 +427,7 @@ dsApp.controller('TabCtrl', [
                                 result.value.isModified = true;
                                 storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr, true).then(function(res) {
                                     syncPopup.close();
+                                    SettingsService.close_all_popups();
                                     SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
                                     d.resolve();
                                 })
@@ -472,7 +476,7 @@ dsApp.controller('TabCtrl', [
                         angular.forEach(vm.project.value.subcontractors, function(subcontr) {
                             //assign the collor corresponding to user id and customer id
                             var colorId = (parseInt(vm.project.value.customer_id + "" + subcontr.id)) % colorsLength;
-                            subcontr.name = subcontr.last_name + " " + subcontr.first_name;
+                            subcontr.name = subcontr.first_name + " " + subcontr.last_name; 
                             subcontr.description = subcontr.company;
                             subcontr.icon = SettingsService.get_initials(subcontr.name);
                             subcontr.backgroundColor = colorList[colorId].backColor;

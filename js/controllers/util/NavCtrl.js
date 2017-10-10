@@ -4,12 +4,11 @@ dsApp.controller('NavCtrl', [
     '$scope',
     '$ionicSideMenuDelegate',
     '$timeout',
-    '$ionicPopup',
     'PostService',
     'AuthService',
     'SyncService',
     'SettingsService',
-    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, PostService, AuthService, SyncService, SettingsService) {
+    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, PostService, AuthService, SyncService, SettingsService) {
         $scope.disconnectDesignValue = true;
         $scope.settings = {};
         $scope.editMode = false;
@@ -58,48 +57,31 @@ dsApp.controller('NavCtrl', [
                 $rootScope.go('login');
                 AuthService.logout().then(function(result) {})
             } else {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Error',
-                    template: "<center>Can't log out now. You are offline.</center>",
-                });
+                SettingsService.show_message_popup('Error', "Can't log out now. You are offline.");
             }
         }
         $scope.sync = function() {
             if (!navigator.onLine) {
-                var popup = $ionicPopup.alert({
-                    title: "You are offline",
-                    template: "<center>You can sync your data when online</center>",
-                    content: "",
-                    buttons: [{
-                        text: 'Ok',
-                        type: 'button-positive',
-                        onTap: function(e) {
-                            popup.close();
-                        }
-                    }]
-                });
-                return;
-            }
-            var syncPopup = $ionicPopup.show({
-                title: "Sync",
-                template: "<center><ion-spinner icon='android'></ion-spinner></center>",
-                content: "",
-                buttons: []
-            });
-            SyncService.syncData().then(function(res) {
-                SyncService.sync().then(function(res) {
-                    syncPopup.close();
-                    $rootScope.go('app.projects');
+                SettingsService.show_message_popup("You are offline", "You can sync your data when online");
+            } else {
+                var syncPopup = SettingsService.show_loading_popup("Sync");
+                SyncService.syncData().then(function(res) {
+                    SyncService.sync().then(function(res) {
+                        syncPopup.close();
+                        $rootScope.go('app.projects');
+                    }, function(reason) {
+                        syncPopup.close();
+                        SettingsService.close_all_popups();
+                        SettingsService.show_message_popup("Error", reason);
+                        // $state.reload();
+                    })
                 }, function(reason) {
                     syncPopup.close();
+                    SettingsService.close_all_popups();
                     SettingsService.show_message_popup("Error", reason);
                     // $state.reload();
                 })
-            }, function(reason) {
-                syncPopup.close();
-                SettingsService.show_message_popup("Error", reason);
-                // $state.reload();
-            })
+            }
         }
     }
 ]);
