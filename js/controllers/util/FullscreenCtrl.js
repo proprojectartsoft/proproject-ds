@@ -214,7 +214,7 @@ dsApp.controller('FullscreenCtrl', [
 
         $scope.local.data = $rootScope.currentDraw;
         setPdf($scope.local.data.path || ($APP.server + '/pub/drawings/' + $scope.local.data.base64String));
-        if (sessionStorage.getObject('ds.fullscreen.back').state === 'app.defects' && $rootScope.currentDraw) {
+        if ($rootScope.routeback.state === 'app.defects' && $rootScope.currentDraw) {
             //fullscreen for drawing of a defect fron defects tab
             $scope.local.singleMarker = true;
             if ($scope.local.data.markers && $scope.local.data.markers.length && $scope.local.data.markers[0].id) {
@@ -329,15 +329,14 @@ dsApp.controller('FullscreenCtrl', [
         }
 
         $scope.back = function() {
-            var routeback = sessionStorage.getObject('ds.fullscreen.back')
-            if (routeback) {
+            if ($rootScope.routeback) {
                 //make sure a marker is set for a new defect
-                if (routeback.id == "0" && routeback.state == "app.defects" && !hasMarker) {
+                if ($rootScope.routeback.id == "0" && $rootScope.routeback.state == "app.defects" && !hasMarker) {
                     SettingsService.show_message_popup("Error", "<center>Please select a marker for the new defect.<center/>");
                     return;
                 }
-                $rootScope.go(routeback.state, {
-                    id: routeback.id
+                $rootScope.go($rootScope.routeback.state, {
+                    id: $rootScope.routeback.id
                 });
             } else {
                 $rootScope.go('app.tab')

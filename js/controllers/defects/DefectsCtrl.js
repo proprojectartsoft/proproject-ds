@@ -16,10 +16,10 @@ dsApp.controller('DefectsCtrl', [
         vm.settings.project = $rootScope.projId;
         vm.local = {};
         vm.local.entityId = $stateParams.id;
-        sessionStorage.setObject('ds.fullscreen.back', {
+        $rootScope.routeback = {
             id: $stateParams.id,
             state: 'app.defects'
-        })
+        }
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;
         }

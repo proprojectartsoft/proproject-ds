@@ -41,7 +41,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
             //create the src for the attachment by concatenating the serevr path, the directory and the image path
             value.url = $APP.server + 'pub/defectPhotos/' + value.base_64_string;
         });
-        
+
         goToTop();
         pullDown();
 

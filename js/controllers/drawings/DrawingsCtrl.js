@@ -21,10 +21,6 @@ dsApp.controller('DrawingsCtrl', [
             id: $stateParams.id,
             state: 'app.drawings'
         }
-        sessionStorage.setObject('ds.fullscreen.back', {
-            id: $stateParams.id,
-            state: 'app.drawings'
-        })
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;
         }

@@ -8,7 +8,6 @@ dsApp.controller('AppCtrl', [
     '$ionicHistory',
     '$window',
     function($rootScope, $timeout, $scope, $state, $stateParams, $ionicSideMenuDelegate, $ionicHistory, $window) {
-        sessionStorage.removeItem('ds.fullscreen.back');
         /**
          * Method to go somewhere
          * @param {String} where - app state to go to
