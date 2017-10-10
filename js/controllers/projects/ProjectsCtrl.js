@@ -23,9 +23,10 @@ dsApp.controller('ProjectsCtrl', [
             vm.projects = projects;
             var aux = $rootScope.projId;
             if (aux) {
-                vm.local.activeProject = $filter('filter')(vm.projects, {
+                var pr = $filter('filter')(vm.projects, {
                     id: aux
-                })[0].value;
+                });
+                vm.local.activeProject = pr && pr.length && pr[0].value;
             }
         })
         vm.go = function(item) {
