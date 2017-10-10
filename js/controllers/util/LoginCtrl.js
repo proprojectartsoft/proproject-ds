@@ -39,33 +39,45 @@ dsApp.controller('LoginCtrl', [
                         });
                         loginPopup.close();
                         $rootScope.go('app.projects');
+                    }, function(reason) {
+                        loginPopup.close();
+                        SettingsService.show_message_popup("Error", reason);
+                        // $state.reload();
                     })
+                }, function(reason) {
+                    loginPopup.close();
+                    SettingsService.show_message_popup("Error", reason);
+                    // $state.reload();
                 });
             }).error(function(response, status) {
                 if (status === 0 || status === -1) {
-                    SyncService.syncData().then(function(res) {
-                        SyncService.sync().then(function(res) {
-                            localStorage.setObject('ds.user', {
-                                role: 0,
-                                name: $scope.user.username
-                            });
-                            loginPopup.close();
-                            var popup = $ionicPopup.alert({
-                                title: "You are offline",
-                                template: "<center>You can sync your data when online</center>",
-                                content: "",
-                                buttons: [{
-                                    text: 'Ok',
-                                    type: 'button-positive',
-                                    onTap: function(e) {
-                                        popup.close();
-                                        location.reload();
-                                    }
-                                }]
-                            });
-                            $rootScope.go('app.projects');
-                        })
+                    // SyncService.syncData().then(function(res) {
+                    SyncService.sync().then(function(res) {
+                        localStorage.setObject('ds.user', {
+                            role: 0,
+                            name: $scope.user.username
+                        });
+                        loginPopup.close();
+                        var popup = $ionicPopup.alert({
+                            title: "You are offline",
+                            template: "<center>You can sync your data when online</center>",
+                            content: "",
+                            buttons: [{
+                                text: 'Ok',
+                                type: 'button-positive',
+                                onTap: function(e) {
+                                    popup.close();
+                                    location.reload();
+                                }
+                            }]
+                        });
+                        $rootScope.go('app.projects');
+                    }, function(reason) {
+                        loginPopup.close();
+                        SettingsService.show_message_popup("Error", reason);
+                        // $state.reload();
                     });
+                    // });
                 }
                 if (status === 502) {
                     var alertPopup = $ionicPopup.alert({
@@ -104,6 +116,11 @@ dsApp.controller('LoginCtrl', [
                         SyncService.sync().then(function(res) {
                             loginPopup.close();
                             $rootScope.go('app.projects');
+                        }, function(reason) {
+                            loginPopup.close();
+                            SettingsService.show_message_popup("Error", reason);
+                            // $state.reload();
+                            return;
                         })
                         //store data for currently logged user
                         localStorage.setObject('ds.user', {

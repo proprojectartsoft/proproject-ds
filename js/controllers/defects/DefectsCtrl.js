@@ -20,6 +20,9 @@ dsApp.controller('DefectsCtrl', [
             id: $stateParams.id,
             state: 'app.defects'
         })
+        if ($rootScope.disableedit === undefined) {
+            $rootScope.disableedit = true;
+        }
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -96,14 +99,10 @@ dsApp.controller('DefectsCtrl', [
 
         vm.selectDrawing = function(data) {
             $rootScope.currentDraw = data;
+            $rootScope.backupDraw = angular.copy($rootScope.currentDraw);
             vm.defect.drawing = $rootScope.currentDraw;
             vm.go('fullscreen', vm.defect.drawing.id);
             vm.modal.hide();
-        }
-
-        vm.getFullscreen = function() {
-            // $rootScope.currentDraw = vm.defect.drawing;
-            vm.go('fullscreen', vm.defect.drawing.id);
         }
 
         function newDefect() {
@@ -136,11 +135,11 @@ dsApp.controller('DefectsCtrl', [
         }
 
         vm.toggleEdit = function() {
-            $rootScope.disableedit = false;
-        }
-        vm.cancelEdit = function() {
-            $rootScope.currentDefect = angular.copy($rootScope.backupDefect);
-            $rootScope.disableedit = true;
+            $rootScope.disableedit = !$rootScope.disableedit;
+            if ($rootScope.disableedit) {
+                $rootScope.currentDefect = angular.copy($rootScope.backupDefect);
+                vm.defect = ConvertersService.init_defect($rootScope.currentDefect);
+            }
         }
 
         if ($stateParams.id === "0") {
@@ -180,8 +179,10 @@ dsApp.controller('DefectsCtrl', [
                 $ionicViewSwitcher.nextDirection('back');
                 $rootScope.go('app.tab');
             } else {
-                if (predicate == 'fullscreen')
+                if (predicate == 'fullscreen') {
                     $rootScope.currentDraw = $rootScope.currentDefect.drawing;
+                    $rootScope.backupDraw = angular.copy($rootScope.currentDraw);
+                }
                 $rootScope.go('app.' + predicate, {
                     id: item
                 });

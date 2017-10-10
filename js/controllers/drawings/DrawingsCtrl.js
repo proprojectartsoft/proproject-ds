@@ -75,11 +75,9 @@ dsApp.controller('DrawingsCtrl', [
             $scope.go('fullscreen', $stateParams.id);
         }
         $scope.toggleEdit = function() {
-            $rootScope.disableedit = false;
-        }
-        $scope.cancelEdit = function() {
-            $rootScope.currentDraw = angular.copy($rootScope.backupItem);
-            $rootScope.disableedit = true;
+            $rootScope.disableedit = !$rootScope.disableedit;
+            if ($rootScope.disableedit)
+                $rootScope.currentDraw = angular.copy($rootScope.backupDraw);
         }
         $scope.saveEdit = function() {
             $rootScope.disableedit = true;
@@ -89,19 +87,20 @@ dsApp.controller('DrawingsCtrl', [
             $rootScope.go('app.tab')
         }
 
-        $scope.back = function() {
-            $rootScope.routeback = null;
-            $rootScope.disableedit = true;
-            $rootScope.go('app.tab');
-        }
         $scope.go = function(predicate, item) {
-            //TODO: set $rootScope.currentDefect
-            $rootScope.currentDefect = $filter('filter')($rootScope.currentDraw.defects, {
-                id: item
-            });
-            $rootScope.go('app.' + predicate, {
-                id: item
-            });
+            if (predicate == 'back') {
+                $rootScope.routeback = null;
+                $rootScope.disableedit = true;
+                $rootScope.go('app.tab');
+            } else {
+                $rootScope.currentDefect = $filter('filter')($rootScope.defects, {
+                    id: item
+                })[0];
+                $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
+                $rootScope.go('app.' + predicate, {
+                    id: item
+                });
+            }
         }
     }
 ]);

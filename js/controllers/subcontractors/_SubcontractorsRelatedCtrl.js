@@ -44,7 +44,9 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             vm.settings.subHeader = item.name;
             SettingsService.set_settings(vm.settings);
             $rootScope.currentDefect = item;
+            $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
             $rootScope.currentDraw = item.drawing;
+            $rootScope.backupDraw = angular.copy($rootScope.currentDraw);
             $rootScope.go('app.defects', {
                 id: item.id
             })

@@ -111,6 +111,7 @@ dsApp.controller('FullscreenCtrl', [
                                     } else {
                                         //add new defect for the current drawing
                                         $rootScope.currentDefect = ConvertersService.getEmptyDefect();
+                                        $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                                         //set the current drawing as drawing for the new defect
                                         $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
                                         //keep only the marker of the new defect
@@ -139,6 +140,7 @@ dsApp.controller('FullscreenCtrl', [
                                     } else {
                                         //add new defect for the current drawing
                                         $rootScope.currentDefect = ConvertersService.getEmptyDefect();
+                                        $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                                         //set the current drawing as drawing for the new defect
                                         $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
                                         //keep only the marker of the new defect

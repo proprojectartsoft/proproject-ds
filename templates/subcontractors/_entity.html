@@ -4,7 +4,7 @@
         <h1 class="title">{{vm.settings.subHeader}}</h1>
     </ion-header-bar>
     <ion-content class="has-header ds-blackscroll ds-page ds-subcontractors">
-        <div class="title">{{vm.local.data.user_name}}<img src="img/use/edit.png" ng-click="vm.toggleEdit()"  ng-if="disableedit"/></div>
+        <div class="title">{{vm.local.data.user_name}}<img src="img/use/edit.png" ng-click="vm.toggleEdit()" ng-if="disableedit" /></div>
         <div class="title">
             <i class="ion-android-globe"></i>{{vm.local.data.company}}</div>
         <ion-item class="ds-grh-cont active">
@@ -51,11 +51,11 @@
                 </label>
             </div>
         </ion-item>
-        <ion-item class="ds-grh" ng-click="vm.go('subcontractorrelated', local.entityId)">
+        <ion-item class="ds-grh" ng-click="go('app.subcontractorrelated', {'id': local.entityId})">
             <h3>Tasks<i class="ion ion-ios-folder-outline"></i>
             </h3>
         </ion-item>
         <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="vm.saveEdit()">Save changes</div>
-        <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="vm.cancelEdit()">Cancel</div>
+        <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="vm.toggleEdit()">Cancel</div>
     </ion-content>
 </ion-view>

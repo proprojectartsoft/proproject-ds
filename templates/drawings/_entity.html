@@ -1,5 +1,5 @@
 <ion-view hide-back-button="true" cache-view="false">
-    <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="back()">
+    <ion-header-bar align-title="left" class="bar-subheader bar-calm" ng-click="go('back')">
         <button class="button ion-ios-arrow-left"></button>
         <h1 class="title">{{settings.subHeader}}</h1>
     </ion-header-bar>
@@ -31,6 +31,6 @@
             </h3>
         </ion-item>
         <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="saveEdit()">Save changes</div>
-        <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="cancelEdit()">Cancel</div>
+        <div class="button button-bar pp-formbtn" ng-if="!disableedit" ng-click="toggleEdit()">Cancel</div>
     </ion-content>
 </ion-view>

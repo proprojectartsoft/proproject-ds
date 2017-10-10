@@ -8,7 +8,7 @@
     <ion-content class="has-header ds-blackscroll ds-page">
         <div class="title" ng-if="vm.local.entityId !== '0'">{{vm.defect.title}}<img src="img/use/edit.png" ng-click="vm.toggleEdit()" ng-if="disableedit" /></div>
         <ion-item class="ds-pdf" ng-if="vm.local.entityId">
-            <i class="ion-arrow-expand" ng-click="vm.getFullscreen()" ng-if="vm.defect.drawing"></i>
+            <i class="ion-arrow-expand" ng-click="vm.go('fullscreen', vm.defect.drawing.id)" ng-if="vm.defect.drawing"></i>
             <div style="position:relative" class="ds-container">
                 <div class="ds-marker">
                     <img class="ds-marker" src="img/completed.png" ng-if="vm.local.marker.status == 'Completed'" style="height:17px;width:17px;position: absolute; margin-left: {{vm.local.marker.x}}px; margin-top: {{vm.local.marker.y}}px">
@@ -39,6 +39,6 @@
         </ion-item>
         <div class="button button-bar pp-formbtn" ng-if="!disableedit && !thiscreate" ng-click="vm.saveEdit()">Save changes</div>
         <div class="button button-bar pp-formbtn" ng-if="!disableedit && thiscreate" ng-click="vm.saveCreate()">Create defect</div>
-        <div class="button button-bar pp-formbtn" ng-if="!disableedit && !thiscreate" ng-click="vm.cancelEdit()">Cancel</div>
+        <div class="button button-bar pp-formbtn" ng-if="!disableedit && !thiscreate" ng-click="vm.toggleEdit()">Cancel</div>
     </ion-content>
 </ion-view>

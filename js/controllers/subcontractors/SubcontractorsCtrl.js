@@ -8,23 +8,24 @@ dsApp.controller('SubcontractorsCtrl', [
         vm.settings = {};
         vm.local = {};
         vm.local.entityId = $stateParams.id;
-        $rootScope.disableedit = true;
         SettingsService.put_settings('tabActive', 'subcontractors');
+        if ($rootScope.disableedit === undefined) {
+            $rootScope.disableedit = true;
+        }
         $rootScope.routeback = {
             id: $stateParams.id,
             state: 'app.subcontractorrelated'
         }
         vm.local.data = $rootScope.currentSubcontr;
         vm.settings.subHeader = 'Subcontractor - ' + vm.local.data.last_name + ' ' + vm.local.data.first_name;
-        //delete subcontractor.company_logo;
 
         vm.toggleEdit = function() {
-            $rootScope.disableedit = false;
-            vm.local.backup = angular.copy(vm.local.data);
-        }
-        vm.cancelEdit = function() {
-            vm.local.data = vm.local.backup;
-            $rootScope.disableedit = true;
+            $rootScope.disableedit = !$rootScope.disableedit;
+            if ($rootScope.disableedit == true) {
+                vm.local.data = vm.local.backup;
+            } else {
+                vm.local.backup = angular.copy(vm.local.data);
+            }
         }
 
         vm.saveEdit = function() {
@@ -32,18 +33,13 @@ dsApp.controller('SubcontractorsCtrl', [
             $rootScope.currentSubcontr.isModified = true;
             $rootScope.currentSubcontr.modified = true;
             //go to main page and save the changes there
-            vm.go('tab');
+            $rootScope.go('app.tab');
         }
 
-        vm.go = function(predicate, item) {
-            $rootScope.go('app.' + predicate, {
-                id: item
-            });
-        }
         vm.back = function() {
             $rootScope.disableedit = true;
             $rootScope.routeback = null;
-            $rootScope.go('app.tab')
+            $rootScope.go('app.tab');
         }
     }
 ]);

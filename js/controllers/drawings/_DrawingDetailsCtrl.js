@@ -6,9 +6,6 @@ dsApp.controller('_DrawingDetailsCtrl', [
     '$timeout',
     function($rootScope, $scope, $stateParams, $state, $timeout) {
         $scope.settings = {};
-        if ($rootScope.disableedit === undefined) {
-            $rootScope.disableedit = true;
-        }
         $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentDraw.title;
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {

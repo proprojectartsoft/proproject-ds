@@ -8,7 +8,8 @@ dsApp.controller('NavCtrl', [
     'PostService',
     'AuthService',
     'SyncService',
-    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, PostService, AuthService, SyncService) {
+    'SettingsService',
+    function($rootScope, $state, $scope, $ionicSideMenuDelegate, $timeout, $ionicPopup, PostService, AuthService, SyncService, SettingsService) {
         $scope.disconnectDesignValue = true;
         $scope.settings = {};
         $scope.editMode = false;
@@ -89,7 +90,15 @@ dsApp.controller('NavCtrl', [
                 SyncService.sync().then(function(res) {
                     syncPopup.close();
                     $rootScope.go('app.projects');
+                }, function(reason) {
+                    syncPopup.close();
+                    SettingsService.show_message_popup("Error", reason);
+                    // $state.reload();
                 })
+            }, function(reason) {
+                syncPopup.close();
+                SettingsService.show_message_popup("Error", reason);
+                // $state.reload();
             })
         }
     }
