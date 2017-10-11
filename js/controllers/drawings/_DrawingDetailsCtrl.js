@@ -3,8 +3,7 @@ dsApp.controller('_DrawingDetailsCtrl', [
     '$scope',
     '$stateParams',
     '$state',
-    '$timeout',
-    function($rootScope, $scope, $stateParams, $state, $timeout) {
+    function($rootScope, $scope, $stateParams, $state) {
         $scope.settings = {};
         $scope.settings.subHeader = 'Drawing - ' + $rootScope.currentDraw.title;
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {

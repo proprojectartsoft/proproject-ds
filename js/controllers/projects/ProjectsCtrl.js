@@ -2,11 +2,10 @@ dsApp.controller('ProjectsCtrl', [
     '$rootScope',
     '$scope',
     '$state',
-    '$timeout',
     '$filter',
     'SyncService',
 
-    function($rootScope, $scope, $state, $timeout, $filter, SyncService) {
+    function($rootScope, $scope, $state, $filter, SyncService) {
         var vm = this;
         $rootScope.navTitle = 'Choose a project';
         $rootScope.currentTab = 'drawings';

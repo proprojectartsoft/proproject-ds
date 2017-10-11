@@ -5,8 +5,8 @@ dsApp.controller('LoginCtrl', [
     'AuthService',
     'SyncService',
     'SettingsService',
-
-    function($rootScope, $scope, $state, AuthService, SyncService, SettingsService) {
+    '$timeout',
+    function($rootScope, $scope, $state, AuthService, SyncService, SettingsService, $timeout) {
         $scope.user = {};
         //indicate if there is a defect/drawing or subcontractor added in offline mode
         $rootScope.offline = {

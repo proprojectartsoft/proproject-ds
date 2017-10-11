@@ -4,11 +4,10 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
     '$stateParams',
     '$state',
     'SettingsService',
-    '$timeout',
     '$ionicModal',
     '$filter',
     'ConvertersService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $ionicModal, $filter, ConvertersService) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $ionicModal, $filter, ConvertersService) {
         var vm = this;
         vm.settings = {};
         vm.settings.subHeader = SettingsService.get_settings('subHeader');

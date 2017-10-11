@@ -4,9 +4,8 @@ dsApp.controller('_DefectCommentsCtrl', [
     '$stateParams',
     '$state',
     'SettingsService',
-    '$timeout',
     '$filter',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, $filter) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $filter) {
         $scope.settings = {};
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.local = {};

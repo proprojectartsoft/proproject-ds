@@ -4,8 +4,7 @@ dsApp.controller('_DrawingRelatedCtrl', [
     '$stateParams',
     '$state',
     'SettingsService',
-    '$timeout',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout) {
+    function($rootScope, $scope, $stateParams, $state, SettingsService) {
         $scope.settings = {};
         $scope.settings.project = parseInt($rootScope.projId);
         $rootScope.routeback = {
