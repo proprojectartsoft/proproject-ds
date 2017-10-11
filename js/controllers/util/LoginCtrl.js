@@ -39,14 +39,17 @@ dsApp.controller('LoginCtrl', [
                     }, function(reason) {
                         loginPopup.close();
                         SettingsService.close_all_popups();
-                        SettingsService.show_message_popup("Error", reason);
-                        // $state.reload();
+                        $timeout(function() {
+                            SettingsService.show_message_popup("Error", reason);
+
+                        }, 100);
                     })
                 }, function(reason) {
                     loginPopup.close();
                     SettingsService.close_all_popups();
-                    SettingsService.show_message_popup("Error", reason);
-                    // $state.reload();
+                    $timeout(function() {
+                        SettingsService.show_message_popup("Error", reason);
+                    }, 100);
                 });
             }).error(function(response, status) {
                 if (status === 0 || status === -1) {
@@ -57,16 +60,16 @@ dsApp.controller('LoginCtrl', [
                         });
                         loginPopup.close();
                         SettingsService.close_all_popups();
-                        SettingsService.show_message_popup("You are offline", "You can sync your data when online");
-                        // .then(function(res) {
-                        //     location.reload();
-                        // });
+                        $timeout(function() {
+                            SettingsService.show_message_popup("You are offline", "You can sync your data when online");
+                        }, 100);
                         $rootScope.go('app.projects');
                     }, function(reason) {
                         loginPopup.close();
                         SettingsService.close_all_popups();
-                        SettingsService.show_message_popup("Error", reason);
-                        // $state.reload();
+                        $timeout(function() {
+                            SettingsService.show_message_popup("Error", reason);
+                        }, 100);
                     });
                 }
                 if (status === 502) {
@@ -93,8 +96,9 @@ dsApp.controller('LoginCtrl', [
                         }, function(reason) {
                             loginPopup.close();
                             SettingsService.close_all_popups();
-                            SettingsService.show_message_popup("Error", reason);
-                            // $state.reload();
+                            $timeout(function() {
+                                SettingsService.show_message_popup("Error", reason);
+                            }, 100);
                             return;
                         })
                         //store data for currently logged user

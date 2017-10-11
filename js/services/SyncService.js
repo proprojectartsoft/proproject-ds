@@ -176,7 +176,9 @@ dsApp.service('SyncService', [
                                             if (path == 'fail') {
                                                 def.resolve(projects);
                                                 SettingsService.close_all_popups();
-                                                SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again.");
+                                                $timeout(function() {
+                                                    SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again.");
+                                                }, 100);
                                             } else {
                                                 var countProj = 0;
                                                 angular.forEach(projects, function(proj) {
@@ -197,7 +199,9 @@ dsApp.service('SyncService', [
                                                                 //not enough space to download all pdfs; stop download
                                                                 def.resolve(projects);
                                                                 SettingsService.close_all_popups();
-                                                                SettingsService.show_message_popup("Download stopped", "Not enough space to download all files");
+                                                                $timeout(function() {
+                                                                    SettingsService.show_message_popup("Download stopped", "Not enough space to download all files");
+                                                                }, 100);
                                                                 return;
                                                             } else {
                                                                 count++;
@@ -224,7 +228,9 @@ dsApp.service('SyncService', [
                             if (!navigator.onLine) {
                                 var loggedIn = localStorage.getObject('dsremember');
                                 SettingsService.close_all_popups();
-                                SettingsService.show_message_popup("You are offline", "You can sync your data when online");
+                                $timeout(function() {
+                                    SettingsService.show_message_popup("You are offline", "You can sync your data when online");
+                                }, 100);
                             }
                         })
                     } else {
@@ -234,7 +240,6 @@ dsApp.service('SyncService', [
                 });
             } else {
                 deferred.resolve();
-                var savedCredentials = localStorage.getObject('dsremember');
             }
             return deferred.promise;
         };
