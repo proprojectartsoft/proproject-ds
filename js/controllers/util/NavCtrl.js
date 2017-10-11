@@ -61,34 +61,35 @@ dsApp.controller('NavCtrl', [
             }
         }
         $scope.sync = function() {
-          SettingsService.show_message_popup("You are offline", "You can sync your data when online");
-          SettingsService.show_message_popup("You are offline", "You can sync your data when online");
-          SettingsService.show_message_popup("You are offline", "You can sync your data when online");
-          SettingsService.show_message_popup("You are offline", "You can sync your data when online");
-          SettingsService.close_all_popups();
-            // if (!navigator.onLine) {
-            //     SettingsService.show_message_popup("You are offline", "You can sync your data when online");
-            // } else {
-            //     var syncPopup = SettingsService.show_loading_popup("Sync");
-            //     SyncService.syncData().then(function(res) {
-            //         SyncService.sync().then(function(res) {
-            //             syncPopup.close();
-            //             $rootScope.go('app.projects');
-            //         }, function(reason) {
-            //             syncPopup.close();
-            //             SettingsService.close_all_popups();
-            //             $timeout(function() {
-            //                 SettingsService.show_message_popup("Error", reason);
-            //             }, 100);
-            //         })
-            //     }, function(reason) {
-            //         syncPopup.close();
-            //         SettingsService.close_all_popups();
-            //         $timeout(function() {
-            //             SettingsService.show_message_popup("Error", reason);
-            //         }, 100);
-            //     })
-            // }
+            if (!navigator.onLine) {
+                SettingsService.show_message_popup("You are offline", "You can sync your data when online");
+            } else {
+                var syncPopup = SettingsService.show_loading_popup("Sync");
+                SyncService.syncData().then(function(res) {
+                    SyncService.sync().then(function(res) {
+                        $timeout(function() {
+                            syncPopup.close();
+                        }, 10);
+                        $rootScope.go('app.projects');
+                    }, function(reason) {
+                        $timeout(function() {
+                            syncPopup.close();
+                        }, 10);
+                        $timeout(function() {
+                            SettingsService.close_all_popups();
+                            SettingsService.show_message_popup("Error", reason);
+                        }, 100);
+                    })
+                }, function(reason) {
+                    $timeout(function() {
+                        syncPopup.close();
+                    }, 10);
+                    $timeout(function() {
+                        SettingsService.close_all_popups();
+                        SettingsService.show_message_popup("Error", reason);
+                    }, 100);
+                })
+            }
         }
     }
 ]);

@@ -4,7 +4,8 @@ dsApp.controller('_DrawingRelatedCtrl', [
     '$stateParams',
     '$state',
     'SettingsService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService) {
+    '$filter',
+    function($rootScope, $scope, $stateParams, $state, SettingsService, $filter) {
         $scope.settings = {};
         $scope.settings.project = parseInt($rootScope.projId);
         $rootScope.routeback = {
@@ -36,12 +37,13 @@ dsApp.controller('_DrawingRelatedCtrl', [
             $scope.settings.subHeader = item.title;
             SettingsService.set_settings($scope.settings);
             //store the new item (defect) to be displayed
-            //TODO: get the entire defect
             item.drawing = $rootScope.currentDraw;
             item.photos = [];
             item.comments = [];
             item.related_tasks = [];
-            $rootScope.currentDefect = item;
+            $rootScope.currentDefect = $filter('filter')($rootScope.defects, {
+                id: item.id
+            })[0];
             $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
             $rootScope.go('app.defects', {
                 id: item.id

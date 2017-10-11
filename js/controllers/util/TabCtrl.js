@@ -304,7 +304,7 @@ dsApp.controller('TabCtrl', [
                 def.resolve();
             }, function(err) {
                 SettingsService.show_message_popup('Please notice', 'An unexpected error occured and defect could not be updated.');
-                def.resolve(); //TODO: reject
+                def.resolve();
             })
             return def.promise;
         }
@@ -329,13 +329,20 @@ dsApp.controller('TabCtrl', [
                             data: syncedDraw
                         }, function(res) {
                             storeModifiedDraw(result.value, $rootScope.currentDraw);
-                            syncPopup.close();
+                            $timeout(function() {
+                                syncPopup.close();
+                            }, 10);
+
                         }, function(err) {
                             storeModifiedDraw(result.value, $rootScope.currentDraw);
                             result.value.isModified = true;
-                            syncPopup.close();
-                            SettingsService.close_all_popups();
-                            SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
+                            $timeout(function() {
+                                syncPopup.close();
+                            }, 10);
+                            $timeout(function() {
+                                SettingsService.close_all_popups();
+                                SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
+                            }, 10);
                         })
                     }
 
@@ -356,7 +363,9 @@ dsApp.controller('TabCtrl', [
                                 newDef.id = res.data;
                                 setReporterId(newDef).then(function(data) {
                                     storeNewDefect(result.value, newDef).then(function(res) {
-                                        syncPopup.close();
+                                        $timeout(function() {
+                                            syncPopup.close();
+                                        }, 10);
                                         d.resolve();
                                     })
                                 })
@@ -364,9 +373,13 @@ dsApp.controller('TabCtrl', [
                                 //set id for local use
                                 newDef.id = "new" + result.value.defects.length;
                                 storeNewDefect(result.value, newDef, true).then(function(res) {
-                                    syncPopup.close();
-                                    SettingsService.close_all_popups();
-                                    SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
+                                    $timeout(function() {
+                                        syncPopup.close();
+                                    }, 10);
+                                    $timeout(function() {
+                                        SettingsService.close_all_popups();
+                                        SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
+                                    }, 10);
                                     d.resolve();
                                 })
                             })
@@ -390,14 +403,20 @@ dsApp.controller('TabCtrl', [
                                     data: syncedDefect
                                 }, function(res) {
                                     storeModifiedDefect(result.value, $rootScope.currentDefect).then(function(res) {
-                                        syncPopup.close();
+                                        $timeout(function() {
+                                            syncPopup.close();
+                                        }, 10);
                                         d.resolve();
                                     })
                                 }, function(err) {
                                     storeModifiedDefect(result.value, $rootScope.currentDefect, true).then(function(res) {
-                                        syncPopup.close();
-                                        SettingsService.close_all_popups();
-                                        SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
+                                        $timeout(function() {
+                                            syncPopup.close();
+                                        }, 10);
+                                        $timeout(function() {
+                                            SettingsService.close_all_popups();
+                                            SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
+                                        }, 10);
                                         d.resolve();
                                     })
                                 })
@@ -420,15 +439,21 @@ dsApp.controller('TabCtrl', [
                                 data: $rootScope.currentSubcontr
                             }, function(res) {
                                 storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr).then(function(res) {
-                                    syncPopup.close();
-                                    d.resolve();
+                                  $timeout(function() {
+                                      syncPopup.close();
+                                  }, 10);
+                                                                    d.resolve();
                                 })
                             }, function(error) {
                                 result.value.isModified = true;
                                 storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr, true).then(function(res) {
-                                    syncPopup.close();
-                                    SettingsService.close_all_popups();
-                                    SettingsService.show_message_popup('You are offline', 'Sync when online to add data to server.');
+                                  $timeout(function() {
+                                      syncPopup.close();
+                                  }, 10);
+                                  $timeout(function() {
+                                      SettingsService.close_all_popups();
+                                      SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
+                                  }, 10);
                                     d.resolve();
                                 })
                             })
@@ -476,7 +501,7 @@ dsApp.controller('TabCtrl', [
                         angular.forEach(vm.project.value.subcontractors, function(subcontr) {
                             //assign the collor corresponding to user id and customer id
                             var colorId = (parseInt(vm.project.value.customer_id + "" + subcontr.id)) % colorsLength;
-                            subcontr.name = subcontr.first_name + " " + subcontr.last_name; 
+                            subcontr.name = subcontr.first_name + " " + subcontr.last_name;
                             subcontr.description = subcontr.company;
                             subcontr.icon = SettingsService.get_initials(subcontr.name);
                             subcontr.backgroundColor = colorList[colorId].backColor;

@@ -31,7 +31,6 @@ dsApp.controller('_DefectCommentsCtrl', [
                     "date": Date.now(),
                     "isNew": true
                 };
-                //TODO: check if OK
                 //indicate that the defect will be modified locally
                 $scope.defect.modified = true;
                 request.isNew = true;

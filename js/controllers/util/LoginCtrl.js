@@ -34,20 +34,25 @@ dsApp.controller('LoginCtrl', [
                             role: result.data.role.id,
                             name: result.data.username
                         });
-                        loginPopup.close();
+                        $timeout(function() {
+                            loginPopup.close();
+                        }, 10);
                         $rootScope.go('app.projects');
                     }, function(reason) {
-                        loginPopup.close();
-                        SettingsService.close_all_popups();
                         $timeout(function() {
+                            loginPopup.close();
+                        }, 10);
+                        $timeout(function() {
+                            SettingsService.close_all_popups();
                             SettingsService.show_message_popup("Error", reason);
-
                         }, 100);
                     })
                 }, function(reason) {
-                    loginPopup.close();
-                    SettingsService.close_all_popups();
                     $timeout(function() {
+                        loginPopup.close();
+                    }, 10);
+                    $timeout(function() {
+                        SettingsService.close_all_popups();
                         SettingsService.show_message_popup("Error", reason);
                     }, 100);
                 });
@@ -58,15 +63,18 @@ dsApp.controller('LoginCtrl', [
                             role: 0,
                             name: $scope.user.username
                         });
-                        loginPopup.close();
-                        SettingsService.close_all_popups();
                         $timeout(function() {
+                            loginPopup.close();
+                        }, 10);
+                        $timeout(function() {
+                            SettingsService.close_all_popups();
                             SettingsService.show_message_popup("You are offline", "You can sync your data when online");
                         }, 100);
                         $rootScope.go('app.projects');
                     }, function(reason) {
-                        loginPopup.close();
-                        SettingsService.close_all_popups();
+                        $timeout(function() {
+                            loginPopup.close();
+                        }, 10);
                         $timeout(function() {
                             SettingsService.show_message_popup("Error", reason);
                         }, 100);
@@ -90,13 +98,16 @@ dsApp.controller('LoginCtrl', [
                 AuthService.login($scope.user).success(function(result) {
                     if (result.data) {
                         SyncService.sync().then(function(res) {
-                            loginPopup.close();
-                            SettingsService.close_all_popups();
+                            $timeout(function() {
+                                loginPopup.close();
+                            }, 10);
                             $rootScope.go('app.projects');
                         }, function(reason) {
-                            loginPopup.close();
-                            SettingsService.close_all_popups();
                             $timeout(function() {
+                                loginPopup.close();
+                            }, 10);
+                            $timeout(function() {
+                                SettingsService.close_all_popups();
                                 SettingsService.show_message_popup("Error", reason);
                             }, 100);
                             return;
@@ -113,8 +124,9 @@ dsApp.controller('LoginCtrl', [
                             localStorage.removeItem('dsremember');
                         }
                     } else {
-                        loginPopup.close();
-                        SettingsService.close_all_popups();
+                        $timeout(function() {
+                            loginPopup.close();
+                        }, 10);
                     }
                 }).error(function(response, status) {
                     if (status === 0 || status === -1) {
