@@ -113,7 +113,7 @@ dsApp.controller('DefectsCtrl', [
             } else {
                 addDrawing()
             }
-            vm.settings.subHeader = 'New defect'
+            vm.settings.subHeader = 'New defect';
         }
 
         function existingDefect() {

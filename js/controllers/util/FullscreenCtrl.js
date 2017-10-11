@@ -213,7 +213,7 @@ dsApp.controller('FullscreenCtrl', [
         }
 
         $scope.local.data = $rootScope.currentDraw;
-        setPdf($scope.local.data.path || ($APP.server + '/pub/drawings/' + $scope.local.data.base64String));
+        setPdf($scope.local.data.pdfPath || ($APP.server + '/pub/drawings/' + $scope.local.data.base64String));
         if ($rootScope.routeback.state === 'app.defects' && $rootScope.currentDraw) {
             //fullscreen for drawing of a defect fron defects tab
             $scope.local.singleMarker = true;

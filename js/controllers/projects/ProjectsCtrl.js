@@ -26,6 +26,20 @@ dsApp.controller('ProjectsCtrl', [
                 });
                 vm.local.activeProject = pr && pr.length && pr[0].value;
             }
+            //set pdfPath for defects' drawings
+            angular.forEach(projects, function(p) {
+                angular.forEach(p.value.defects, function(defect) {
+                    if (defect.drawing) {
+                        var d = $filter('filter')(p.value.drawings, {
+                            id: defect.drawing.id
+                        })
+                        if (d && d.length) {
+                            defect.drawing.pdfPath = d[0].pdfPath;
+                        }
+                    }
+                })
+            })
+
         })
         vm.go = function(item) {
             $rootScope.projId = item.id;
