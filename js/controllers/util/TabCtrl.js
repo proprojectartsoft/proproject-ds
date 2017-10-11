@@ -304,7 +304,6 @@ dsApp.controller('TabCtrl', [
                 defect.assignee_id = defect.assignee_id || result.data.assignee_id;
                 def.resolve();
             }, function(err) {
-                SettingsService.show_message_popup('Please notice', 'An unexpected error occured and defect could not be updated.');
                 def.resolve();
             })
             return def.promise;

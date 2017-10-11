@@ -8,8 +8,8 @@
             <div class="row" ng-repeat="item in vm.pictures track by $index" ng-if="$index % 2 === 0">
                 <div class="col col-50" ng-if="$index < vm.pictures.length">
                     <div class="pull-down" style="max-height: 50vw;overflow: hidden;">
-                        <img ng-src="{{vm.pictures[$index].url}}" ng-click="vm.testPicture(vm.pictures[$index])" ng-if="vm.pictures[$index].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
-                        <img data-ng-src="data:image/png;base64,{{vm.pictures[$index].base_64_string}}" ng-click="vm.testPicture(vm.pictures[$index])" ng-if="!vm.pictures[$index].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);"
+                        <img onerror="this.src='img/not_available.jpg';" ng-src="{{vm.pictures[$index].url}}" ng-click="vm.testPicture(vm.pictures[$index])" ng-if="vm.pictures[$index].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
+                        <img onerror="this.src='img/not_available.jpg';" data-ng-src="data:image/png;base64,{{vm.pictures[$index].base_64_string}}" ng-click="vm.testPicture(vm.pictures[$index])" ng-if="!vm.pictures[$index].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);"
                         />
                     </div>
                     <div>
@@ -18,8 +18,8 @@
                 </div>
                 <div class="col col-50" ng-if="$index + 1 < vm.pictures.length">
                     <div class="pull-down" style="max-height: 50vw;overflow: hidden;">
-                        <img ng-src="{{vm.pictures[$index+1].url}}" ng-click="vm.testPicture(vm.pictures[$index + 1])" ng-if="vm.pictures[$index + 1].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
-                        <img data-ng-src="data:image/png;base64,{{vm.pictures[$index+1].base_64_string}}" ng-click="vm.testPicture(vm.pictures[$index + 1])" ng-if="!vm.pictures[$index + 1].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);"
+                        <img onerror="this.src='img/not_available.jpg';" ng-src="{{vm.pictures[$index+1].url}}" ng-click="vm.testPicture(vm.pictures[$index + 1])" ng-if="vm.pictures[$index + 1].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);" />
+                        <img onerror="this.src='img/not_available.jpg';" data-ng-src="data:image/png;base64,{{vm.pictures[$index+1].base_64_string}}" ng-click="vm.testPicture(vm.pictures[$index + 1])" ng-if="!vm.pictures[$index + 1].id" width="100%;-ms-transform: scale(0.3,0.3);-webkit-transform: scale(0.3,0.3); transform: scale(0.3,0.3);"
                         />
                     </div>
                     <div>
@@ -36,8 +36,8 @@
         <div ng-show="vm.substate === 'pic'">
             <div style="padding-bottom: 45px">
                 <div class="list" style="padding:1px 0">
-                    <img class="attached-photo" ng-if="vm.currentPhoto.id" ng-src="{{vm.currentPhoto.url}}" ng-click="vm.returnToGallery()">
-                    <img ng-if="!vm.currentPhoto.id" data-ng-src="data:image/png;base64,{{vm.currentPhoto.base_64_string}}" ng-click="vm.returnToGallery()" class='attached-photo'>
+                    <img onerror="this.src='img/not_found.jpg';" class="attached-photo" ng-if="vm.currentPhoto.id" ng-src="{{vm.currentPhoto.url}}" ng-click="vm.returnToGallery()">
+                    <img onerror="this.src='img/not_found.jpg';" ng-if="!vm.currentPhoto.id" data-ng-src="data:image/png;base64,{{vm.currentPhoto.base_64_string}}" ng-click="vm.returnToGallery()" class='attached-photo'>
                     <label class="item item-input item-stacked-label attach-title">
                       <span>Title</span>
                       <input type="text" ng-readonly="disableedit" ng-model="vm.currentPhoto.title">

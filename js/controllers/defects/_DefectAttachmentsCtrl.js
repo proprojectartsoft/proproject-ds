@@ -41,7 +41,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
 
         angular.forEach(vm.pictures, function(value) {
             //create the src for the attachment by concatenating the serevr path, the directory and the image path
-            value.url = $APP.server + 'pub/defectPhotos/' + value.resized_path;
+            value.url = $APP.server + 'pub/defectPhotos/fdff' + value.resized_path;
         });
 
         goToTop();
