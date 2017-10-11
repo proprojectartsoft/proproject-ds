@@ -36,20 +36,20 @@ dsApp.factory('DownloadsService', [
                                 }, function(res) {
                                     if (res.data > deviceSpace - 500) {
                                         def.resolve("");
-                                        return;
+                                    } else {
+                                        fileTransfer.download(
+                                            uri,
+                                            fileURL,
+                                            function(entry) {
+                                                def.resolve(fileURL);
+                                            },
+                                            function(error) {
+                                                def.resolve("");
+                                            }
+                                        );
                                     }
-                                    fileTransfer.download(
-                                        uri,
-                                        fileURL,
-                                        function(entry) {
-                                            def.resolve(fileURL);
-                                        },
-                                        function(error) {
-                                            def.resolve("");
-                                        }
-                                    );
                                 }, function(error) {
-                                  console.log("Error getting the size of pdf from server.");
+                                    console.log("Error getting the size of pdf from server.");
                                 })
                             },
                             false);
