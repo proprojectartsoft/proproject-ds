@@ -69,8 +69,8 @@ dsApp.controller('NavCtrl', [
                     SyncService.sync().then(function(res) {
                         $timeout(function() {
                             syncPopup.close();
+                            $rootScope.go('app.projects');
                         }, 10);
-                        $rootScope.go('app.projects');
                     }, function(reason) {
                         $timeout(function() {
                             syncPopup.close();
