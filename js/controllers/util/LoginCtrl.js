@@ -4,7 +4,9 @@ dsApp.controller('LoginCtrl', [
     '$state',
     'AuthService',
     'SyncService',
-    function($rootScope, $scope, $state, AuthService, SyncService) {
+    'SettingsService',
+
+    function($rootScope, $scope, $state, AuthService, SyncService, SettingsService) {
         $scope.user = {};
         //indicate if there is a defect/drawing or subcontractor added in offline mode
         $rootScope.offline = {
@@ -55,9 +57,10 @@ dsApp.controller('LoginCtrl', [
                         });
                         loginPopup.close();
                         SettingsService.close_all_popups();
-                        SettingsService.show_message_popup("You are offline", "You can sync your data when online").then(function(res) {
-                            location.reload();
-                        });
+                        SettingsService.show_message_popup("You are offline", "You can sync your data when online");
+                        // .then(function(res) {
+                        //     location.reload();
+                        // });
                         $rootScope.go('app.projects');
                     }, function(reason) {
                         loginPopup.close();

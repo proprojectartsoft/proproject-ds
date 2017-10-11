@@ -61,27 +61,31 @@ dsApp.controller('NavCtrl', [
             }
         }
         $scope.sync = function() {
-            if (!navigator.onLine) {
-                SettingsService.show_message_popup("You are offline", "You can sync your data when online");
-            } else {
-                var syncPopup = SettingsService.show_loading_popup("Sync");
-                SyncService.syncData().then(function(res) {
-                    SyncService.sync().then(function(res) {
-                        syncPopup.close();
-                        $rootScope.go('app.projects');
-                    }, function(reason) {
-                        syncPopup.close();
-                        SettingsService.close_all_popups();
-                        SettingsService.show_message_popup("Error", reason);
-                        // $state.reload();
-                    })
-                }, function(reason) {
-                    syncPopup.close();
-                    SettingsService.close_all_popups();
-                    SettingsService.show_message_popup("Error", reason);
-                    // $state.reload();
-                })
-            }
+            var syncPopup = SettingsService.show_loading_popup("Sync");;
+            $timeout(function() {
+                syncPopup.close();
+            }, 1000);
+            // if (!navigator.onLine) {
+            //     SettingsService.show_message_popup("You are offline", "You can sync your data when online");
+            // } else {
+            //     var syncPopup = SettingsService.show_loading_popup("Sync");
+            //     SyncService.syncData().then(function(res) {
+            //         SyncService.sync().then(function(res) {
+            //             syncPopup.close();
+            //             $rootScope.go('app.projects');
+            //         }, function(reason) {
+            //             syncPopup.close();
+            //             SettingsService.close_all_popups();
+            //             SettingsService.show_message_popup("Error", reason);
+            //             // $state.reload();
+            //         })
+            //     }, function(reason) {
+            //         syncPopup.close();
+            //         SettingsService.close_all_popups();
+            //         SettingsService.show_message_popup("Error", reason);
+            //         // $state.reload();
+            //     })
+            // }
         }
     }
 ]);

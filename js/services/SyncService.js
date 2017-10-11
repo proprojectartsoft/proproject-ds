@@ -175,9 +175,8 @@ dsApp.service('SyncService', [
                                         DownloadsService.createDirectory("ds-downloads").then(function(path) {
                                             if (path == 'fail') {
                                                 def.resolve(projects);
-                                                SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again.").then(function(r) {
-                                                    location.reload();
-                                                })
+                                                SettingsService.close_all_popups();
+                                                SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again.");
                                             } else {
                                                 var countProj = 0;
                                                 angular.forEach(projects, function(proj) {
@@ -197,9 +196,8 @@ dsApp.service('SyncService', [
                                                                 count++;
                                                                 //not enough space to download all pdfs; stop download
                                                                 def.resolve(projects);
-                                                                SettingsService.show_message_popup("Download stopped", "Not enough space to download all files").then(function(r) {
-                                                                    location.reload();
-                                                                })
+                                                                SettingsService.close_all_popups();
+                                                                SettingsService.show_message_popup("Download stopped", "Not enough space to download all files");
                                                                 return;
                                                             } else {
                                                                 count++;
@@ -225,6 +223,7 @@ dsApp.service('SyncService', [
                             deferred.resolve();
                             if (!navigator.onLine) {
                                 var loggedIn = localStorage.getObject('dsremember');
+                                SettingsService.close_all_popups();
                                 SettingsService.show_message_popup("You are offline", "You can sync your data when online");
                             }
                         })
