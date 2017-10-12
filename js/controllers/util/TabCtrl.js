@@ -274,14 +274,42 @@ dsApp.controller('TabCtrl', [
                             id: defect.id
                         }
                     }, function(result) {
-                        //store the modified defect
-                        for (var i = 0; i < proj.defects.length; i++) {
-                            if (proj.defects[i].id == defect.id) {
-                                proj.defects[i] = result.data;
-                                i = proj.defects.length;
+                        var storedDefect = result.data;
+                        //get comments
+                        var commentsPrm = PostService.post({
+                                method: 'GET',
+                                url: 'defectcomment',
+                                params: {
+                                    defectId: defect.id
+                                }
+                            }, function(result) {
+                                storedDefect.comments = result.data;
+                            }, function(err) {
+                                storedDefect.comments = [];
+                            }),
+                            //get attachments
+                            photosPrm = PostService.post({
+                                method: 'GET',
+                                url: 'defectphoto/defect',
+                                params: {
+                                    defectId: defect.id
+                                }
+                            }, function(result) {
+                                storedDefect.photos = result.data;
+                            }, function(err) {
+                                storedDefect.photos = [];
+                            });
+
+                        Promise.all([commentsPrm, photosPrm]).then(function(succ) {
+                            //store the modified defect
+                            for (var i = 0; i < proj.defects.length; i++) {
+                                if (proj.defects[i].id == defect.id) {
+                                    proj.defects[i] = storedDefect;
+                                    i = proj.defects.length;
+                                }
                             }
-                        }
-                        prm.resolve();
+                            prm.resolve();
+                        })
                     }, function(err) {
                         delete defect.photos.toBeUpdated;
                         delete defect.photos.toBeDeleted;
