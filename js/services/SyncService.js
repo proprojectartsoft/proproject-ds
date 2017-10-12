@@ -173,56 +173,55 @@ dsApp.service('SyncService', [
                                     //create directory to download the pdfs
                                     if (ionic.Platform.isIPad() || ionic.Platform.isAndroid() || ionic.Platform.isIOS()) {
                                         DownloadsService.createDirectory("ds-downloads").then(function(path) {
-                                            if (path == 'fail') {
-                                                def.resolve(projects);
-                                                SettingsService.close_all_popups();
-                                                $timeout(function() {
-                                                    SettingsService.show_message_popup("Error", "Could not create directory to download the files. Please try again.");
-                                                }, 100);
-                                            } else {
-                                                var countProj = 0;
-                                                angular.forEach(projects, function(proj) {
+                                            var countProj = 0;
+                                            angular.forEach(projects, function(proj) {
+                                                if (!proj.value.drawings || proj.value.drawings && !proj.value.drawings.length) {
                                                     countProj++;
-                                                    if (!proj.value.drawings || proj.value.drawings && !proj.value.drawings.length) {
-                                                        if (countProj >= projects.length)
-                                                            def.resolve(projects);
-                                                    }
-
-                                                    //order drawings by date
-                                                    proj.value.drawings = orderBy(proj.value.drawings, 'draw.drawing_date', true);
-                                                    var count = 0;
-                                                    //download the pdf for every drawing
-                                                    angular.forEach(proj.value.drawings, function(draw) {
-                                                        DownloadsService.downloadPdf(draw, path).then(function(downloadRes) {
-                                                            if (downloadRes == "") {
-                                                                count++;
-                                                                //not enough space to download all pdfs; stop download
+                                                    if (countProj >= projects.length)
+                                                        def.resolve(projects);
+                                                }
+                                                //order drawings by date to download first the most recent drawings
+                                                proj.value.drawings = orderBy(proj.value.drawings, 'draw.drawing_date', true);
+                                                console.log(proj);
+                                                var count = 0;
+                                                //download the pdf for every drawing
+                                                angular.forEach(proj.value.drawings, function(draw) {
+                                                    DownloadsService.downloadPdf(draw, path).then(function(downloadRes) {
+                                                        count++;
+                                                        draw.pdfPath = downloadRes;
+                                                        //stop when all pdfs have been downloaded
+                                                        if (count >= proj.value.drawings.length) {
+                                                            console.log(draw);
+                                                            console.log(proj);
+                                                            countProj++;
+                                                            if (countProj >= projects.length) {
+                                                                console.log(projects);
                                                                 def.resolve(projects);
-                                                                SettingsService.close_all_popups();
-                                                                $timeout(function() {
-                                                                    SettingsService.show_message_popup("Download stopped", "Not enough space to download all files");
-                                                                }, 100);
-                                                                return;
-                                                            } else {
-                                                                count++;
-                                                                draw.pdfPath = downloadRes;
-                                                                //all pdfs have been downloaded
-                                                                if (countProj >= projects.length && count >= proj.value.drawings.length)
-                                                                    def.resolve(projects);
                                                             }
-                                                        })
+                                                        }
+                                                    }, function(reason) {
+                                                        SettingsService.close_all_popups();
+                                                        $timeout(function() {
+                                                            SettingsService.show_message_popup("Download stopped", reason);
+                                                        }, 100);
+                                                        def.resolve(projects);
                                                     })
                                                 })
-                                            }
+                                            })
+                                        }, function(reason) {
+                                            SettingsService.close_all_popups();
+                                            $timeout(function() {
+                                                SettingsService.show_message_popup("Download stopped", reason);
+                                            }, 100);
+                                            def.resolve(projects);
                                         })
                                     } else {
-                                        def.resolve(projects);
                                         console.log("You are not on mobile. Files download not necessary.");
+                                        def.resolve(projects);
                                     }
                                 })
                                 return def.promise;
                             }
-
                         }, function(e) {
                             deferred.resolve();
                             if (!navigator.onLine) {
