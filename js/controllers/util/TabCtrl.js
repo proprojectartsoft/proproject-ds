@@ -63,7 +63,8 @@ dsApp.controller('TabCtrl', [
         }
 
         function upload(defect) {
-            var d = $q.defer();
+            var d = $q.defer(),
+                count = 0;
             if (!defect.photos.pictures || defect.photos.pictures && !defect.photos.pictures.length)
                 d.resolve();
             angular.forEach(defect.photos.pictures, function(attachment) {
@@ -71,7 +72,7 @@ dsApp.controller('TabCtrl', [
                     //add new attachment or update an existing one for already existing defect
                     PostService.post({
                         method: 'POST',
-                        url: url,
+                        url: 'defectphoto/uploadfile',
                         data: attachment
                     }, function(result) {
                         count++;
