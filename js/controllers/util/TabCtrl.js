@@ -62,33 +62,6 @@ dsApp.controller('TabCtrl', [
             }
         }
 
-        function upload(defect) {
-            var d = $q.defer(),
-                count = 0;
-            if (!defect.photos.pictures || defect.photos.pictures && !defect.photos.pictures.length)
-                d.resolve();
-            angular.forEach(defect.photos.pictures, function(attachment) {
-                if (!attachment.id) {
-                    //add new attachment or update an existing one for already existing defect
-                    PostService.post({
-                        method: 'POST',
-                        url: 'defectphoto/uploadfile',
-                        data: attachment
-                    }, function(result) {
-                        count++;
-                        attachment.id = result;
-                        if (count >= defect.photos.pictures.length)
-                            d.resolve();
-                    }, function(error) {
-                        count++;
-                        if (count >= defect.photos.pictures.length)
-                            d.resolve();
-                    })
-                }
-            })
-            return d.promise;
-        }
-
         function updateDraw(draw) {
             var d = $q.defer();
             if (!draw)
@@ -162,13 +135,28 @@ dsApp.controller('TabCtrl', [
             }
 
             if (!offline) {
+                var attachments = {};
+                attachments.toAdd = newDef.photos.pictures || [];
+                attachments.toUpd = [];
+                attachments.toDelete = [];
                 var subcontrPrm = SyncService.syncSubcontractors(proj.subcontractors),
-                    attachPrm = upload(newDef),
+                    attachPrm = SyncService.syncAttachments(attachments),
                     drawPrm = updateDraw(drawToUpdate);
 
                 Promise.all([attachPrm, drawPrm, subcontrPrm]).then(function(res) {
-                    proj.defects.push(newDef);
-                    prm.resolve();
+                    //get from server the new created defect and add it locally
+                    PostService.post({
+                        method: 'GET',
+                        url: 'defect',
+                        params: {
+                            id: newDef.id
+                        }
+                    }, function(result) {
+                        proj.defects.push(result.data);
+                        prm.resolve();
+                    }, function(err) {
+                        prm.resolve();
+                    })
                 })
             } else {
                 proj.defects.push(newDef);
@@ -232,26 +220,52 @@ dsApp.controller('TabCtrl', [
                         commentsToAdd.push(comment);
                     }
                 })
+
+                //store new attachments
+                angular.forEach(defect.photos.pictures, function(pic) {
+                    //store new attachments to be synced
+                    if (!pic.id) {
+                        attachments.toAdd.push(pic);
+                    }
+                })
+
                 attachments.toUpd = defect.photos.toBeUpdated || [];
                 attachments.toDelete = defect.photos.toBeDeleted || [];
 
                 var subcontrPrm = SyncService.syncSubcontractors(proj.subcontractors),
                     commPrm = SyncService.syncComments(commentsToAdd),
                     attachPrm = SyncService.syncAttachments(attachments),
-                    drawPrm = updateDraw(drawToUpdate),
-                    uploadPrm = upload(defect);
+                    drawPrm = updateDraw(drawToUpdate);
 
-                Promise.all([attachPrm, uploadPrm, drawPrm, subcontrPrm]).then(function(res) {
-                    delete defect.photos.toBeUpdated;
-                    delete defect.photos.toBeDeleted;
-                    //store the modified defect
-                    for (var i = 0; i < proj.defects.length; i++) {
-                        if (proj.defects[i].id == defect.id) {
-                            proj.defects[i] = defect;
-                            i = proj.defects.length;
+                Promise.all([attachPrm, drawPrm, subcontrPrm]).then(function(res) {
+                    //get from server the new created defect and add it locally
+                    PostService.post({
+                        method: 'GET',
+                        url: 'defect',
+                        params: {
+                            id: defect.id
                         }
-                    }
-                    prm.resolve();
+                    }, function(result) {
+                        //store the modified defect
+                        for (var i = 0; i < proj.defects.length; i++) {
+                            if (proj.defects[i].id == defect.id) {
+                                proj.defects[i] = result.data;
+                                i = proj.defects.length;
+                            }
+                        }
+                        prm.resolve();
+                    }, function(err) {
+                        delete defect.photos.toBeUpdated;
+                        delete defect.photos.toBeDeleted;
+                        //store the modified defect
+                        for (var i = 0; i < proj.defects.length; i++) {
+                            if (proj.defects[i].id == defect.id) {
+                                proj.defects[i] = defect;
+                                i = proj.defects.length;
+                            }
+                        }
+                        prm.resolve();
+                    })
                 })
             } else {
                 //store the modified defect
