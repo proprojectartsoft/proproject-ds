@@ -63,7 +63,7 @@ dsApp.controller('TabCtrl', [
         }
 
         function upload(defect) {
-            var d = $q.defer(defect.photos);
+            var d = $q.defer();
             if (!defect.photos.pictures || defect.photos.pictures && !defect.photos.pictures.length)
                 d.resolve();
             angular.forEach(defect.photos.pictures, function(attachment) {
@@ -84,6 +84,22 @@ dsApp.controller('TabCtrl', [
                             d.resolve();
                     })
                 }
+            })
+            return d.promise;
+        }
+
+        function updateDraw(draw) {
+            var d = $q.defer();
+            if (!draw)
+                d.resolve();
+            PostService.post({
+                method: 'PUT',
+                url: 'drawing',
+                data: ConvertersService.get_drawing_for_update(draw)
+            }, function(res) {
+                d.resolve();
+            }, function(err) {
+                d.resolve();
             })
             return d.promise;
         }
@@ -147,15 +163,7 @@ dsApp.controller('TabCtrl', [
             if (!offline) {
                 var subcontrPrm = SyncService.syncSubcontractors(proj.subcontractors),
                     attachPrm = upload(newDef),
-                    drawPrm = '';
-
-                if (drawToUpdate) {
-                    drawPrm = PostService.post({
-                        method: 'PUT',
-                        url: 'drawing',
-                        data: ConvertersService.get_drawing_for_update(drawToUpdate)
-                    }, function(res) {}, function(err) {});
-                }
+                    drawPrm = updateDraw(drawToUpdate);
 
                 Promise.all([attachPrm, drawPrm, subcontrPrm]).then(function(res) {
                     proj.defects.push(newDef);
@@ -229,16 +237,8 @@ dsApp.controller('TabCtrl', [
                 var subcontrPrm = SyncService.syncSubcontractors(proj.subcontractors),
                     commPrm = SyncService.syncComments(commentsToAdd),
                     attachPrm = SyncService.syncAttachments(attachments),
-                    drawPrm = '',
+                    drawPrm = updateDraw(drawToUpdate),
                     uploadPrm = upload(defect);
-
-                if (drawToUpdate) {
-                    drawPrm = PostService.post({
-                        method: 'PUT',
-                        url: 'drawing',
-                        data: ConvertersService.get_drawing_for_update(drawToUpdate)
-                    }, function(res) {}, function(err) {});
-                }
 
                 Promise.all([attachPrm, uploadPrm, drawPrm, subcontrPrm]).then(function(res) {
                     delete defect.photos.toBeUpdated;

@@ -453,7 +453,7 @@ dsApp.service('ConvertersService', ['$http', '$rootScope', '$filter', function C
             priority_id: defect.priority_id,
             severity_id: defect.severity_id,
             status_id: defect.status_id,
-            description: "",
+            description: defect.description,
             related_tasks: [],
             assignee_id: defect.assignee_id,
             assignee_name: defect.assignee_name

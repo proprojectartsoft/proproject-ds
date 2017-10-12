@@ -42,7 +42,20 @@ dsApp.controller('NavCtrl', [
             $rootScope.currentUser = aux;
             $rootScope.currentUser.username = result.data.first_name + ' ' + result.data.last_name;
         }, function(error) {
-
+            var aux = localStorage.getObject('ds.user')
+            switch (aux.role) {
+                case 1:
+                    aux.role_title = 'Site Manager'
+                    break;
+                case 2:
+                    aux.role_title = 'Company Admin'
+                    break;
+                case 3:
+                    aux.role_title = 'Super Admin'
+                    break;
+            }
+            $rootScope.currentUser = aux;
+            $rootScope.currentUser.username = result.data.first_name + ' ' + result.data.last_name;
         })
         $scope.redirect = function(predicate) {
             $rootScope.go('app.' + predicate);
