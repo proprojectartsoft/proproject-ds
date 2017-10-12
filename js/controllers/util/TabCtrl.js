@@ -517,7 +517,7 @@ dsApp.controller('TabCtrl', [
                     vm.settings.loaded = true;
                     break;
                 case 'defects':
-                    vm.list = orderBy($rootScope.defects, 'draw.drawing_date', true);
+                    vm.list = orderBy($rootScope.defects, 'date', true); 
                     vm.settings.loaded = true;
                     break;
             }

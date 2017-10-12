@@ -27,7 +27,7 @@ dsApp.controller('_DrawingRelatedCtrl', [
             var colorsLength = Object.keys(colorList).length;
             angular.forEach($scope.local.list, function(relTask) {
                 // assign the collor corresponding to user id and customer id
-                var colorId = (parseInt($rootScope.customer_id || 0 + "" + relTask.assignee_id)) % colorsLength;
+                var colorId = (parseInt(($rootScope.customer_id || 0) + "" + relTask.assignee_id)) % colorsLength;
                 relTask.backgroundColor = colorList[colorId].backColor;
                 relTask.foregroundColor = colorList[colorId].foreColor;
             })

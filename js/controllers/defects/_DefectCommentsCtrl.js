@@ -40,6 +40,10 @@ dsApp.controller('_DefectCommentsCtrl', [
                 if (typeof $scope.defect.isNew == 'undefined') {
                     $scope.defect.isModified = true;
                 }
+                //sync with the server if not in edit mode
+                if ($rootScope.disableedit) {
+                    $rootScope.go('app.tab');
+                }
             }
         }
 
