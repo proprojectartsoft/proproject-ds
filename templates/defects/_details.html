@@ -39,7 +39,7 @@
                     <div class="ds-content">
                         <span class="ds-title">Assignee</span>
                     </div>
-                    <input class="ds-input" ng-model="vm.defect.assignee_name" ng-click="vm.assignee()" ng-if="!disableedit">
+                    <input class="ds-input" ng-readonly=true ng-model="vm.defect.assignee_name" ng-click="vm.assignee()" ng-if="!disableedit">
                     <span class="ds-input" ng-if="disableedit">{{vm.defect.assignee_name}}</span>
                 </label>
                 <div class="ds-label">
