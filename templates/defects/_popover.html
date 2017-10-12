@@ -11,10 +11,10 @@
                     <input class="ds-input" type="search" placeholder="Search" ng-change="vm.search()" ng-model="vm.local.search">
                 </label>
                 <div class="list" ng-if="vm.settings.state === 'details'">
-                    <ion-item class="item" ng-repeat="assignee in vm.local.poplist | filter:local.search" ng-click="vm.addAssignee(assignee)">{{assignee.first_name}} {{assignee.last_name}}</ion-item>
+                    <ion-item class="item" ng-repeat="assignee in vm.local.poplist | filter:vm.local.search" ng-click="vm.addAssignee(assignee)">{{assignee.first_name}} {{assignee.last_name}}</ion-item>
                 </div>
                 <div class="list" ng-if="vm.settings.state === 'related'">
-                    <ion-item class="item" ng-repeat="related in vm.local.poplist | filter:local.search" ng-click="vm.addRelated(related)">{{related.title}}</ion-item>
+                    <ion-item class="item" ng-repeat="related in vm.local.poplist | filter:vm.local.search" ng-click="vm.addRelated(related)">{{related.title}}</ion-item>
                 </div>
             </ion-list>
     </ion-content>
