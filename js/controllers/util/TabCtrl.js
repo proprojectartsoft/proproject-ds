@@ -152,8 +152,36 @@ dsApp.controller('TabCtrl', [
                             id: newDef.id
                         }
                     }, function(result) {
-                        proj.defects.push(result.data);
-                        prm.resolve();
+                        var storedDefect = result.data;
+                        //get comments
+                        var commentsPrm = PostService.post({
+                                method: 'GET',
+                                url: 'defectcomment',
+                                params: {
+                                    defectId: newDef.id
+                                }
+                            }, function(result) {
+                                storedDefect.comments = result.data;
+                            }, function(err) {
+                                storedDefect.comments = [];
+                            }),
+                            //get attachments
+                            photosPrm = PostService.post({
+                                method: 'GET',
+                                url: 'defectphoto/defect',
+                                params: {
+                                    defectId: newDef.id
+                                }
+                            }, function(result) {
+                                storedDefect.photos = result.data;
+                            }, function(err) {
+                                storedDefect.photos = [];
+                            });
+
+                        Promise.all([commentsPrm, photosPrm]).then(function(succ) {
+                            proj.defects.push(storedDefect);
+                            prm.resolve();
+                        })
                     }, function(err) {
                         prm.resolve();
                     })
@@ -634,6 +662,7 @@ dsApp.controller('TabCtrl', [
                     }]
                 }).then(function(res) {
                     if (res !== 'close') {
+                        var popup = SettingsService.show_loading_popup("Inviting subcontractor");
                         PostService.post({
                             method: 'POST',
                             url: 'invite/subcontractor',
@@ -641,7 +670,23 @@ dsApp.controller('TabCtrl', [
                                 email: res,
                                 projectId: $rootScope.projId
                             }
-                        }, function(succ) {}, function(error) {})
+                        }, function(succ) {
+                            $timeout(function() {
+                                popup.close();
+                            }, 10);
+                            $timeout(function() {
+                                SettingsService.show_message_popup('Success', 'Subcontractor invited');
+
+                            }, 10);
+                        }, function(err) {
+                            $timeout(function() {
+                                popup.close();
+                            }, 10);
+                            if (err.data.status == 422)
+                                $timeout(function() {
+                                    SettingsService.show_message_popup('Error', 'User with email ' + res + ' already exists.');
+                                }, 10);
+                        })
                     }
                 }, function(err) {
                     console.log('Err:', err);

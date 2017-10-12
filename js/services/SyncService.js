@@ -182,7 +182,6 @@ dsApp.service('SyncService', [
                                                 }
                                                 //order drawings by date to download first the most recent drawings
                                                 proj.value.drawings = orderBy(proj.value.drawings, 'draw.drawing_date', true);
-                                                console.log(proj);
                                                 var count = 0;
                                                 //download the pdf for every drawing
                                                 angular.forEach(proj.value.drawings, function(draw) {
@@ -191,11 +190,8 @@ dsApp.service('SyncService', [
                                                         draw.pdfPath = downloadRes;
                                                         //stop when all pdfs have been downloaded
                                                         if (count >= proj.value.drawings.length) {
-                                                            console.log(draw);
-                                                            console.log(proj);
                                                             countProj++;
                                                             if (countProj >= projects.length) {
-                                                                console.log(projects);
                                                                 def.resolve(projects);
                                                             }
                                                         }
@@ -369,7 +365,6 @@ dsApp.service('SyncService', [
                                         changes.defectsToAdd.push(defect);
 
                                         angular.forEach(defect.photos.pictures, function(pic) {
-                                            console.log(pic);
                                             //store new attachments to be synced
                                             if (!pic.id) {
                                                 changes.attachments.toAdd.push(pic);
