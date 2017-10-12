@@ -70,7 +70,7 @@ dsApp.controller('TabCtrl', [
                 if (!attachment.id) {
                     //add new attachment or update an existing one for already existing defect
                     PostService.post({
-                        method: method,
+                        method: 'POST',
                         url: url,
                         data: attachment
                     }, function(result) {
