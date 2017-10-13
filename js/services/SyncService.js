@@ -83,7 +83,7 @@ dsApp.service('SyncService', [
             //user already logged
             if (sessionStorage.getObject('isLoggedIn')) {
                 callback("logged");
-            } else {
+            } else if (localStorage.getObject('dsremember')) {
                 //user is not logged on server
                 var user = {
                     username: localStorage.getObject('dsremember').username,
@@ -96,6 +96,8 @@ dsApp.service('SyncService', [
                 }).error(function() {
                     callback("error");
                 })
+            } else {
+                callback("error");
             }
         };
 
@@ -364,36 +366,11 @@ dsApp.service('SyncService', [
                                         console.log("NEW: " + defect.id);
                                         delete defect.isNew;
                                         changes.defectsToAdd.push(defect);
-                                        // //store new attachments to be synced
-                                        // angular.extend(changes.attachments.toAdd, defect.photos.pictures);
-                                        // //store new comments for the defect
-                                        // angular.extend(changes.commentsToAdd, defect.comments);
                                     }
 
                                     if (defect.isModified) {
                                         console.log("MODIFIED: " + defect.id);
                                         delete defect.isModified;
-
-                                        // //store new comments for the defect
-                                        // angular.forEach(defect.comments, function(comment) {
-                                        //     //store new comments to be synced
-                                        //     if (typeof comment.isNew != 'undefined') {
-                                        //         delete comment.isNew;
-                                        //         changes.commentsToAdd.push(comment);
-                                        //     }
-                                        // })
-                                        // //store new attachments
-                                        // angular.forEach(defect.photos.pictures, function(pic) {
-                                        //     //store new attachments to be synced
-                                        //     if (!pic.id) {
-                                        //         changes.attachments.toAdd.push(pic);
-                                        //     }
-                                        // })
-                                        //
-                                        // //add photos to be updated
-                                        // angular.extend(changes.attachments.toUpd, defect.photos.toBeUpdated);
-                                        // //add photos to be deleted
-                                        // angular.extend(changes.attachments.toDelete, defect.photos.toBeDeleted);
                                         //store all modified defects for this project
                                         changes.defectsToUpd.push(defect);
                                     }
@@ -477,33 +454,22 @@ dsApp.service('SyncService', [
                                         }
                                     }
 
-                                    // //set the new id of the added defect as defect_id for all its new attachments
-                                    // angular.forEach(changes.attachments.toAdd, function(pic) {
-                                    //     pic.defect_id = res.data;
-                                    // })
-                                    //
-                                    // //set the new id of the added defect as defect_id for all its comments
-                                    // angular.forEach(changes.commentsToAdd, function(comment) {
-                                    //     comment.defect_id = res.data;
-                                    // })
-
                                     var attachments = {
                                         toAdd: [],
                                         toUpd: [],
                                         toDelete: []
                                     };
-
                                     //set the new id of the added defect as defect_id for all its new attachments
                                     angular.forEach(oldDefect.photos.pictures, function(pic) {
                                         pic.defect_id = res.data;
                                     })
-                                    attachments.toAdd = oldDefect.photos.pictures;
+                                    attachments.toAdd = oldDefect.photos.pictures || [];
 
                                     //set the new id of the added defect as defect_id for all its comments
                                     angular.forEach(oldDefect.comments, function(comment) {
                                         comment.defect_id = res.data;
                                     })
-                                    var commPrm = service.syncComments(oldDefect.comments),
+                                    var commPrm = service.syncComments(oldDefect.comments || []),
                                         attPrm = service.syncAttachments(attachments);
                                     Promise.all([commPrm, attPrm]).then(function(r) {
                                         defer.resolve(changes);
@@ -524,11 +490,13 @@ dsApp.service('SyncService', [
                                 angular.forEach(changes.defectsToAdd, function(defect) {
                                     addDefect(defect, changes).then(function(res) {
                                         count++;
+                                        changes = res;
                                         if (count >= changes.defectsToAdd.length) {
                                             defer.resolve(res);
                                         }
                                     }, function(res) {
                                         count++;
+                                        changes = res;
                                         if (count >= changes.defectsToAdd.length) {
                                             defer.resolve(res);
                                         }
@@ -564,7 +532,7 @@ dsApp.service('SyncService', [
                                 var defer = $q.defer(),
                                     count = 0;
                                 if (!changes.defectsToUpd.length)
-                                    defer.resolve();
+                                    defer.resolve(changes);
 
                                 var defects = changes.defectsToUpd,
                                     update = function(defect) {
@@ -630,7 +598,7 @@ dsApp.service('SyncService', [
                                         }, function(error) {
                                             count++;
                                             if (count >= defects.length)
-                                                defer.resolve();
+                                                defer.resolve(changes);
                                         })
                                     } else {
                                         var attachments = {
@@ -672,15 +640,9 @@ dsApp.service('SyncService', [
                             var project = p.value;
                             //remove all data to add or update for this project
                             changes = {
-                                // commentsToAdd: [], //TODO: delete comm, attachm
                                 defectsToAdd: [],
                                 defectsToUpd: [],
                                 drawingsToUpd: [],
-                                // attachments: {
-                                //     toAdd: [],
-                                //     toUpd: [],
-                                //     toDelete: []
-                                // }
                             };
                             if (project.isModified) {
                                 //sync all data for modified projects
@@ -692,8 +654,6 @@ dsApp.service('SyncService', [
                                 syncDefects(changes).then(function(res) {
                                     var updDefectsPrm = updateDefects(res),
                                         updDrawsPrm = updateDrawings(res),
-                                        // saveComments = service.syncComments(res.commentsToAdd), //TODO: not
-                                        // saveAttachments = service.syncAttachments(res.attachments), //TODO: not
                                         saveSubcontr = service.syncSubcontractors(subcontr);
 
                                     Promise.all([updDefectsPrm, updDrawsPrm, saveSubcontr]).then(function(s) {
