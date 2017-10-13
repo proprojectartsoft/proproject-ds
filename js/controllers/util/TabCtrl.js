@@ -153,6 +153,13 @@ dsApp.controller('TabCtrl', [
                         }
                     }, function(result) {
                         var storedDefect = result.data;
+                        //set pdfPath fro drawing
+                        if (storedDefect.drawing) {
+                            var drawing = $filter('filter')(proj.drawings, {
+                                id: storedDefect.drawing.id
+                            });
+                            storedDefect.drawing.pdfPath = drawing && drawing[0].pdfPath || null;
+                        }
                         //get comments
                         var commentsPrm = PostService.post({
                                 method: 'GET',
@@ -275,6 +282,13 @@ dsApp.controller('TabCtrl', [
                         }
                     }, function(result) {
                         var storedDefect = result.data;
+                        //set pdfPath fro drawing
+                        if (storedDefect.drawing) {
+                            var drawing = $filter('filter')(proj.drawings, {
+                                id: storedDefect.drawing.id
+                            });
+                            storedDefect.drawing.pdfPath = drawing && drawing[0].pdfPath || null;
+                        }
                         //get comments
                         var commentsPrm = PostService.post({
                                 method: 'GET',
