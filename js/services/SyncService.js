@@ -589,7 +589,7 @@ dsApp.service('SyncService', [
 
                                             var commPrm = service.syncComments(commToAdd),
                                                 attPrm = service.syncAttachments(attachments),
-                                                updPrm = update();
+                                                updPrm = update(defect);
                                             Promise.all([updPrm, commPrm, attPrm]).then(function(r) {
                                                 count++;
                                                 if (count >= defects.length)
@@ -625,7 +625,7 @@ dsApp.service('SyncService', [
                                         })
                                         var commPrm = service.syncComments(commToAdd),
                                             attPrm = service.syncAttachments(attachments),
-                                            updPrm = update();
+                                            updPrm = update(defect);
                                         Promise.all([updPrm, commPrm, attPrm]).then(function(r) {
                                             count++;
                                             if (count >= defects.length)
