@@ -146,9 +146,10 @@ dsApp.controller('TabCtrl', [
                 attachments.toDelete = [];
                 var subcontrPrm = SyncService.syncSubcontractors(proj.subcontractors),
                     attachPrm = SyncService.syncAttachments(attachments),
-                    drawPrm = updateDraw(drawToUpdate);
+                    drawPrm = updateDraw(drawToUpdate),
+                    commPrm = SyncService.syncComments(newDef.comments);
 
-                Promise.all([attachPrm, drawPrm, subcontrPrm]).then(function(res) {
+                Promise.all([attachPrm, drawPrm, subcontrPrm, commPrm]).then(function(res) {
                     //get from server the new created defect and add it locally
                     PostService.post({
                         method: 'GET',

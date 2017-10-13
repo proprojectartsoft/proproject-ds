@@ -365,9 +365,9 @@ dsApp.service('SyncService', [
                                         delete defect.isNew;
                                         changes.defectsToAdd.push(defect);
                                         //store new attachments to be synced
-                                        changes.attachments.toAdd = defect.photos.pictures;
+                                        angular.extend(changes.attachments.toAdd, defect.photos.pictures);
                                         //store new comments for the defect
-                                        changes.commentsToAdd = defect.comments;
+                                        angular.extend(changes.commentsToAdd, defect.comments);
                                     }
 
                                     if (defect.isModified) {
