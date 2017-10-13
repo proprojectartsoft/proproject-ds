@@ -52,16 +52,6 @@ dsApp.controller('TabCtrl', [
         } else
             tabSelect($rootScope.currentTab);
 
-        function storeModifiedDraw(proj, drawing) {
-            //store the modified drawing
-            for (var i = 0; i < proj.drawings.length; i++) {
-                if (proj.drawings[i].id == drawing.id) {
-                    proj.drawings[i] = drawing;
-                    return;
-                }
-            }
-        }
-
         function updateDraw(draw) {
             var d = $q.defer();
             if (!draw)
@@ -100,7 +90,17 @@ dsApp.controller('TabCtrl', [
             return def.promise;
         }
 
-        function storeNewDefect(proj, newDef, offline) {
+        function storeModifiedDraw(proj, drawing) {
+            //store the modified drawing
+            for (var i = 0; i < proj.drawings.length; i++) {
+                if (proj.drawings[i].id == drawing.id) {
+                    proj.drawings[i] = drawing;
+                    return;
+                }
+            }
+        }
+
+        function storeNewDefect(proj, newDef) {
             var prm = $q.defer(),
                 drawToUpdate = null;
             proj.subcontractors = ConvertersService.add_task_for_subcontractor(newDef, proj.subcontractors) || [];
@@ -121,7 +121,7 @@ dsApp.controller('TabCtrl', [
                     id: newDef.drawing.id
                 });
                 if (drawing && drawing.length) {
-                    if (offline)
+                    if ($rootScope.offlineData)
                         drawing[0].isModified = true;
                     //store the new defect in drawing's defects list
                     drawing[0].defects.push(newDef);
@@ -139,7 +139,7 @@ dsApp.controller('TabCtrl', [
                 }
             }
 
-            if (!offline) {
+            if (!$rootScope.offlineData) {
                 var attachments = {};
                 attachments.toAdd = newDef.photos.pictures || [];
                 attachments.toUpd = [];
@@ -208,7 +208,7 @@ dsApp.controller('TabCtrl', [
             return prm.promise;
         }
 
-        function storeModifiedDefect(proj, defect, offline) {
+        function storeModifiedDefect(proj, defect) {
             var subc = null,
                 drawToUpdate = null,
                 prm = $q.defer();
@@ -228,7 +228,7 @@ dsApp.controller('TabCtrl', [
                     id: defect.drawing.id
                 });
                 if (drawing && drawing.length) {
-                    if (offline)
+                    if ($rootScope.offlineData)
                         drawing[0].isModified = true;
                     //change the status for marker
                     if (drawing[0].markers && drawing[0].markers.length != 0) {
@@ -248,7 +248,7 @@ dsApp.controller('TabCtrl', [
                 }
             }
 
-            if (!offline) {
+            if (!$rootScope.offlineData) {
                 var commentsToAdd = [],
                     attachments = {
                         toAdd: []
@@ -358,7 +358,7 @@ dsApp.controller('TabCtrl', [
             return prm.promise;
         }
 
-        function storeModifiedSubcontractor(proj, subcontr, offline) {
+        function storeModifiedSubcontractor(proj, subcontr) {
             var prm = $q.defer(),
                 cnt = 0;
             if (!subcontr.newTasks || subcontr.newTasks && !subcontr.newTasks.length) {
@@ -387,7 +387,7 @@ dsApp.controller('TabCtrl', [
                     proj.subcontractors = ConvertersService.remove_task_for_subcontractor(related, proj.subcontractors, oldAssignee);
                 }
                 //call updateDefect
-                if (!offline) {
+                if (!$rootScope.offlineData) {
                     setReporterId(defect).then(function(succ) {
                         PostService.post({
                             method: 'PUT',
@@ -412,10 +412,11 @@ dsApp.controller('TabCtrl', [
                 } else {
                     cnt++;
                     if (cnt >= subcontr.newTasks.length) {
-                        if (!defect.isNew) //TODO: not isNew
+                        if (!defect.isNew)
                             defect.isModified = true;
                         subcontr.newTasks = [];
                         replaceSubcontractor(proj.subcontractors, subcontr);
+                        proj.isModified = true;
                         prm.resolve();
                     }
                 }
@@ -430,105 +431,83 @@ dsApp.controller('TabCtrl', [
                     var drawPrm = '',
                         newDefectPrm = '',
                         updDefectPrm = '',
-                        subcontrPrm = '';
+                        subcontrPrm = '',
+                        syncPopup = null;
+
+                    //if there are any changes, submit them
+                    for (var key in $rootScope) {
+                        if (key.indexOf('current') != -1) {
+                          if ($rootScope[key].hasOwnProperty('modified')) {
+                            SettingsService.close_all_popups();
+                            syncPopup = SettingsService.show_loading_popup("Submitting");
+                          }
+                        }
+                    }
+
                     //store drawing's changes
                     if ($rootScope.currentDraw && $rootScope.currentDraw.modified) {
-                        SettingsService.close_all_popups();
-                        var syncPopup = SettingsService.show_loading_popup("Submitting");
-                        var syncedDraw = ConvertersService.get_drawing_for_update($rootScope.currentDraw);
-                        delete $rootScope.currentDraw.modified;
+                        if ($rootScope.offlineData) {
+                            storeModifiedDraw(result.value, $rootScope.currentDraw);
+                        } else {
+                            var syncedDraw = ConvertersService.get_drawing_for_update($rootScope.currentDraw);
+                            delete $rootScope.currentDraw.modified;
 
-                        drawPrm = PostService.post({
-                            method: 'PUT',
-                            url: 'drawing',
-                            data: syncedDraw
-                        }, function(res) {
-                            delete $rootScope.currentDraw.isModified;
-                            storeModifiedDraw(result.value, $rootScope.currentDraw);
-                            $timeout(function() {
-                                syncPopup.close();
-                            }, 10);
-                        }, function(err) {
-                            storeModifiedDraw(result.value, $rootScope.currentDraw);
-                            result.value.isModified = true;
-                            $timeout(function() {
-                                syncPopup.close();
-                            }, 10);
-                            $timeout(function() {
-                                SettingsService.close_all_popups();
-                                SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
-                            }, 10);
-                        })
+                            drawPrm = PostService.post({
+                                method: 'PUT',
+                                url: 'drawing',
+                                data: syncedDraw
+                            }, function(res) {
+                                delete $rootScope.currentDraw.isModified;
+                                storeModifiedDraw(result.value, $rootScope.currentDraw);
+                                $timeout(function() {
+                                    syncPopup.close();
+                                }, 10);
+                            }, function(err) {
+                                $rootScope.offlineData = true;
+                                storeModifiedDraw(result.value, $rootScope.currentDraw);
+                                result.value.isModified = true;
+                                $timeout(function() {
+                                    syncPopup.close();
+                                }, 10);
+                                $timeout(function() {
+                                    SettingsService.close_all_popups();
+                                    SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
+                                }, 10);
+                            })
+                        }
                     }
 
                     //store new defect
                     if ($rootScope.currentDefect && $rootScope.currentDefect.new) {
-                        SettingsService.close_all_popups();
-                        var syncPopup = SettingsService.show_loading_popup("Submitting"),
-                            newDef = $rootScope.currentDefect,
-                            syncedDefect = ConvertersService.get_defect_for_create($rootScope.currentDefect);
-                        delete $rootScope.currentDefect.new;
+                        if ($rootScope.offlineData) {
+                            storeNewDefect(result.value, $rootScope.currentDefect);
+                        } else {
+                            var newDef = $rootScope.currentDefect,
+                                syncedDefect = ConvertersService.get_defect_for_create($rootScope.currentDefect);
+                            delete $rootScope.currentDefect.new;
 
-                        var addNew = function() {
-                            var d = $q.defer();
-                            PostService.post({
-                                method: 'POST',
-                                url: 'defect',
-                                data: syncedDefect
-                            }, function(res) {
-                                newDef.id = res.data;
-                                delete newDef.isNew;
-                                setReporterId(newDef).then(function(data) {
-                                    storeNewDefect(result.value, newDef).then(function(res) {
-                                        $timeout(function() {
-                                            syncPopup.close();
-                                            d.resolve();
-                                        }, 10);
-                                    })
-                                })
-                            }, function(err) {
-                                //set id for local use
-                                newDef.id = "new" + result.value.defects.length;
-                                storeNewDefect(result.value, newDef, true).then(function(res) {
-                                    $timeout(function() {
-                                        syncPopup.close();
-                                    }, 10);
-                                    $timeout(function() {
-                                        SettingsService.close_all_popups();
-                                        SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
-                                        d.resolve();
-                                    }, 10);
-                                })
-                            })
-                            return d.promise;
-                        }
-                        newDefectPrm = addNew();
-                    }
-
-                    //store defect's changes
-                    if ($rootScope.currentDefect && $rootScope.currentDefect.modified) {
-                        SettingsService.close_all_popups();
-                        var syncPopup = SettingsService.show_loading_popup("Submitting"),
-                            syncedDefect = ConvertersService.get_defect_for_update($rootScope.currentDefect);
-                        delete $rootScope.currentDefect.modified;
-
-                        var update = function() {
-                            var d = $q.defer();
-                            setReporterId(syncedDefect).then(function(succ) {
+                            var addNew = function() {
+                                var d = $q.defer();
                                 PostService.post({
-                                    method: 'PUT',
+                                    method: 'POST',
                                     url: 'defect',
                                     data: syncedDefect
                                 }, function(res) {
-                                    delete $rootScope.currentDefect.isModified;
-                                    storeModifiedDefect(result.value, $rootScope.currentDefect).then(function(res) {
-                                        $timeout(function() {
-                                            syncPopup.close();
-                                            d.resolve();
-                                        }, 10);
+                                    newDef.id = res.data;
+                                    delete newDef.isNew;
+                                    setReporterId(newDef).then(function(data) {
+                                        storeNewDefect(result.value, newDef).then(function(res) {
+                                            $timeout(function() {
+                                                syncPopup.close();
+                                                d.resolve();
+                                            }, 10);
+                                        })
                                     })
                                 }, function(err) {
-                                    storeModifiedDefect(result.value, $rootScope.currentDefect, true).then(function(res) {
+                                    $rootScope.offlineData = true;
+                                    //set id for local use
+                                    newDef.id = "new" + result.value.defects.length;
+                                    storeNewDefect(result.value, newDef).then(function(res) {
                                         $timeout(function() {
                                             syncPopup.close();
                                         }, 10);
@@ -539,70 +518,146 @@ dsApp.controller('TabCtrl', [
                                         }, 10);
                                     })
                                 })
-                            })
-                            return d.promise;
+                                return d.promise;
+                            }
+                            newDefectPrm = addNew();
                         }
-                        updDefectPrm = update();
+                    }
+
+                    //store defect's changes
+                    if ($rootScope.currentDefect && $rootScope.currentDefect.modified) {
+                        if ($rootScope.offlineData) {
+                            storeModifiedDefect(result.value, $rootScope.currentDefect);
+                        } else {
+                            var syncedDefect = ConvertersService.get_defect_for_update($rootScope.currentDefect);
+                            delete $rootScope.currentDefect.modified;
+
+                            var update = function() {
+                                var d = $q.defer();
+                                setReporterId(syncedDefect).then(function(succ) {
+                                    PostService.post({
+                                        method: 'PUT',
+                                        url: 'defect',
+                                        data: syncedDefect
+                                    }, function(res) {
+                                        delete $rootScope.currentDefect.isModified;
+                                        storeModifiedDefect(result.value, $rootScope.currentDefect).then(function(res) {
+                                            $timeout(function() {
+                                                syncPopup.close();
+                                                d.resolve();
+                                            }, 10);
+                                        })
+                                    }, function(err) {
+                                        $rootScope.offlineData = true;
+                                        storeModifiedDefect(result.value, $rootScope.currentDefect).then(function(res) {
+                                            $timeout(function() {
+                                                syncPopup.close();
+                                            }, 10);
+                                            $timeout(function() {
+                                                SettingsService.close_all_popups();
+                                                SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
+                                                d.resolve();
+                                            }, 10);
+                                        })
+                                    })
+                                })
+                                return d.promise;
+                            }
+                            updDefectPrm = update();
+                        }
                     }
 
                     //store subcontractor's changes
                     if ($rootScope.currentSubcontr && $rootScope.currentSubcontr.modified) {
-                        SettingsService.close_all_popups();
-                        var syncPopup = SettingsService.show_loading_popup("Submitting");
-                        delete $rootScope.currentSubcontr.modified;
+                        if ($rootScope.offlineData) {
+                            storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr);
+                        } else {
+                            delete $rootScope.currentSubcontr.modified;
+                            var updSubcontr = function() {
+                                var d = $q.defer();
+                                PostService.post({
+                                    method: 'PUT',
+                                    url: 'subcontractor',
+                                    data: $rootScope.currentSubcontr
+                                }, function(res) {
+                                    delete $rootScope.currentSubcontr.isModified;
+                                    storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr).then(function(res) {
+                                        $timeout(function() {
+                                            syncPopup.close();
+                                            d.resolve();
+                                        }, 10);
+                                    })
+                                }, function(error) {
+                                    result.value.isModified = true;
+                                    $rootScope.offlineData = true;
+                                    storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr).then(function(res) {
+                                        $timeout(function() {
+                                            syncPopup.close();
+                                        }, 10);
+                                        $timeout(function() {
+                                            SettingsService.close_all_popups();
+                                            SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
+                                            d.resolve();
+                                        }, 10);
+                                    })
+                                })
+                                return d.promise;
+                            }
+                            subcontrPrm = updSubcontr();
+                        }
+                    }
 
-                        var updSubcontr = function() {
-                            var d = $q.defer();
-                            PostService.post({
-                                method: 'PUT',
-                                url: 'subcontractor',
-                                data: $rootScope.currentSubcontr
-                            }, function(res) {
-                                delete $rootScope.currentSubcontr.isModified;
-                                storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr).then(function(res) {
+                    //only some data is modified in online mode
+                    Promise.all([drawPrm, newDefectPrm, updDefectPrm, subcontrPrm]).then(function(res) {
+                        if (navigator.onLine && $rootScope.offlineData) {
+                            //data needs to be synced
+                            $rootScope.offlineData = false;
+
+                            SyncService.syncData().then(function(res) {
+                                SyncService.sync().then(function(res) {
                                     $timeout(function() {
                                         syncPopup.close();
-                                        d.resolve();
+                                        $rootScope.go('app.projects');
                                     }, 10);
-                                })
-                            }, function(error) {
-                                result.value.isModified = true;
-                                storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr, true).then(function(res) {
+                                }, function(reason) {
                                     $timeout(function() {
                                         syncPopup.close();
                                     }, 10);
                                     $timeout(function() {
                                         SettingsService.close_all_popups();
-                                        SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
-                                        d.resolve();
-                                    }, 10);
+                                        SettingsService.show_message_popup("Error", reason);
+                                    }, 100);
+                                })
+                            }, function(reason) {
+                                $timeout(function() {
+                                    syncPopup.close();
+                                }, 10);
+                                $timeout(function() {
+                                    SettingsService.close_all_popups();
+                                    SettingsService.show_message_popup("Error", reason);
+                                }, 100);
+                            })
+                        } else {
+                            //store changes to lacal db
+                            SyncService.setProjects([result], function() {
+                                //store local project
+                                vm.project = result;
+                                $rootScope.users = result.value.users;
+                                $rootScope.defects = result.value.defects;
+                                SettingsService.get_colors().then(function(colorList) {
+                                    var colorsLength = Object.keys(colorList).length;
+                                    angular.forEach($rootScope.defects, function(defect) {
+                                        defect.icon = SettingsService.get_initials(defect.assignee_name);
+                                        //assign the collor corresponding to user id and customer id
+                                        var colorId = (parseInt(result.value.customer_id + "" + defect.assignee_id)) % colorsLength;
+                                        defect.backgroundColor = colorList[colorId].backColor;
+                                        defect.foregroundColor = colorList[colorId].foreColor;
+                                    });
+                                    //load page for the active tab
+                                    vm.reload();
                                 })
                             })
-                            return d.promise;
                         }
-                        subcontrPrm = updSubcontr();
-                    }
-
-                    Promise.all([drawPrm, newDefectPrm, updDefectPrm, subcontrPrm]).then(function(res) {
-                        //store changes to lacal db
-                        SyncService.setProjects([result], function() {
-                            //store local project
-                            vm.project = result;
-                            $rootScope.users = result.value.users;
-                            $rootScope.defects = result.value.defects;
-                            SettingsService.get_colors().then(function(colorList) {
-                                var colorsLength = Object.keys(colorList).length;
-                                angular.forEach($rootScope.defects, function(defect) {
-                                    defect.icon = SettingsService.get_initials(defect.assignee_name);
-                                    //assign the collor corresponding to user id and customer id
-                                    var colorId = (parseInt(result.value.customer_id + "" + defect.assignee_id)) % colorsLength;
-                                    defect.backgroundColor = colorList[colorId].backColor;
-                                    defect.foregroundColor = colorList[colorId].foreColor;
-                                });
-                                //load page for the active tab
-                                vm.reload();
-                            })
-                        })
                     })
                 })
             }
@@ -645,7 +700,6 @@ dsApp.controller('TabCtrl', [
                 vm.settings.tabs[key] = 'img/new/' + key + '.png';
             });
             vm.settings.tabs[predicate] = vm.settings.tabs[predicate].substr(0, vm.settings.tabs[predicate].lastIndexOf(".png")) + "_active" + vm.settings.tabs[predicate].substr(vm.settings.tabs[predicate].lastIndexOf(".png"));
-            // vm.settings.tabActive = predicate;
             $rootScope.currentTab = predicate;
             SettingsService.set_settings(vm.settings);
             //no updates were made, so just reload data
@@ -653,7 +707,6 @@ dsApp.controller('TabCtrl', [
         }
 
         function goItem(item) {
-            // vm.settings.subHeader = item.name;
             switch ($rootScope.currentTab) {
                 case 'defects':
                     //copy all attachments into pictures field
