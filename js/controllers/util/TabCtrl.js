@@ -437,10 +437,10 @@ dsApp.controller('TabCtrl', [
                     //if there are any changes, submit them
                     for (var key in $rootScope) {
                         if (key.indexOf('current') != -1) {
-                          if ($rootScope[key].hasOwnProperty('modified')) {
-                            SettingsService.close_all_popups();
-                            syncPopup = SettingsService.show_loading_popup("Submitting");
-                          }
+                            if ($rootScope[key] && $rootScope[key].hasOwnProperty('modified')) {
+                                SettingsService.close_all_popups();
+                                syncPopup = SettingsService.show_loading_popup("Submitting");
+                            }
                         }
                     }
 
@@ -459,20 +459,10 @@ dsApp.controller('TabCtrl', [
                             }, function(res) {
                                 delete $rootScope.currentDraw.isModified;
                                 storeModifiedDraw(result.value, $rootScope.currentDraw);
-                                $timeout(function() {
-                                    syncPopup.close();
-                                }, 10);
                             }, function(err) {
                                 $rootScope.offlineData = true;
                                 storeModifiedDraw(result.value, $rootScope.currentDraw);
                                 result.value.isModified = true;
-                                $timeout(function() {
-                                    syncPopup.close();
-                                }, 10);
-                                $timeout(function() {
-                                    SettingsService.close_all_popups();
-                                    SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
-                                }, 10);
                             })
                         }
                     }
@@ -497,10 +487,7 @@ dsApp.controller('TabCtrl', [
                                     delete newDef.isNew;
                                     setReporterId(newDef).then(function(data) {
                                         storeNewDefect(result.value, newDef).then(function(res) {
-                                            $timeout(function() {
-                                                syncPopup.close();
-                                                d.resolve();
-                                            }, 10);
+                                            d.resolve();
                                         })
                                     })
                                 }, function(err) {
@@ -508,14 +495,7 @@ dsApp.controller('TabCtrl', [
                                     //set id for local use
                                     newDef.id = "new" + result.value.defects.length;
                                     storeNewDefect(result.value, newDef).then(function(res) {
-                                        $timeout(function() {
-                                            syncPopup.close();
-                                        }, 10);
-                                        $timeout(function() {
-                                            SettingsService.close_all_popups();
-                                            SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
-                                            d.resolve();
-                                        }, 10);
+                                        d.resolve();
                                     })
                                 })
                                 return d.promise;
@@ -542,22 +522,12 @@ dsApp.controller('TabCtrl', [
                                     }, function(res) {
                                         delete $rootScope.currentDefect.isModified;
                                         storeModifiedDefect(result.value, $rootScope.currentDefect).then(function(res) {
-                                            $timeout(function() {
-                                                syncPopup.close();
-                                                d.resolve();
-                                            }, 10);
+                                            d.resolve();
                                         })
                                     }, function(err) {
                                         $rootScope.offlineData = true;
                                         storeModifiedDefect(result.value, $rootScope.currentDefect).then(function(res) {
-                                            $timeout(function() {
-                                                syncPopup.close();
-                                            }, 10);
-                                            $timeout(function() {
-                                                SettingsService.close_all_popups();
-                                                SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
-                                                d.resolve();
-                                            }, 10);
+                                            d.resolve();
                                         })
                                     })
                                 })
@@ -582,23 +552,13 @@ dsApp.controller('TabCtrl', [
                                 }, function(res) {
                                     delete $rootScope.currentSubcontr.isModified;
                                     storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr).then(function(res) {
-                                        $timeout(function() {
-                                            syncPopup.close();
-                                            d.resolve();
-                                        }, 10);
+                                        d.resolve();
                                     })
                                 }, function(error) {
                                     result.value.isModified = true;
                                     $rootScope.offlineData = true;
                                     storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr).then(function(res) {
-                                        $timeout(function() {
-                                            syncPopup.close();
-                                        }, 10);
-                                        $timeout(function() {
-                                            SettingsService.close_all_popups();
-                                            SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
-                                            d.resolve();
-                                        }, 10);
+                                        d.resolve();
                                     })
                                 })
                                 return d.promise;
@@ -638,6 +598,16 @@ dsApp.controller('TabCtrl', [
                                 }, 100);
                             })
                         } else {
+                            if (syncPopup) {
+                                $timeout(function() {
+                                    syncPopup.close();
+                                }, 10);
+                                if ($rootScope.offlineData)
+                                    $timeout(function() {
+                                        SettingsService.close_all_popups();
+                                        SettingsService.show_message_popup("You are offline", "Sync when online to update data to server.");
+                                    }, 10);
+                            }
                             //store changes to lacal db
                             SyncService.setProjects([result], function() {
                                 //store local project
