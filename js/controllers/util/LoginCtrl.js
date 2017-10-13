@@ -30,6 +30,7 @@ dsApp.controller('LoginCtrl', [
             AuthService.login($scope.user).success(function(result) {
                 SyncService.syncData().then(function(res) {
                     SyncService.sync().then(function(res) {
+                        $rootScope.offlineData = false;
                         localStorage.setObject('ds.user', {
                             role: result.data.role.id,
                             name: result.data.username
@@ -59,6 +60,7 @@ dsApp.controller('LoginCtrl', [
             }).error(function(response, status) {
                 if (status === 0 || status === -1) {
                     SyncService.sync().then(function(res) {
+                        $rootScope.offlineData = false;
                         localStorage.setObject('ds.user', {
                             role: 0,
                             name: $scope.user.username
@@ -98,6 +100,7 @@ dsApp.controller('LoginCtrl', [
                 AuthService.login($scope.user).success(function(result) {
                     if (result.data) {
                         SyncService.sync().then(function(res) {
+                            $rootScope.offlineData = false;
                             $timeout(function() {
                                 loginPopup.close();
                             }, 10);

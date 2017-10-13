@@ -77,6 +77,7 @@ dsApp.controller('NavCtrl', [
                 SettingsService.show_message_popup("You are offline", "You can sync your data when online");
             } else {
                 var syncPopup = SettingsService.show_loading_popup("Sync");
+                $rootScope.offlineData = false;
                 SyncService.syncData().then(function(res) {
                     SyncService.sync().then(function(res) {
                         $timeout(function() {
