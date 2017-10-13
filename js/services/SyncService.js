@@ -319,7 +319,7 @@ dsApp.service('SyncService', [
                 defer.resolve();
             angular.forEach(subcontractors, function(subcontr) {
                 //store modified subcontractors to server
-                if (typeof subcontr.isModified != 'undefined') {
+                if (subcontr.isModified) {
                     PostService.post({
                         method: 'PUT',
                         url: 'subcontractor',
@@ -360,19 +360,20 @@ dsApp.service('SyncService', [
                             getModifiedDefects = function(project) {
                                 angular.forEach(project.defects, function(defect) {
                                     //store all new defects for this project
-                                    if (typeof defect.isNew != 'undefined') {
+                                    if (defect.isNew) {
+                                        console.log("NEW: " + defect.id);
                                         delete defect.isNew;
                                         changes.defectsToAdd.push(defect);
-
-                                        angular.forEach(defect.photos.pictures, function(pic) {
-                                            //store new attachments to be synced
-                                            if (!pic.id) {
-                                                changes.attachments.toAdd.push(pic);
-                                            }
-                                        })
+                                        //store new attachments to be synced
+                                        changes.attachments.toAdd = defect.photos.pictures;
+                                        //store new comments for the defect
+                                        changes.commentsToAdd = defect.comments;
                                     }
 
-                                    if (typeof defect.isModified != 'undefined') {
+                                    if (defect.isModified) {
+                                        console.log("MODIFIED: " + defect.id);
+                                        delete defect.isModified;
+
                                         //store new comments for the defect
                                         angular.forEach(defect.comments, function(comment) {
                                             //store new comments to be synced
@@ -381,16 +382,13 @@ dsApp.service('SyncService', [
                                                 changes.commentsToAdd.push(comment);
                                             }
                                         })
-
-                                        if (typeof defect.isNew == 'undefined') {
-                                            //store new attachments
-                                            angular.forEach(defect.photos.pictures, function(pic) {
-                                                //store new attachments to be synced
-                                                if (!pic.id) {
-                                                    changes.attachments.toAdd.push(pic);
-                                                }
-                                            })
-                                        }
+                                        //store new attachments
+                                        angular.forEach(defect.photos.pictures, function(pic) {
+                                            //store new attachments to be synced
+                                            if (!pic.id) {
+                                                changes.attachments.toAdd.push(pic);
+                                            }
+                                        })
 
                                         //add photos to be updated
                                         angular.extend(changes.attachments.toUpd, defect.photos.toBeUpdated);
@@ -399,15 +397,13 @@ dsApp.service('SyncService', [
                                         //store all modified defects for this project
                                         changes.defectsToUpd.push(defect);
                                     }
-                                    delete defect.isNew;
-                                    delete defect.isModified;
                                 })
                             },
                             //method to store in changes all drawings that have to be updated
                             getModifiedDrawings = function(project) {
                                 angular.forEach(project.drawings, function(draw) {
                                     //store modified drawings
-                                    if (typeof draw.isModified != 'undefined') {
+                                    if (draw.isModified) {
                                         delete draw.isModified;
                                         changes.drawingsToUpd.push(draw);
                                     }

@@ -110,6 +110,11 @@ dsApp.controller('TabCtrl', [
                 pic.defect_id = newDef.id;
             })
 
+            // set the new id of the added defect as defect_id for all its new comments
+            angular.forEach(newDef.comments, function(comm) {
+                comm.defect_id = newDef.id;
+            })
+
             if (newDef.drawing) {
                 //get the drawing of the new added defect from the array of drawings
                 var drawing = $filter('filter')(proj.drawings, {

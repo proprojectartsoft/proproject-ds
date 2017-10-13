@@ -73,6 +73,7 @@ dsApp.controller('ProjectsCtrl', [
                     'markers': [],
                     'nr_of_defects': 0,
                     'partially_completed_defects': 0,
+                    "pdfPath": draw.pdfPath,
                     'project_id': draw.project_id,
                     'project_name': draw.project_name,
                     'resized_path': draw.resized_path,
