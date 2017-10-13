@@ -79,6 +79,7 @@ dsApp.controller('_SubcontractorsRelatedCtrl', [
             $rootScope.currentSubcontr.isModified = true;
             $rootScope.currentSubcontr.modified = true;
             $rootScope.currentSubcontr.nr_of_defects++;
+            $rootScope.backupDefect = angular.copy(related);
             related.assignee_id = vm.subcontractor.id;
             related.assignee_name = vm.subcontractor.first_name + " " + vm.subcontractor.last_name;
             SettingsService.get_colors().then(function(colorList) {

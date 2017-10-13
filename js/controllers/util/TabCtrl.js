@@ -361,12 +361,7 @@ dsApp.controller('TabCtrl', [
                     id: related.id
                 })[0];
                 //remember old assignee and use it to remove the task from his list
-                var oldAssignee = angular.copy(defect.assignee_id);
-                //store new assignee for defect
-                defect.assignee_id = subcontr.id;
-                defect.assignee_name = subcontr.name;
-                if (offline)
-                    defect.isModified = true;
+                var oldAssignee = $rootScope.backupDefect.assignee_id;
                 if (related.assignee_id != oldAssignee) {
                     //remove task from old assignee's list
                     proj.subcontractors = ConvertersService.remove_task_for_subcontractor(related, proj.subcontractors, oldAssignee);
@@ -397,6 +392,8 @@ dsApp.controller('TabCtrl', [
                 } else {
                     cnt++;
                     if (cnt >= subcontr.newTasks.length) {
+                        if (!defect.isNew) //TODO: not isNew
+                            defect.isModified = true;
                         subcontr.newTasks = [];
                         replaceSubcontractor(proj.subcontractors, subcontr);
                         prm.resolve();

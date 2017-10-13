@@ -82,7 +82,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     //indicate that the defect needs to be modified in local db
                     if ($rootScope.currentDefect.id != 0) {
                         $rootScope.currentDefect.modified = true;
-                        if (typeof $rootScope.currentDefect.isNew == 'undefined') {
+                        if (!$rootScope.currentDefect.isNew) {
                             //indicate that the defect needs to be modified on server
                             $rootScope.currentDefect.isModified = true;
                         }
@@ -118,7 +118,7 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     //indicate that the defect needs to be modified in local db
                     if ($rootScope.currentDefect.id != 0) {
                         $rootScope.currentDefect.modified = true;
-                        if (typeof $rootScope.currentDefect.isNew == 'undefined') {
+                        if (!$rootScope.currentDefect.isNew) {
                             //indicate that the defect needs to be modified on server
                             $rootScope.currentDefect.isModified = true;
                         }
@@ -151,7 +151,9 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                                     vm.dataToUpdate = vm.dataToUpdate.filter(function(obj) {
                                         return obj.id !== pic.id;
                                     });
-                                    $rootScope.currentDefect.isModified = true;
+                                    if (!$rootScope.currentDefect.isNew) {
+                                        $rootScope.currentDefect.isModified = true;
+                                    }
                                 }
                             }
                             pullDown();
@@ -178,7 +180,9 @@ dsApp.controller('_DefectAttachmentsCtrl', [
                     if (vm.currentPhoto.id) {
                         //if not a new photo, add it to dataToUpdate
                         vm.dataToUpdate.push(vm.currentPhoto);
-                        $rootScope.currentDefect.isModified = true;
+                        if (!$rootScope.currentDefect.isNew) {
+                            $rootScope.currentDefect.isModified = true;
+                        }
                     }
                 }
             }

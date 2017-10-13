@@ -37,7 +37,7 @@ dsApp.controller('_DefectCommentsCtrl', [
                 $scope.defect.comments.push(request);
                 $scope.local.comment = '';
                 $scope.local.list = $scope.defect.comments;
-                if (typeof $scope.defect.isNew == 'undefined') {
+                if (!$rootScope.currentDefect.isNew) {
                     $scope.defect.isModified = true;
                 }
                 //sync with the server if not in edit mode

@@ -149,7 +149,9 @@ dsApp.controller('DefectsCtrl', [
 
         vm.saveEdit = function() {
             $rootScope.disableedit = true;
-            $rootScope.currentDefect.isModified = true;
+            if (!$rootScope.currentDefect.isNew) {
+                $rootScope.currentDefect.isModified = true;
+            }
             $rootScope.currentDefect.modified = true;
             vm.go('tab');
         }

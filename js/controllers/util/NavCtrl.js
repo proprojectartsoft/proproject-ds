@@ -55,7 +55,6 @@ dsApp.controller('NavCtrl', [
                     break;
             }
             $rootScope.currentUser = aux;
-            $rootScope.currentUser.username = result.data.first_name + ' ' + result.data.last_name;
         })
         $scope.redirect = function(predicate) {
             $rootScope.go('app.' + predicate);
