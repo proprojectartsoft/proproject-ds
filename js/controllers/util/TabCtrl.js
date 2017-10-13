@@ -437,7 +437,7 @@ dsApp.controller('TabCtrl', [
                     //if there are any changes, submit them
                     for (var key in $rootScope) {
                         if (key.indexOf('current') != -1) {
-                            if ($rootScope[key] && $rootScope[key].hasOwnProperty('modified')) {
+                            if ($rootScope[key] && ($rootScope[key].hasOwnProperty('modified') || $rootScope[key].hasOwnProperty('new'))) {
                                 SettingsService.close_all_popups();
                                 syncPopup = SettingsService.show_loading_popup("Submitting");
                             }
@@ -446,12 +446,11 @@ dsApp.controller('TabCtrl', [
 
                     //store drawing's changes
                     if ($rootScope.currentDraw && $rootScope.currentDraw.modified) {
+                        delete $rootScope.currentDraw.modified;
                         if ($rootScope.offlineData) {
                             storeModifiedDraw(result.value, $rootScope.currentDraw);
                         } else {
                             var syncedDraw = ConvertersService.get_drawing_for_update($rootScope.currentDraw);
-                            delete $rootScope.currentDraw.modified;
-
                             drawPrm = PostService.post({
                                 method: 'PUT',
                                 url: 'drawing',
@@ -469,13 +468,12 @@ dsApp.controller('TabCtrl', [
 
                     //store new defect
                     if ($rootScope.currentDefect && $rootScope.currentDefect.new) {
+                        delete $rootScope.currentDefect.new;
                         if ($rootScope.offlineData) {
                             storeNewDefect(result.value, $rootScope.currentDefect);
                         } else {
                             var newDef = $rootScope.currentDefect,
                                 syncedDefect = ConvertersService.get_defect_for_create($rootScope.currentDefect);
-                            delete $rootScope.currentDefect.new;
-
                             var addNew = function() {
                                 var d = $q.defer();
                                 PostService.post({
@@ -506,12 +504,11 @@ dsApp.controller('TabCtrl', [
 
                     //store defect's changes
                     if ($rootScope.currentDefect && $rootScope.currentDefect.modified) {
+                        delete $rootScope.currentDefect.modified;
                         if ($rootScope.offlineData) {
                             storeModifiedDefect(result.value, $rootScope.currentDefect);
                         } else {
                             var syncedDefect = ConvertersService.get_defect_for_update($rootScope.currentDefect);
-                            delete $rootScope.currentDefect.modified;
-
                             var update = function() {
                                 var d = $q.defer();
                                 setReporterId(syncedDefect).then(function(succ) {
@@ -539,10 +536,10 @@ dsApp.controller('TabCtrl', [
 
                     //store subcontractor's changes
                     if ($rootScope.currentSubcontr && $rootScope.currentSubcontr.modified) {
+                        delete $rootScope.currentSubcontr.modified;
                         if ($rootScope.offlineData) {
                             storeModifiedSubcontractor(result.value, $rootScope.currentSubcontr);
                         } else {
-                            delete $rootScope.currentSubcontr.modified;
                             var updSubcontr = function() {
                                 var d = $q.defer();
                                 PostService.post({
@@ -569,7 +566,7 @@ dsApp.controller('TabCtrl', [
 
                     //only some data is modified in online mode
                     Promise.all([drawPrm, newDefectPrm, updDefectPrm, subcontrPrm]).then(function(res) {
-                        if (navigator.onLine && $rootScope.offlineData) {
+                        if (navigator.onLine && $rootScope.offlineData && syncPopup) {
                             //data needs to be synced
                             $rootScope.offlineData = false;
 
