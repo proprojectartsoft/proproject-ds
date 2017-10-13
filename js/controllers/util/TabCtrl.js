@@ -54,8 +54,10 @@ dsApp.controller('TabCtrl', [
 
         function updateDraw(draw) {
             var d = $q.defer();
-            if (!draw)
+            if (!draw) {
                 d.resolve();
+                return d.promise;
+            }
             PostService.post({
                 method: 'PUT',
                 url: 'drawing',
