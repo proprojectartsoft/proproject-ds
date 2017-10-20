@@ -123,7 +123,7 @@ dsApp.controller('DefectsCtrl', [
             }
             $rootScope.thiscreate = false;
             vm.defect = ConvertersService.init_defect($rootScope.currentDefect);
-            vm.settings.subHeader = 'Defect - ' + vm.defect.title;
+            vm.settings.subHeader = 'Defect - ' + vm.defect.title ? vm.defect.title : '';
 
             if (vm.defect.drawing) {
                 vm.defect.drawing.pdfPath = vm.defect.drawing.pdfPath || ($APP.server + '/pub/drawings/' + vm.defect.drawing.base64String);
