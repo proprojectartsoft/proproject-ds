@@ -12,7 +12,12 @@
         <div class="ds-pdf">
             <div detect-gestures gesture-type="pinchin" style="position:relative" class="ds-container">
                 <div detect-gestures gesture-type="pinchout" id="dspdfcontainer">
-                    <img class="ds-marker" ng-repeat="marker in local.markers" ng-src="{{marker.img}}" ng-style="{{local.troll}}" ng-click="go('defects', marker.defect_id)" style="height:17px;width:17px;position: absolute; left: {{marker.x}}px; top: {{marker.y}}px;z-index:{{marker.z}}">
+                    <img class="ds-marker"
+                         ng-repeat="marker in local.markers"
+                         ng-src="{{marker.img}}"
+                         ng-style="{{local.troll}}"
+                         ng-click="go('defects', marker.defect_id)"
+                         style="height:17px;width:17px;position: absolute; left: {{marker.x}}px; top: {{marker.y}}px;z-index:{{marker.z}}">
                     <canvas style="width:{{index}}px;position:relative" id="fullPreviewCanvas"></canvas>
                     </ion-scroll>
                 </div>

@@ -3,10 +3,11 @@ dsApp.controller('FullscreenCtrl', [
     '$scope',
     '$stateParams',
     '$state',
+    '$filter',
     'SettingsService',
     '$timeout',
     'ConvertersService',
-    function($rootScope, $scope, $stateParams, $state, SettingsService, $timeout, ConvertersService) {
+    function($rootScope, $scope, $stateParams, $state, $filter, SettingsService, $timeout, ConvertersService) {
         $scope.settings = {};
         $scope.settings.subHeader = SettingsService.get_settings('subHeader');
         $scope.settings.tabActive = $rootScope.currentTab;
@@ -344,6 +345,10 @@ dsApp.controller('FullscreenCtrl', [
         }
         $scope.go = function(predicate, id) {
             if (id) {
+                $rootScope.currentDefect = $filter('filter')($rootScope.defects, {
+                    id: id
+                })[0];
+                $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                 $rootScope.go('app.' + predicate, {
                     id: id
                 });
