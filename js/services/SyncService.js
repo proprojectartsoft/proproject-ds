@@ -388,9 +388,12 @@ dsApp.service('SyncService', [
                             },
                             //method to add a given defect to server, and keep data to be synced
                             // (subcontractors, attachments, comments, drawing)
-                            addDefect = function(oldDefect, changes) {
+                            addDefect = function(changes, index) { //oldDefect, changes
                                 var defer = $q.defer(),
-                                    defect = ConvertersService.get_defect_for_create(oldDefect);
+                                    // defect = ConvertersService.get_defect_for_create(oldDefect);
+                                    oldDefect = changes.defectsToAdd[index],
+                                    defect = ConvertersService.get_defect_for_create(changes.defectsToAdd[index]);
+                                console.log("post defect with index " + index);
                                 //save defect on server
                                 PostService.post({
                                     method: 'POST',
@@ -472,10 +475,18 @@ dsApp.service('SyncService', [
                                     var commPrm = service.syncComments(oldDefect.comments || []),
                                         attPrm = service.syncAttachments(attachments);
                                     Promise.all([commPrm, attPrm]).then(function(r) {
-                                        defer.resolve(changes);
+                                        index++;
+                                        if (index < changes.defectsToAdd.length)
+                                            addDefect(changes, index);
+                                        else
+                                            defer.resolve(changes);
                                     })
                                 }, function(error) {
-                                    defer.resolve(changes);
+                                    index++;
+                                    if (index < changes.defectsToAdd.length)
+                                        addDefect(changes, index);
+                                    else
+                                        defer.resolve(changes);
                                 })
                                 return defer.promise;
                             },
@@ -486,22 +497,29 @@ dsApp.service('SyncService', [
                                     defer.resolve(changes);
                                     return defer.promise;
                                 }
-                                var count = 0;
-                                angular.forEach(changes.defectsToAdd, function(defect) {
-                                    addDefect(defect, changes).then(function(res) {
-                                        count++;
-                                        changes = res;
-                                        if (count >= changes.defectsToAdd.length) {
-                                            defer.resolve(res);
-                                        }
-                                    }, function(res) {
-                                        count++;
-                                        changes = res;
-                                        if (count >= changes.defectsToAdd.length) {
-                                            defer.resolve(res);
-                                        }
-                                    })
-                                })
+                                // var count = 0;
+
+                                addDefect(changes, 0).then(function(res) {
+                                    defer.resolve(res);
+                                }, function(res) {
+                                    defer.resolve(res);
+                                });
+
+                                // angular.forEach(changes.defectsToAdd, function(defect) {
+                                //     addDefect(defect, changes).then(function(res) {
+                                //         count++;
+                                //         changes = res;
+                                //         if (count >= changes.defectsToAdd.length) {
+                                //             defer.resolve(res);
+                                //         }
+                                //     }, function(res) {
+                                //         count++;
+                                //         changes = res;
+                                //         if (count >= changes.defectsToAdd.length) {
+                                //             defer.resolve(res);
+                                //         }
+                                //     })
+                                // })
                                 return defer.promise;
                             },
                             //method to update the drawings
