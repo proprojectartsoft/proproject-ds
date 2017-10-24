@@ -472,6 +472,8 @@ dsApp.controller('TabCtrl', [
                     if ($rootScope.currentDefect && $rootScope.currentDefect.new) {
                         delete $rootScope.currentDefect.new;
                         if ($rootScope.offlineData) {
+                            //set id for local use
+                            $rootScope.currentDefect.id = "new" + result.value.defects.length;
                             storeNewDefect(result.value, $rootScope.currentDefect);
                         } else {
                             var newDef = $rootScope.currentDefect,
