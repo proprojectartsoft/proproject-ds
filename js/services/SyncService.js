@@ -392,11 +392,9 @@ dsApp.service('SyncService', [
                             },
                             //method to add a given defect to server, and keep data to be synced
                             // (subcontractors, attachments, comments, drawing)
-                            addDefect = function(changes, index) { //oldDefect, changes
-                                var defer = $q.defer(),
-                                    // defect = ConvertersService.get_defect_for_create(oldDefect);
-                                    oldDefect = changes.defectsToAdd[index],
-                                    defect = ConvertersService.get_defect_for_create(changes.defectsToAdd[index]);
+                            addDefect = function(changes, index, defer) { //oldDefect, changes
+                                var oldDefect = changes.defectsToAdd[index],
+                                    defect = ConvertersService.get_defect_for_create(oldDefect);
                                 console.log("post defect with index " + index);
                                 //save defect on server
                                 PostService.post({
@@ -481,14 +479,14 @@ dsApp.service('SyncService', [
                                     Promise.all([commPrm, attPrm]).then(function(r) {
                                         index++;
                                         if (index < changes.defectsToAdd.length)
-                                            addDefect(changes, index);
+                                            addDefect(changes, index, defer);
                                         else
                                             defer.resolve(changes);
                                     })
                                 }, function(error) {
                                     index++;
                                     if (index < changes.defectsToAdd.length)
-                                        addDefect(changes, index);
+                                        addDefect(changes, index, defer);
                                     else
                                         defer.resolve(changes);
                                 })
@@ -503,11 +501,7 @@ dsApp.service('SyncService', [
                                 }
                                 // var count = 0;
 
-                                addDefect(changes, 0).then(function(res) {
-                                    defer.resolve(res);
-                                }, function(res) {
-                                    defer.resolve(res);
-                                });
+                                addDefect(changes, 0, defer);
 
                                 // angular.forEach(changes.defectsToAdd, function(defect) {
                                 //     addDefect(defect, changes).then(function(res) {
