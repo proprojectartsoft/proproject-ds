@@ -31,6 +31,25 @@ dsApp.controller('_DefectDetailsCtrl', [
             vm.settings.subHeader = 'Defect - ' + vm.defect.title;
         }
 
+        //expand textarea
+        var textareas = document.querySelectorAll('textarea');
+        for (var i = 0; i < textareas.length; i++) {
+            textareas[i].addEventListener('keydown', autosize);
+        }
+
+        function autosize() {
+            var el = this;
+            setTimeout(function() {
+                el.style.cssText = 'height:auto; padding:0;';
+                if (angular.element(el)[0].scrollHeight <= 80) {
+                    el.style.cssText = 'height:' + el.scrollHeight + 'px;line-height:normal; padding-top:10px!important';
+                } else {
+                    el.style.cssText = 'height:' + el.scrollHeight / 2 + 'px;line-height:normal; padding-top:10px!important; margin-bottom:20px!important';
+                }
+
+            }, 0);
+        }
+
         $ionicModal.fromTemplateUrl('templates/defects/_popover.html', {
             scope: $scope
         }).then(function(modal) {

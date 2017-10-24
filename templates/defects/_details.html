@@ -15,7 +15,8 @@
                     <div class="ds-content">
                         <span class="ds-title">Name</span>
                     </div>
-                    <input ng-model="vm.defect.title" ng-readonly="disableedit">
+                    <!-- <input ng-model="vm.defect.title" ng-readonly="disableedit"> -->
+                    <textarea ng-model="vm.defect.title" ng-readonly="disableedit"></textarea>
                 </label>
                 <label>
                     <div class="ds-content">
@@ -39,7 +40,7 @@
                     <div class="ds-content">
                         <span class="ds-title">Assignee</span>
                     </div>
-                    <input class="ds-input" ng-readonly=true ng-model="vm.defect.assignee_name" ng-click="vm.assignee()" ng-if="!disableedit">
+                    <textarea class="ds-input" ng-readonly=true ng-model="vm.defect.assignee_name" ng-click="vm.assignee()" ng-if="!disableedit"></textarea>
                     <span class="ds-input" ng-if="disableedit">{{vm.defect.assignee_name}}</span>
                 </label>
                 <div class="ds-label">
@@ -59,19 +60,19 @@
                     <div class="ds-content">
                         <span class="ds-title">Description</span>
                     </div>
-                    <input ng-model="vm.defect.description" ng-readonly="disableedit">
+                    <textarea ng-model="vm.defect.description" ng-readonly="disableedit"></textarea>
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Location</span>
                     </div>
-                    <input ng-model="vm.defect.location" ng-readonly="disableedit">
+                    <textarea ng-model="vm.defect.location" ng-readonly="disableedit"></textarea>
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Cost</span>
                     </div>
-                    <input type="number" ng-model="vm.defect.cost" ng-readonly="disableedit">
+                    <textarea type="number" ng-model="vm.defect.cost" ng-readonly="disableedit"></textarea>
                 </label>
             </div>
         </ion-item>
