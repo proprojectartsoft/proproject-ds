@@ -578,8 +578,14 @@ dsApp.controller('TabCtrl', [
                                 SyncService.sync().then(function(res) {
                                     $timeout(function() {
                                         syncPopup.close();
-                                        $rootScope.go('app.projects');
                                     }, 10);
+                                    if (res.error) {
+                                        $timeout(function() {
+                                            SettingsService.close_all_popups();
+                                            SettingsService.show_message_popup(res.error, res.message);
+                                        }, 10)
+                                    }
+                                    $rootScope.go('app.projects');
                                 }, function(reason) {
                                     $timeout(function() {
                                         syncPopup.close();

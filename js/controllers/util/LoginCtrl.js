@@ -38,6 +38,12 @@ dsApp.controller('LoginCtrl', [
                         $timeout(function() {
                             loginPopup.close();
                         }, 10);
+                        if (res.error) {
+                            $timeout(function() {
+                                SettingsService.close_all_popups();
+                                SettingsService.show_message_popup(res.error, res.message);
+                            }, 10)
+                        }
                         $rootScope.go('app.projects');
                     }, function(reason) {
                         $timeout(function() {
@@ -104,6 +110,12 @@ dsApp.controller('LoginCtrl', [
                             $timeout(function() {
                                 loginPopup.close();
                             }, 10);
+                            if (res.error) {
+                                $timeout(function() {
+                                    SettingsService.close_all_popups();
+                                    SettingsService.show_message_popup(res.error, res.message);
+                                }, 10)
+                            }
                             $rootScope.go('app.projects');
                         }, function(reason) {
                             $timeout(function() {

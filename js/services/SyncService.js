@@ -4,17 +4,14 @@ dsApp.service('SyncService', [
     '$state',
     '$timeout',
     '$ionicPlatform',
-    '$ionicPopup',
     '$filter',
     'orderByFilter',
     'DownloadsService',
     'AuthService',
-    'SettingsService',
     'IndexedService',
     'ConvertersService',
     'PostService',
-    function($q, $http, $state, $timeout, $ionicPlatform, $ionicPopup, $filter, orderBy, DownloadsService, AuthService, SettingsService,
-        IndexedService, ConvertersService, PostService) {
+    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, DownloadsService, AuthService, IndexedService, ConvertersService, PostService) {
 
         var service = this;
 
@@ -198,19 +195,19 @@ dsApp.service('SyncService', [
                                                             }
                                                         }
                                                     }, function(reason) {
-                                                        SettingsService.close_all_popups();
-                                                        $timeout(function() {
-                                                            SettingsService.show_message_popup("Download stopped", reason);
-                                                        }, 100);
+                                                        // SettingsService.close_all_popups();
+                                                        // $timeout(function() {
+                                                        //     SettingsService.show_message_popup("Download stopped", reason);
+                                                        // }, 100);
                                                         def.resolve(projects);
                                                     })
                                                 })
                                             })
                                         }, function(reason) {
-                                            SettingsService.close_all_popups();
-                                            $timeout(function() {
-                                                SettingsService.show_message_popup("Download stopped", reason);
-                                            }, 100);
+                                            // SettingsService.close_all_popups();
+                                            // $timeout(function() {
+                                            //     SettingsService.show_message_popup("Download stopped", reason);
+                                            // }, 100);
                                             def.resolve(projects);
                                         })
                                     } else {
@@ -221,14 +218,21 @@ dsApp.service('SyncService', [
                                 return def.promise;
                             }
                         }, function(e) {
-                            deferred.resolve();
                             if (!navigator.onLine) {
                                 var loggedIn = localStorage.getObject('dsremember');
-                                SettingsService.close_all_popups();
-                                $timeout(function() {
-                                    SettingsService.show_message_popup("You are offline", "You can sync your data when online");
-                                }, 100);
+                                deferred.resolve({
+                                    error: "You are offline",
+                                    message: "You can sync your data when online"
+                                });
+                                // SettingsService.close_all_popups();
+                                // $timeout(function() {
+                                //     SettingsService.show_message_popup("You are offline", "You can sync your data when online");
+                                // }, 100);
                             }
+                            deferred.resolve({
+                                error: "Error",
+                                message: "An unexpected error occured during authentication and sync could not be done. Please try again."
+                            });
                         })
                     } else {
                         deferred.reject("An unexpected error occured during authentication and sync could not be done. Please try again.");
