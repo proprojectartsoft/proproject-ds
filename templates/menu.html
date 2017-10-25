@@ -1,40 +1,37 @@
-<ion-side-menus id="menu" cache-view="false" drag-content="false"  class="custom-menu">
-    <ion-side-menu-content scroll="true">
+<ion-side-menus id="menu" cache-view="false" drag-content="false">
+    <ion-side-menu-content scroll="true" id="ds-content">
         <ion-header-bar class="bar bar-header">
-            <button class="button button-icon icon ion-navicon" ng-click="toggleLeft($event)"></button>
+            <button id="ds-menu-btn" class="button button-icon icon ion-navicon" ng-click="toggleLeft($event)"></button>
             <div class="title-right">{{navTitle}}</div>
         </ion-header-bar>
         <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
     </ion-side-menu-content>
-    <ion-side-menu side="left" class="dark" drag-content="toggledrag">
-        <header class="bar bar-header bar-dark">
-        </header>
-        <ion-content class="ds-menu" scroll="false">
-            <ion-item nav-clear menu-close>
-                <div class="user-circle-img">
-                    <img src="img/new/user_default.png">
+    <ion-side-menu side="left" class="dark" drag-content="toggledrag" id="ds-menu">
+        <header class="bar bar-header bar-dark"></header>
+        <ion-content scroll="false" class="has-header dark-bg">
+            <ion-item nav-clear menu-close class="ds-group" style="border-top:none">
+                <div class="ds-img ">
+                    <img src="img/new/user_default.png ">
                 </div>
-                <div class="ds-txt">{{currentUser.role_title}}</div>
-                <div class="ds-txt">{{currentUser.username}}</div>
-                <div class="ds-link">{{currentUser.name}}</div>
-                <ion-toggle ng-click="logout()" ng-model="disconnectDesignValue" toggle-class="toggle-calm">Disconnect</ion-toggle>
+                <div class="ds-text">{{currentUser.username}}</div>
+                <div class="ds-text">{{currentUser.role_title}}</div>
             </ion-item>
-            <ion-item nav-clear menu-close ng-click="sync()" class="ds-option">
-                <img src="img/new/synchronize.png">
+            <ion-item nav-clear menu-close ng-click="logout() " class="ds-btn">
+                <button class="button button-block button-calm bold">Log out</button>
+            </ion-item>
+            <ion-item nav-clear menu-close ng-click="sync()">
+                <img src="img/new/synchronize.png ">
                 <span>Synchronize</span>
             </ion-item>
-            <ion-item nav-clear menu-close class="ds-option" ng-click="redirect('account')">
-                <img src="img/new/user_1.png">
-                <span>My Account</span>
-            </ion-item>
-            <ion-item nav-clear menu-close class="ds-option" ng-click="redirect('projects')">
+            <ion-item nav-clear menu-close ng-click="redirect('projects')">
                 <img src="img/new/projects.png">
                 <span>Projects</span>
             </ion-item>
-            <ion-item nav-clear menu-close href="" onclick="navigator.app.loadUrl('http://app.preprod.proproject.io/', {openExternal: true});"
-                      class="ds-option-link">
-                <img src="img/new/onWeb.svg">
-                <span>ProProject on web</span>
+            <ion-item nav-clear menu-close ng-click="goOnWeb()" class="ds-invert">
+                <!-- <img src="img/pp-logo.jpg"> -->
+                <!-- <img src="img/web1.png"> -->
+                <img src="img/web4.png">
+                <span>Visit our website</span>
             </ion-item>
         </ion-content>
     </ion-side-menu>

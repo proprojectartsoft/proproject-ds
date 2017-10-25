@@ -72,6 +72,9 @@ dsApp.controller('NavCtrl', [
                 SettingsService.show_message_popup('Error', "Can't log out now. You are offline.");
             }
         }
+        $scope.goOnWeb = function() {
+            window.open('http://app.preprod.proproject.io/', "_system");
+        }
         $scope.sync = function() {
             if (!navigator.onLine) {
                 SettingsService.show_message_popup("You are offline", "You can sync your data when online");

@@ -47,15 +47,6 @@ var dsApp = angular.module($APP.name, [
                     }
                 }
             })
-            .state('app.account', {
-                url: "account",
-                views: {
-                    'menuContent': {
-                        templateUrl: "templates/account.html",
-                        controller: 'NavCtrl'
-                    }
-                }
-            })
             .state('app.projects', {
                 url: "projects",
                 views: {

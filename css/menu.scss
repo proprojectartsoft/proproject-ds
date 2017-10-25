@@ -7,119 +7,112 @@ and open the template in the editor.
 Created on : Sep 10, 2016, 5:33:58 PM
 Author     : buchi
 */
-.ds-menu {
-    font-family: 'FreightLight';
-    background-color: #2f4759;
+$darkblue: #32475a;
+$dark: #313131;
+$lightblue: #11c1f3;
 
-    ion-item {
-        background-color: #2f4759;
+#ds-content {
+    > .bar-header {
+        background-color: $darkblue;
+        background-image: none;
+        box-shadow: 0 7px 20px rgba(0,0,0,0.19),0 4px 6px rgba(0,0,0,0.23);
+
+        #ds-menu-btn {
+            color: #fff;
+        }
+
+        .title {
+            color: #fff;
+        }
+    }
+}
+
+#ds-menu {
+    .bar-dark,
+    .dark-bg {
+        background-color: #31475A;
         color: #fff;
-        position: relative;
-        border-color: #171d21;
+        background-image: none;
+    }
 
-        .user-circle-img {
-            padding-bottom: 10px;
+    .item {
+        background-color: $darkblue;
+        border-color: $dark;
+
+        &.ds-btn {
+            border: none;
+            padding: 0;
+
+            button {
+                min-height: 35px;
+                height: 35px;
+                line-height: 35px;
+                width: 80px;
+                margin: 0 auto 10px;
+                border-radius: 4px;
+            }
+        }
+
+        .ds-img {
+            border-radius: 100%;
+            height: 100px;
+            width: 100px;
+            border: 3px solid $lightblue;
+            margin: 0 auto 5px;
 
             img {
-                width: 110px;
-                margin: 0 auto;
-                display: block;
-                border-radius: 100%;
-                border: 5px solid #35bdee;
+                width: 100%;
+                height: 100%;
             }
+        }
+    }
+
+    .item.ds-group {
+        text-align: center;
+        padding-bottom: 5px;
+
+        .ds-text {
+            color: #fff;
         }
 
         .ds-link {
-            color: #35bdee;
-            font-size: 15px !important;
-            font-weight: 100;
+            color: $lightblue;
+        }
+    }
+
+    .item {
+        > img {
+            height: 25px;
+            vertical-align: middle;
         }
 
-        .ds-txt {
-            font-size: 15px !important;
-            font-weight: 100;
-        }
-
-        .item-toggle {
-            display: inline-block;
-            padding: 0;
-            background-color: transparent;
-            border: none;
+        span {
             color: #fff;
-            font-size: 14px;
+            vertical-align: middle;
+            padding-left: 10px;
+            font-size: 18px!important;
+        }
+    }
 
-            > div {
-                display: inline-block;
-                padding-right: 5px;
-            }
+    .item.ds-invert {
+        background-color: #fff;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
 
-            .toggle {
-                position: relative;
-                top: 0;
-                right: 0;
-
-                .track {
-                    width: 30px;
-                    height: 10px;
-                    border-color: #fff !important;
-                    background-color: #fff !important;
-                }
-
-                .handle {
-                    top: 8px;
-                    left: 4px;
-                    width: 15px;
-                    height: 15px;
-                    border-color: #11c1f3;
-                    background-color: #11c1f3;
-                }
-            }
-
-            .toggle input:checked + .track .handle {
-                -webkit-transform: translate3d(16px, 0, 0);
-                transform: translate3d(16px, 0, 0);
-            }
+        > img {
+            height: auto;
+            width: 30px;
         }
 
-        &:first-child {
-            text-align: center;
-            padding-bottom: 10px;
-            font-size: 15px;
+        span {
+            color: $darkblue;
+            padding-left: 5px;
+            font-weight: 400;
         }
+    }
 
-        &.ds-option {
-            position: relative;
-            padding: 10px 15px;
-
-            img {
-                position: absolute;
-                left: 15px;
-                height: 24px;
-            }
-
-            span {
-                color: #fff;
-                padding-left: 40px;
-                font-weight: 400;
-            }
-        }
-
-        &.ds-option-link {
-            position: absolute;
-            width: 100%;
-            bottom: 0;
-            right: 1px;
-
-            img {
-                position: absolute;
-                left: 15px;
-                height: 24px;
-            }
-
-            span {
-                color: #2f4759;
-                padding-left: 45px;
-            }
-        }
+    .scroll-content {
+        background-color: $darkblue;
     }
 }

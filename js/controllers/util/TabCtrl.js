@@ -18,7 +18,7 @@ dsApp.controller('TabCtrl', [
         vm.reload = reload;
         vm.goItem = goItem;
         vm.go = go;
-        vm.showPopup = showPopup
+        vm.showPopup = showPopup;
         vm.settings = {};
         vm.settings.tabs = SettingsService.get_settings('tabs');
         $rootScope.disableedit = true;
