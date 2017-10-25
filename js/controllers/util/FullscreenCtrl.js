@@ -86,47 +86,26 @@ dsApp.controller('FullscreenCtrl', [
                             if ($scope.addingMarker) {
                                 hasMarker = true;
                                 $scope.addingMarker = false;
-                                var newstatus = 'Incomplete';
-                                var img = 'img/incomplete.png';
-                                if ($rootScope.currentDraw) {
-                                    generateDefectImg('Incomplete');
-                                }
-                                if (index !== 2) {
-                                    var x = (Math.floor(event.offsetX) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
-                                    var y = (Math.floor(event.offsetY) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
-                                    var newMarker = {
-                                        id: 0,
-                                        xInit: x,
-                                        yInit: y,
-                                        position_x: x,
-                                        position_y: y,
-                                        drawing_id: parseInt($stateParams.id),
-                                        status: newstatus,
-                                        img: img
-                                    }
-                                    if ($scope.local.singleMarker) {
-                                        $scope.local.markers = [];
-                                        $scope.local.markers.push(newMarker);
-                                        //set the current drawing as drawing for the new defect
-                                        $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
-                                        //keep only the marker of the new defect
-                                        $rootScope.currentDefect.drawing.markers = [newMarker];
-                                    } else {
-                                        //add new defect for the current drawing
-                                        $rootScope.currentDefect = ConvertersService.getEmptyDefect();
-                                        //set the current drawing as drawing for the new defect
-                                        $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
-                                        //keep only the marker of the new defect
-                                        $rootScope.currentDefect.drawing.markers = [newMarker];
-                                        $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
-                                    }
+                                var x = (Math.floor(event.offsetX) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
+                                var y = (Math.floor(event.offsetY) / $scope.widthMap[index].zoom) * 100 - 6 - (5 - index);
+                                //modify the location of an existing marker
+                                if ($scope.local.data.markers && $scope.local.data.markers.length == 1) { // && $scope.local.data.markers[0].id
+                                    // generateDefectImg($scope.local.data.markers[0].status);
+                                    $scope.local.data.markers[0].position_x = $scope.local.data.markers[0].xInit = $scope.local.data.markers[0].x = x;
+                                    $scope.local.data.markers[0].position_y = $scope.local.data.markers[0].yInit = $scope.local.data.markers[0].y = y;
+                                    $scope.local.markers[0] = $scope.local.data.markers[0];
+                                    //set the current drawing as drawing for the new defect
+                                    $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
+                                    $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                                     $rootScope.go('app.defects', {
-                                        id: 0
+                                        id: $rootScope.currentDefect.id
                                     })
-                                    renderPoints(index, false);
                                 } else {
-                                    var x = Math.floor(event.offsetX) - 6;
-                                    var y = Math.floor(event.offsetY) - 6;
+                                    var newstatus = 'Incomplete';
+                                    if ($rootScope.currentDraw) {
+                                        generateDefectImg(newstatus);
+                                    }
+                                    //add a new marker
                                     var newMarker = {
                                         id: 0,
                                         xInit: x,
@@ -135,26 +114,30 @@ dsApp.controller('FullscreenCtrl', [
                                         position_y: y,
                                         drawing_id: parseInt($stateParams.id),
                                         status: newstatus,
-                                        img: img
+                                        img: 'img/incomplete.png'
                                     }
                                     if ($scope.local.singleMarker) {
                                         $scope.local.markers = [];
                                         $scope.local.markers.push(newMarker);
-
-                                    } else {
-                                        //add new defect for the current drawing
-                                        $rootScope.currentDefect = ConvertersService.getEmptyDefect();
-                                        $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                                         //set the current drawing as drawing for the new defect
                                         $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
                                         //keep only the marker of the new defect
                                         $rootScope.currentDefect.drawing.markers = [newMarker];
+                                        $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
+                                    } else {
+                                        //add new defect for the current drawing
+                                        $rootScope.currentDefect = ConvertersService.getEmptyDefect();
+                                        //set the current drawing as drawing for the new defect
+                                        $rootScope.currentDefect.drawing = angular.copy($scope.local.data);
+                                        //keep only the marker of the new defect
+                                        $rootScope.currentDefect.drawing.markers = [newMarker];
+                                        $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
                                     }
                                     $rootScope.go('app.defects', {
                                         id: 0
                                     })
-                                    renderPoints(index, false);
                                 }
+                                renderPoints(index, false);
                             }
                         }
                         var renderContext = {
@@ -166,27 +149,6 @@ dsApp.controller('FullscreenCtrl', [
                                 $scope.local.markers = [];
                                 angular.forEach($scope.local.data.markers, function(markerResult) {
                                     if (!(markerResult.position_x === 0 && markerResult.position_y === 0)) {
-                                        var img = '';
-                                        switch (markerResult.status) {
-                                            case 'Incomplete':
-                                                img = 'img/incomplete.png'
-                                                break;
-                                            case 'Completed':
-                                                img = 'img/completed.png'
-                                                break;
-                                            case 'Contested':
-                                                img = 'img/contested.png'
-                                                break;
-                                            case 'Delayed':
-                                                img = 'img/delayed.png'
-                                                break;
-                                            case 'Closed Out':
-                                                img = 'img/closed_out.png'
-                                                break;
-                                            case 'Partially Completed':
-                                                img = 'img/partially_completed.png'
-                                                break;
-                                        }
                                         var auxPoint = {
                                             xInit: markerResult.position_x,
                                             yInit: markerResult.position_y,
@@ -198,7 +160,7 @@ dsApp.controller('FullscreenCtrl', [
                                             drawing_id: markerResult.drawing_id,
                                             id: markerResult.id,
                                             status: markerResult.status,
-                                            img: img,
+                                            img: generateDefectImg(markerResult.status),
                                             z: 99
                                         };
                                         $scope.local.markers.push(auxPoint);
@@ -218,9 +180,6 @@ dsApp.controller('FullscreenCtrl', [
         if ($rootScope.routeback.state === 'app.defects' && $rootScope.currentDraw) {
             //fullscreen for drawing of a defect fron defects tab
             $scope.local.singleMarker = true;
-            if ($scope.local.data.markers && $scope.local.data.markers.length && $scope.local.data.markers[0].id) {
-                $scope.local.disableAddMarker = true;
-            }
         } else {
             //fullscreen for a drawing from drawings tab
             $scope.local.singleMarker = false;
@@ -307,6 +266,7 @@ dsApp.controller('FullscreenCtrl', [
         }
 
         function generateDefectImg(newstatus) {
+            var img = '';
             switch (newstatus) {
                 case 'Incomplete':
                     img = 'img/incomplete.png'
@@ -327,6 +287,7 @@ dsApp.controller('FullscreenCtrl', [
                     img = 'img/partially_completed.png'
                     break;
             }
+            return img;
         }
 
         $scope.back = function() {

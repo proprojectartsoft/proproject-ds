@@ -499,25 +499,7 @@ dsApp.service('SyncService', [
                                     defer.resolve(changes);
                                     return defer.promise;
                                 }
-                                // var count = 0;
-
                                 addDefect(changes, 0, defer);
-
-                                // angular.forEach(changes.defectsToAdd, function(defect) {
-                                //     addDefect(defect, changes).then(function(res) {
-                                //         count++;
-                                //         changes = res;
-                                //         if (count >= changes.defectsToAdd.length) {
-                                //             defer.resolve(res);
-                                //         }
-                                //     }, function(res) {
-                                //         count++;
-                                //         changes = res;
-                                //         if (count >= changes.defectsToAdd.length) {
-                                //             defer.resolve(res);
-                                //         }
-                                //     })
-                                // })
                                 return defer.promise;
                             },
                             //method to update the drawings

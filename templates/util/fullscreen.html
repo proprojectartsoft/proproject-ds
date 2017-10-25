@@ -4,7 +4,7 @@
         <h1 class="title">Drawing&nbsp;-&nbsp;{{local.data.title}}</h1>
     </ion-header-bar>
     <div class="ds-fullscreentools">
-        <img src="img/use/marker.png" ng-click="triggerMarker()" ng-if="!local.disableAddMarker">
+        <img src="img/use/marker.png" ng-click="triggerMarker()" ng-if="!disableedit">
         <i class="ion-android-add" ng-if="!disableZoomIn" ng-click="zoomIn()"></i>
         <i class="ion-android-remove" ng-if="!disableZoomOut" ng-click="zoomOut()"></i>
     </div>

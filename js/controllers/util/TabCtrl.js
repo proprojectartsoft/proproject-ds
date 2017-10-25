@@ -234,10 +234,15 @@ dsApp.controller('TabCtrl', [
                         drawing[0].isModified = true;
                     //change the status for marker
                     if (drawing[0].markers && drawing[0].markers.length != 0) {
-                        $filter('filter')(drawing[0].markers, {
+                        var marker = $filter('filter')(drawing[0].markers, {
                             defect_id: defect.id
-                        })[0].status = defect.drawing.markers[0].status;
-
+                        });
+                        if (marker && marker.length) {
+                            //change status and position for the modified defect's marker
+                            marker[0].status = defect.drawing.markers[0].status;
+                            marker[0].position_x = defect.drawing.markers[0].position_x;
+                            marker[0].position_y = defect.drawing.markers[0].position_y;
+                        }
                     }
                     //change details for drawing's defect
                     for (var i = 0; i < drawing[0].defects.length; i++) {
