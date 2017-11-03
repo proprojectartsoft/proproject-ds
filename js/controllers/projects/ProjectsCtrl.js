@@ -12,6 +12,8 @@ dsApp.controller('ProjectsCtrl', [
         vm.projects = [];
         vm.local = {};
         vm.local.createProject = {}
+        vm.showList = false;
+
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
@@ -39,8 +41,9 @@ dsApp.controller('ProjectsCtrl', [
                     }
                 })
             })
-
+            vm.showList = true;
         })
+
         vm.go = function(item) {
             $rootScope.projId = item.id;
             $rootScope.navTitle = item.name;

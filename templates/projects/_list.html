@@ -1,6 +1,6 @@
 <ion-view id="projects" hide-back-button="true" cache-view="false">
     <ion-content class="has-header ds-blackscroll">
-        <ion-list>
+        <ion-list ng-show="vm.showList">
             <ion-item ng-click="vm.go(vm.local.activeProject)" class="ds-active" ng-if="vm.local.activeProject">
                 <div>{{vm.local.activeProject.name}}</div>
                 <span class="ds-tag">ID:&nbsp;{{vm.local.activeProject.project_number}}</span>
