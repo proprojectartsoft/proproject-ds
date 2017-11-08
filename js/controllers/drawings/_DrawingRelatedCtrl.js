@@ -33,6 +33,7 @@ dsApp.controller('_DrawingRelatedCtrl', [
             })
         })
 
+        //go to a defect
         $scope.goItem = function(item) {
             $scope.settings.subHeader = item.title;
             SettingsService.set_settings($scope.settings);
@@ -48,6 +49,30 @@ dsApp.controller('_DrawingRelatedCtrl', [
             $rootScope.go('app.defects', {
                 id: item.id
             })
+        }
+
+        //launch fullscreen
+        $scope.getFullscreen = function() {
+            $rootScope.disableedit = !$rootScope.disableedit;
+            if ($rootScope.disableedit)
+                $rootScope.currentDraw = angular.copy($rootScope.backupDraw);
+            $scope.goToFullscreen('fullscreen', $stateParams.id);
+        }
+
+        $scope.goToFullscreen = function(predicate, item) {
+            if (predicate == 'back') {
+                $rootScope.routeback = null;
+                $rootScope.disableedit = true;
+                $rootScope.go('app.tab');
+            } else {
+                $rootScope.currentDefect = $filter('filter')($rootScope.defects, {
+                    id: item
+                })[0];
+                $rootScope.backupDefect = angular.copy($rootScope.currentDefect);
+                $rootScope.go('app.' + predicate, {
+                    id: item
+                });
+            }
         }
 
         $scope.getInitials = function(str) {
