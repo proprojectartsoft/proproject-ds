@@ -31,6 +31,7 @@
     <gap:plugin name="cordova-plugin-network-information" source="npm"/>
     <plugin name="cordova-plugin-keyboard" source="npm"/>
     <plugin name="cordova-plugin-screen-orientation" source="npm"/>
+    <plugin name="cordova-plugin-inappbrowser" source="npm"/>
 
     <access origin="*"/>
     <allow-navigation href="*"/>
