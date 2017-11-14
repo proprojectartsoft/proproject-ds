@@ -73,6 +73,11 @@ dsApp.controller('NavCtrl', [
             }
         }
 
+        $scope.goOnline = function () {
+          window.open('http://proproject.io/', '_system', 'location=yes');
+          return false;
+        }
+
         $scope.sync = function() {
             if (!navigator.onLine) {
                 SettingsService.show_message_popup("You are offline", "You can sync your data when online");
