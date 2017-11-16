@@ -25,6 +25,7 @@ dsApp.controller('LoginCtrl', [
             $scope.user.username = localStorage.getObject('dsremember').username;
             $scope.user.password = localStorage.getObject('dsremember').password;
             $scope.user.rememberMe = localStorage.getObject('dsremember').rememberMe;
+            $scope.user.gmt = -(new Date().getTimezoneOffset() / 60);
 
             var loginPopup = SettingsService.show_loading_popup("Sync");
             AuthService.login($scope.user).success(function(result) {
@@ -103,6 +104,7 @@ dsApp.controller('LoginCtrl', [
         $scope.login = function() {
             var loginPopup = SettingsService.show_loading_popup("Sync");
             if ($scope.user.username && $scope.user.password) {
+                $scope.user.gmt = -(new Date().getTimezoneOffset() / 60);
                 AuthService.login($scope.user).success(function(result) {
                     if (result.data) {
                         SyncService.sync().then(function(res) {
