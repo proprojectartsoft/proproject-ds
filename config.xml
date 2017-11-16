@@ -27,7 +27,7 @@
     <plugin name="cordova-plugin-file" source="npm" version="4.3.0" />
     <plugin name="cordova-plugin-file-transfer" source="npm" version="1.5.0" />
     <gap:plugin name="cordova-plugin-camera" source="npm" version="2.4.1" />
-    <gap:plugin name="cordova-plugin-contacts" source="npm" version="2.9.0" />
+    <gap:plugin name="cordova-plugin-contacts" source="npm" version="2.3.1" />
     <gap:plugin name="cordova-plugin-network-information" source="npm"/>
     <plugin name="cordova-plugin-keyboard" source="npm"/>
     <plugin name="cordova-plugin-screen-orientation" source="npm"/>
