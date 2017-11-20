@@ -1,9 +1,9 @@
 <div class="tabs-striped tabs-top tabs-color-light">
     <div class="tabs">
-        <a class="tab-item" ng-click="vm.tabSelect('drawings')" ng-class="{'active':currentTab === 'drawings'}">
+        <a ng-hide="vm.user.role === 5" class="tab-item" ng-click="vm.tabSelect('drawings')" ng-class="{'active':currentTab === 'drawings'}">
             <img ng-src="{{vm.settings.tabs['drawings']}}">
         </a>
-        <a class="tab-item" ng-click="vm.tabSelect('subcontractors')" ng-class="{'active':currentTab === 'subcontractors'}">
+        <a ng-hide="vm.user.role === 5" class="tab-item" ng-click="vm.tabSelect('subcontractors')" ng-class="{'active':currentTab === 'subcontractors'}">
             <img ng-src="{{vm.settings.tabs['subcontractors']}}">
         </a>
         <a class="tab-item" ng-click="vm.tabSelect('defects')" ng-class="{'active':currentTab === 'defects'}">
@@ -50,6 +50,6 @@
         <span>No data</span>for {{currentTab}}
     </div>
 </ion-content>
-<span ng-if="currentTab==='subcontractors' || currentTab==='defects'" class="ds-actionbtn" ng-click="vm.showPopup()">
+<span ng-hide="vm.user.role === 5" ng-if="currentTab==='subcontractors' || currentTab==='defects'" class="ds-actionbtn" ng-click="vm.showPopup()">
   <i class="ion-ios-plus-empty"></i>
 </span>

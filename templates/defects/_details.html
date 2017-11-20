@@ -16,26 +16,26 @@
                         <span class="ds-title">Name</span>
                     </div>
                     <!-- <input ng-model="vm.defect.title" ng-readonly="disableedit"> -->
-                    <textarea ng-model="vm.defect.title" ng-readonly="disableedit"></textarea>
+                    <textarea ng-model="vm.defect.title" ng-readonly="disableedit || (vm.user.role === 5)"></textarea>
                 </label>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Status</span>
                     </div>
                 </label>
-                <status item="vm.defect.status_obj" ng-disabled="disableedit"></status>
+                <status item="vm.defect.status_obj" ng-disabled="disableedit || (vm.user.role === 5)"></status>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Priority</span>
                     </div>
                 </label>
-                <priority item="vm.defect.priority_obj" ng-disabled="disableedit"></priority>
+                <priority item="vm.defect.priority_obj" ng-disabled="disableedit || (vm.user.role === 5)"></priority>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Severity</span>
                     </div>
                 </label>
-                <severity item="vm.defect.severity_obj" ng-disabled="disableedit"></severity>
+                <severity item="vm.defect.severity_obj" ng-disabled="disableedit || (vm.user.role === 5)"></severity>
                 <label>
                     <div class="ds-content">
                         <span class="ds-title">Assignee</span>
@@ -47,7 +47,7 @@
                     <div class="ds-content">
                         <span class="ds-title">Due date</span>
                     </div>
-                    <div ion-datetime-picker date ng-model="vm.defect.due_date" month-step="1" hour-step="1" minute-step="1" second-step="1" class="ds-date" ng-if="!disableedit">
+                    <div ion-datetime-picker date ng-model="vm.defect.due_date" month-step="1" hour-step="1" minute-step="1" second-step="1" class="ds-date" ng-if="!disableedit && !(vm.user.role == 5)">
                         <div ng-if="vm.defect.due_date">{{vm.defect.due_date | date}}</div>
                         <div ng-if="!vm.defect.due_date">Tap here to select a date.</div>
                     </div>

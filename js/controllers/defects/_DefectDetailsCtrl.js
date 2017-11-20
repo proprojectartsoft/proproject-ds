@@ -14,6 +14,7 @@ dsApp.controller('_DefectDetailsCtrl', [
         vm.local = {};
         vm.local.search = '';
         vm.local.entityId = $stateParams.id;
+        vm.user = localStorage.getObject('ds.user');
 
         if ($rootScope.disableedit === undefined) {
             $rootScope.disableedit = true;

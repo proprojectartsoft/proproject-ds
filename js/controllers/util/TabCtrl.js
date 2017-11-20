@@ -25,6 +25,7 @@ dsApp.controller('TabCtrl', [
         // vm.settings.subHeader = SettingsService.get_settings('subHeader');
         vm.inviteemail = '';
         $rootScope.routeback = null;
+        vm.user = localStorage.getObject('ds.user');
         var initOnce = false;
 
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
@@ -636,6 +637,7 @@ dsApp.controller('TabCtrl', [
                                         defect.foregroundColor = colorList[colorId].foreColor;
                                     });
                                     //load page for the active tab
+                                    if(vm.user.role === 5) $rootScope.currentTab = 'defects';
                                     vm.reload();
                                 })
                             })
