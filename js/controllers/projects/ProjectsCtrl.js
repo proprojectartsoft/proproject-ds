@@ -20,26 +20,28 @@ dsApp.controller('ProjectsCtrl', [
             }, 200);
         }
         SyncService.getProjects(function(projects) {
-            vm.projects = projects;
-            var aux = $rootScope.projId;
-            if (aux) {
-                var pr = $filter('filter')(vm.projects, {
-                    id: aux
-                });
-                vm.local.activeProject = pr && pr.length && pr[0].value;
-            }
-            //set pdfPath for defects' drawings
-            angular.forEach(projects, function(p) {
-                angular.forEach(p.value.defects, function(defect) {
-                    if (defect.drawing) {
-                        var d = $filter('filter')(p.value.drawings, {
-                            id: defect.drawing.id
-                        })
-                        if (d && d.length) {
-                            defect.drawing.pdfPath = d[0].pdfPath;
-                        }
-                    }
-                })
+            $scope.$apply(function () {
+              vm.projects = projects;
+              var aux = $rootScope.projId;
+              if (aux) {
+                  var pr = $filter('filter')(vm.projects, {
+                      id: aux
+                  });
+                  vm.local.activeProject = pr && pr.length && pr[0].value;
+              }
+              //set pdfPath for defects' drawings
+              angular.forEach(projects, function(p) {
+                  angular.forEach(p.value.defects, function(defect) {
+                      if (defect.drawing) {
+                          var d = $filter('filter')(p.value.drawings, {
+                              id: defect.drawing.id
+                          })
+                          if (d && d.length) {
+                              defect.drawing.pdfPath = d[0].pdfPath;
+                          }
+                      }
+                  })
+              })
             })
             // vm.showList = true;
         })
