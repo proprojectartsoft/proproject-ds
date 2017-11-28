@@ -12,7 +12,7 @@ dsApp.controller('ProjectsCtrl', [
         vm.projects = [];
         vm.local = {};
         vm.local.createProject = {}
-        vm.showList = false;
+        // vm.showList = false;
 
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
@@ -41,7 +41,7 @@ dsApp.controller('ProjectsCtrl', [
                     }
                 })
             })
-            vm.showList = true;
+            // vm.showList = true;
         })
 
         vm.go = function(item) {
