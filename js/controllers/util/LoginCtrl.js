@@ -109,6 +109,7 @@ dsApp.controller('LoginCtrl', [
                     SettingsService.show_loading_popup("We are loging in");
                     if (result.data) {
                         SettingsService.show_loading_popup("We are now going to sync");
+                        SettingsService.close_all_popups();
                         SyncService.sync().then(function(res) {
                             $rootScope.offlineData = false;
                             $timeout(function() {

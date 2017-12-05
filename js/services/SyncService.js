@@ -10,7 +10,8 @@ dsApp.service('SyncService', [
     'IndexedService',
     'ConvertersService',
     'PostService',
-    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, AuthService, IndexedService, ConvertersService, PostService) {
+    'SettingsService',
+    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, AuthService, IndexedService, ConvertersService, PostService, SettingsService) {
 
         var service = this;
 
@@ -98,6 +99,7 @@ dsApp.service('SyncService', [
         };
 
         service.sync = function() {
+          SettingsService.show_loading_popup("entering sync service");
             var deferred = $q.defer();
             var failed = false;
             if (navigator.onLine) {
