@@ -106,7 +106,9 @@ dsApp.controller('LoginCtrl', [
             if ($scope.user.username && $scope.user.password) {
                 $scope.user.gmt = -(new Date().getTimezoneOffset() / 60);
                 AuthService.login($scope.user).success(function(result) {
+                    SettingsService.show_loading_popup("We are loging in");
                     if (result.data) {
+                        SettingsService.show_loading_popup("We are now going to sync");
                         SyncService.sync().then(function(res) {
                             $rootScope.offlineData = false;
                             $timeout(function() {
