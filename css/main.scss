@@ -965,12 +965,16 @@ label {
     }
 }
 
-//dimensions for tablets
+/*dimensions for tablets*/
 @media (min-width : 415px) {
   #login-new ion-content div {
     width: 414px;
     margin: 0 auto;
     margin-top: 10px;
+  }
+
+  #login-new ion-content .scroll-bar {
+    width: 0px;
   }
 
   .item-checkbox .checkbox {
