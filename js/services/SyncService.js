@@ -6,12 +6,12 @@ dsApp.service('SyncService', [
     '$ionicPlatform',
     '$filter',
     'orderByFilter',
+    'DownloadsService',
     'AuthService',
     'IndexedService',
     'ConvertersService',
     'PostService',
-    'SettingsService',
-    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, AuthService, IndexedService, ConvertersService, PostService, SettingsService) {
+    function($q, $http, $state, $timeout, $ionicPlatform, $filter, orderBy, DownloadsService, AuthService, IndexedService, ConvertersService, PostService) {
 
         var service = this;
 
@@ -99,11 +99,9 @@ dsApp.service('SyncService', [
         };
 
         service.sync = function() {
-          SettingsService.show_loading_popup("entering sync service");
             var deferred = $q.defer();
             var failed = false;
             if (navigator.onLine) {
-              SettingsService.show_loading_popup("We are online");
                 service.login(function(res) {
                     if (res === "logged") {
                         PostService.post({
@@ -169,56 +167,54 @@ dsApp.service('SyncService', [
 
                             //method to download the pdfs for all drawings of all projects
                             var downloadPdfs = function(projects) {
-                              SettingsService.show_loading_popup("We are trying to download");
                                 var def = $q.defer();
-                                // $ionicPlatform.ready(function() {
-                                //     //create directory to download the pdfs
-                                //     if (ionic.Platform.isIPad() || ionic.Platform.isAndroid() || ionic.Platform.isIOS()) {
-                                //         DownloadsService.createDirectory("ds-downloads").then(function(path) {
-                                //             var countProj = 0;
-                                //             angular.forEach(projects, function(proj) {
-                                //                 if (!proj.value.drawings || proj.value.drawings && !proj.value.drawings.length) {
-                                //                     countProj++;
-                                //                     if (countProj >= projects.length)
-                                //                         def.resolve(projects);
-                                //                 }
-                                //                 //order drawings by date to download first the most recent drawings
-                                //                 proj.value.drawings = orderBy(proj.value.drawings, 'draw.drawing_date', true);
-                                //                 var count = 0;
-                                //                 //download the pdf for every drawing
-                                //                 angular.forEach(proj.value.drawings, function(draw) {
-                                //                     DownloadsService.downloadPdf(draw, path).then(function(downloadRes) {
-                                //                         count++;
-                                //                         draw.pdfPath = downloadRes;
-                                //                         //stop when all pdfs have been downloaded
-                                //                         if (count >= proj.value.drawings.length) {
-                                //                             countProj++;
-                                //                             if (countProj >= projects.length) {
-                                //                                 def.resolve(projects);
-                                //                             }
-                                //                         }
-                                //                     }, function(reason) {
-                                //                         // SettingsService.close_all_popups();
-                                //                         // $timeout(function() {
-                                //                         //     SettingsService.show_message_popup("Download stopped", reason);
-                                //                         // }, 100);
-                                //                         def.resolve(projects);
-                                //                     })
-                                //                 })
-                                //             })
-                                //         }, function(reason) {
-                                //             // SettingsService.close_all_popups();
-                                //             // $timeout(function() {
-                                //             //     SettingsService.show_message_popup("Download stopped", reason);
-                                //             // }, 100);
-                                //             def.resolve(projects);
-                                //         })
-                                //     } else {
-                                //         console.log("You are not on mobile. Files download not necessary.");
-                                //         def.resolve(projects);
-                                //     }
-                                // })
-                                def.resolve(projects);
+                                $ionicPlatform.ready(function() {
+                                    //create directory to download the pdfs
+                                    if (ionic.Platform.isIPad() || ionic.Platform.isAndroid() || ionic.Platform.isIOS()) {
+                                        DownloadsService.createDirectory("ds-downloads").then(function(path) {
+                                            var countProj = 0;
+                                            angular.forEach(projects, function(proj) {
+                                                if (!proj.value.drawings || proj.value.drawings && !proj.value.drawings.length) {
+                                                    countProj++;
+                                                    if (countProj >= projects.length)
+                                                        def.resolve(projects);
+                                                }
+                                                //order drawings by date to download first the most recent drawings
+                                                proj.value.drawings = orderBy(proj.value.drawings, 'draw.drawing_date', true);
+                                                var count = 0;
+                                                //download the pdf for every drawing
+                                                angular.forEach(proj.value.drawings, function(draw) {
+                                                    DownloadsService.downloadPdf(draw, path).then(function(downloadRes) {
+                                                        count++;
+                                                        draw.pdfPath = downloadRes;
+                                                        //stop when all pdfs have been downloaded
+                                                        if (count >= proj.value.drawings.length) {
+                                                            countProj++;
+                                                            if (countProj >= projects.length) {
+                                                                def.resolve(projects);
+                                                            }
+                                                        }
+                                                    }, function(reason) {
+                                                        // SettingsService.close_all_popups();
+                                                        // $timeout(function() {
+                                                        //     SettingsService.show_message_popup("Download stopped", reason);
+                                                        // }, 100);
+                                                        def.resolve(projects);
+                                                    })
+                                                })
+                                            })
+                                        }, function(reason) {
+                                            // SettingsService.close_all_popups();
+                                            // $timeout(function() {
+                                            //     SettingsService.show_message_popup("Download stopped", reason);
+                                            // }, 100);
+                                            def.resolve(projects);
+                                        })
+                                    } else {
+                                        console.log("You are not on mobile. Files download not necessary.");
+                                        def.resolve(projects);
+                                    }
+                                })
                                 return def.promise;
                             }
                         }, function(e) {
