@@ -29,6 +29,7 @@ dsApp.controller('LoginCtrl', [
 
             var loginPopup = SettingsService.show_loading_popup("Sync");
             AuthService.login($scope.user).success(function(result) {
+                console.log('doing the log in');
                 SyncService.syncData().then(function(res) {
                     SyncService.sync().then(function(res) {
                         $rootScope.offlineData = false;
