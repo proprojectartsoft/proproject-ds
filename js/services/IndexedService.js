@@ -12,8 +12,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
         // executed immediately. Lovefield uses builder pattern to build the schema
         // first, then performs necessary database open/creation later.
         try {
-          //
-            // schemaBuilder = lf.schema.create('DS', 24);
+            //creating dexie table
             schemaBuilder = new Dexie('DS');
         } catch (e) {
             console.log('Error creating new DB: ', e);
@@ -33,12 +32,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
         //   PRIMARY KEY ON ('projects_id')
         // );
         try {
-          //
-            // schemaBuilder.createTable('projects')
-            //     .addColumn('id', lf.Type.INTEGER)
-            //     .addColumn('value', lf.Type.STRING)
-            //     .addPrimaryKey(['id'])
-            //     .addIndex('idxValue', ['value'], false, lf.Order.ASC);
+            //adding columns to the dexie table
             schemaBuilder.version(24).stores({
               projects: 'id,value'
             });
@@ -53,16 +47,11 @@ dsApp.service('IndexedService', ['$q', function($q) {
     };
 
     service.runCommands = function(e, callback) {
-      //
         var params = e.data,
             operation = e.operation;
 
         if (!connectionReady) {
-            // Start of the Promise chaining
-            // connectionReady = schemaBuilder.connect({
-            //     "onUpgrade": null,
-            //     "storeType": lf.schema.DataStoreType.INDEXED_DB
-            // });
+            //opening the dexie table
             connectionReady = schemaBuilder.open().catch(function(error) {
 		            console.log('Uh oh : ' + error);
 	          });
@@ -112,13 +101,6 @@ dsApp.service('IndexedService', ['$q', function($q) {
                     }
                     break;
                 case 'eraseDb':
-                    // dsDb.delete().from(projects).exec()
-                    //     .then(function() {
-                    //         callback({
-                    //             results: 0,
-                    //             finished: true
-                    //         });
-                    //     });
                     dsDb.projects.clear().then(function() {
                             callback({
                                 results: 0,
@@ -131,82 +113,45 @@ dsApp.service('IndexedService', ['$q', function($q) {
     };
 
     service.setProjects = function(data, callback) {
-      //
-        // var insertData = function(data) {
-        //         // now try to insert
-        //         try {
-        //             // insert or update the db
-        //             dsDb.projects.update()
-        //                 .into(projects)
-        //                 .values(data)
-        //                 .exec()
-        //                 .then(
-        //                     function(resp) {
-        //                         callback(resp);
-        //                     });
-        //         } catch (e) {
-        //             console.log('Error :', e);
-        //             callback(false);
-        //         }
-        //     },
+            //adding the info to the dexie table
             parseData = function(data) {
                 var dt = [],
                     object = false;
                 for (var i = 0; i < data.length; i++) {
-                    // create lovefield row type
-                    // object = projects.createRow({
-                    //     'id': data[i].id,
-                    //     'value': data[i].value
-                    // });
-                    console.log('Thissss', data[i]);
                     dt.push(data[i]);
                 }
               if (dt.length > 1) {
+                  //adding all the info in the dexie table as an array
                   dsDb.projects.bulkAdd(dt).then(function (lastKey){
-                    console.log('The last id inserted was: ', lastKey);
+                    // console.log('The last id inserted was: ', lastKey);
                     callback(lastKey);
                   }).catch(Dexie.bulkError, function(e) {
                     console.log('Error inserting in dexie: ', e);
                     callback(false);
                   });
               } else {
+                //updating a specific object in the dexie table
                 dsDb.projects.update(dt[0].id, dt[0]).then(function (updated){
-                  console.log('Updated element: ', updated);
+                  // console.log('Updated element: ', updated);
                   callback(updated);
                 }).catch(Dexie.bulkError, function(e) {
                   console.log('Error updating dexie: ', e);
                   callback(false);
                 });
               }
-                // insertData(dt);
             };
         parseData(data);
     };
 
     service.getProjects = function(callback) {
-      //
-        // dsDb
-        //     .from(projects)
-        //     .exec()
-        //     .then(
-        //         function(res) {
-        //             callback(res);
-        //         });
+        //getting all the projects from the table
         dsDb.projects.where('id').between(0, 100000).toArray(function (projects) {
               callback(projects);
         });
     };
 
     service.getProject = function(param, callback) {
-      //
-        // dsDb
-        //     .from(projects)
-        //     .where(projects.id.eq(param.id))
-        //     .exec()
-        //     .then(
-        //         function(res) {
-        //             callback(res);
-        //         });
+        // getting one project by id from the table
         dsDb.projects.where('id').equals(param.id).toArray(function (projects) {
               callback(projects);
         });
