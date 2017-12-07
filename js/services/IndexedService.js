@@ -70,10 +70,6 @@ dsApp.service('IndexedService', ['$q', function($q) {
 
         connectionReady.then(function(db) {
             dsDb = db;
-            // projects = db.getSchema().table('projects');
-            projects = db.projects;
-            console.log(projects)
-            // settings = db.getSchema().table('settings');
 
             switch (operation) {
                 case 'setProjects':
@@ -174,7 +170,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
                     callback(false);
                   });
               } else {
-                dsDb.projects.update(dt[0].id, dt[0].value).then(function (updated){
+                dsDb.projects.update(dt[0].id, dt[0]).then(function (updated){
                   console.log('Updated element: ', updated);
                   callback(updated);
                 }).catch(Dexie.bulkError, function(e) {
