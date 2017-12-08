@@ -34,7 +34,7 @@
     <plugin name="cordova-plugin-inappbrowser" source="npm"/>
 
     <access origin="*"/>
-    <allow-navigation href="*"/>
+    <allow-navigation href="http://*/*" />
 
     <preference name="SplashScreen" value="screen"/>
     <preference name="SplashScreenDelay" value="4000"/>
