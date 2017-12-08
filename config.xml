@@ -33,7 +33,8 @@
     <plugin name="cordova-plugin-screen-orientation" source="npm"/>
     <plugin name="cordova-plugin-inappbrowser" source="npm"/>
 
-    <access origin="*"/>
+    <!-- <access origin="*"/> -->
+    <access origin="http://10.59.254.201:8080/*" />
     <allow-navigation href="*"/>
 
     <preference name="SplashScreen" value="screen"/>
