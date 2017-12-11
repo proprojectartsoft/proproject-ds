@@ -13,7 +13,10 @@ dsApp.service('IndexedService', ['$q', function($q) {
         // first, then performs necessary database open/creation later.
         try {
             //creating dexie table
-            schemaBuilder = new Dexie('DS');
+            schemaBuilder = new Dexie('DS', {
+              indexedDB: window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB,
+              IDBKeyRange: window.IDBKeyRange
+            });
             console.log('creating dexie table');
         } catch (e) {
             console.log('Error creating new DB: ', e);
