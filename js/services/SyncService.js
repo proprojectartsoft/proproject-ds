@@ -355,7 +355,7 @@ dsApp.service('SyncService', [
                 count = 0;
             service.login(function(response) {
                 if (response === "logged") {
-                    console.log('we are syncing the data in Syncservice');
+                    // console.log('we are syncing the data in Syncservice');
                     service.getProjects(function(projects) {
                         //no projects in local db
                         if (!projects.length) {

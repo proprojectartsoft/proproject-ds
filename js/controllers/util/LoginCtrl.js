@@ -29,7 +29,8 @@ dsApp.controller('LoginCtrl', [
 
             var loginPopup = SettingsService.show_loading_popup("Sync");
             AuthService.login($scope.user).success(function(result) {
-                console.log('doing the log in');
+                // console.log('doing the log in');
+                // console.log(window.indexedDB , window.mozIndexedDB , window.webkitIndexedDB , window.msIndexedDB , window.shimIndexedDB)
                 SyncService.syncData().then(function(res) {
                     SyncService.sync().then(function(res) {
                         $rootScope.offlineData = false;

@@ -17,7 +17,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
               indexedDB: window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB,
               IDBKeyRange: window.IDBKeyRange
             });
-            console.log('creating dexie table');
+            // console.log('creating dexie table');
         } catch (e) {
             console.log('Error creating new DB: ', e);
             callback({
@@ -37,7 +37,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
         // );
         try {
             //adding columns to the dexie table
-            console.log('creating dexie table columns');
+            // console.log('creating dexie table columns');
             schemaBuilder.version(24).stores({
               projects: 'id,value'
             });
@@ -57,7 +57,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
 
         if (!connectionReady) {
             //opening the dexie table
-            console.log('oppeining database');
+            // console.log('oppeining database');
             connectionReady = schemaBuilder.open().catch(function(error) {
 		            console.log('Uh oh : ' + error);
 	          });
@@ -107,7 +107,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
                     }
                     break;
                 case 'eraseDb':
-                console.log('deleting database');
+                // console.log('deleting database');
                     dsDb.projects.clear().then(function() {
                             callback({
                                 results: 0,
@@ -131,7 +131,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
                   //adding all the info in the dexie table as an array
                   dsDb.projects.bulkAdd(dt).then(function (lastKey){
                     // console.log('The last id inserted was: ', lastKey);
-                    console.log('adding projects to the database', dt);
+                    // console.log('adding projects to the database', dt);
                     callback(lastKey);
                   }).catch(Dexie.bulkError, function(e) {
                     console.log('Error inserting in dexie: ', e);
@@ -142,7 +142,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
                 dsDb.projects.update(dt[0].id, dt[0]).then(function (updated){
                   // console.log('Updated element: ', updated);
                   callback(updated);
-                  console.log('adding project to the database', dt);
+                  // console.log('adding project to the database', dt);
                 }).catch(Dexie.bulkError, function(e) {
                   console.log('Error updating dexie: ', e);
                   callback(false);
@@ -154,7 +154,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
 
     service.getProjects = function(callback) {
         //getting all the projects from the table
-        console.log('getting projects form database in indexed Service');
+        // console.log('getting projects form database in indexed Service');
 
         dsDb.projects.where('id').between(0, 100000).toArray(function (projects) {
               callback(projects);
@@ -163,7 +163,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
 
     service.getProject = function(param, callback) {
         // getting one project by id from the table
-        console.log('getting project form database in indexed Service');
+        // console.log('getting project form database in indexed Service');
         dsDb.projects.where('id').equals(param.id).toArray(function (projects) {
               callback(projects);
         });
