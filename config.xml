@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="io.proproject.dspreprod" version="1.0.31" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="io.proproject.dspreprod" version="1.0.32" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
 
     <name>Defects and Snagging - ProProject</name>
 
@@ -7,28 +7,31 @@
 
     <author email="anthony.hanna@proproject.io" href="http://proproject.io/"></author>
 
-    <gap:config-file platform="ios" parent="NSPhotoLibraryUsageDescription" overwrite="true">
+    <!-- <gap:config-file platform="ios" parent="NSPhotoLibraryUsageDescription" overwrite="true">
         <string>We are using the Photo Library</string>
-    </gap:config-file>
+    </gap:config-file> -->
 
-    <gap:config-file platform="android" parent="/manifest/application">
+    <config-file platform="android" parent="/manifest/application">
         <application android:debuggable="true"/>
-    </gap:config-file>
+    </config-file>
 
     <content src="index.html"/>
 
-    <gap:config-file platform="android" parent="/manifest">
+    <config-file platform="android" parent="/manifest">
         <application android:theme="@android:style/Theme.NoTitleBar"></application>
-    </gap:config-file>
+    </config-file>
 
-    <gap:plugin name="cordova-plugin-splashscreen" source="npm"/>
-    <gap:plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
+    <plugin name="cordova-plugin-splashscreen" source="npm"/>
+    <plugin name="cordova-plugin-whitelist" source="npm" version="1.0.0"/>
     <plugin name="cordova-plugin-imagepicker" source="npm"/>
     <plugin name="cordova-plugin-file" source="npm" version="4.3.0" />
     <plugin name="cordova-plugin-file-transfer" source="npm" version="1.6.0" />
-    <gap:plugin name="cordova-plugin-camera" source="npm" version="2.4.1" />
-    <gap:plugin name="cordova-plugin-contacts" source="npm" version="2.3.1" />
-    <gap:plugin name="cordova-plugin-network-information" source="npm"/>
+    <plugin name="cordova-plugin-camera" source="npm" version="2.4.1">
+      <param name="CAMERA_USAGE_DESCRIPTION" value="We are using the Camera for something..." />
+      <param name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="We are using the Photo Library for something..." />
+    </plugin>
+    <plugin name="cordova-plugin-contacts" source="npm" version="2.3.1" />
+    <plugin name="cordova-plugin-network-information" source="npm"/>
     <plugin name="cordova-plugin-keyboard" source="npm"/>
     <plugin name="cordova-plugin-screen-orientation" source="npm"/>
     <plugin name="cordova-plugin-inappbrowser" source="npm"/>
@@ -61,11 +64,11 @@
     <icon src="img/icons/android/drawable-xxhdpi/ic_launcher.png" gap:platform="android" gap:qualifier="xxhdpi"/>
     <icon src="img/icons/android/playstore-icon.png" gap:platform="android" gap:qualifier="fr-xxhdpi"/>
 
-    <gap:splash src="splash.png" gap:platform="android" gap:qualifier="port-ldpi"/>
-    <gap:splash src="splash.png" gap:platform="android" gap:qualifier="port-mdpi"/>
-    <gap:splash src="splash.png" gap:platform="android" gap:qualifier="port-hdpi"/>
-    <gap:splash src="splash.png" gap:platform="android" gap:qualifier="port-xhdpi"/>
-    <gap:splash src="splash.png"/>
+    <splash src="splash.png" gap:platform="android" gap:qualifier="port-ldpi"/>
+    <splash src="splash.png" gap:platform="android" gap:qualifier="port-mdpi"/>
+    <splash src="splash.png" gap:platform="android" gap:qualifier="port-hdpi"/>
+    <splash src="splash.png" gap:platform="android" gap:qualifier="port-xhdpi"/>
+    <splash src="splash.png"/>
 
     <icon src="img/icons/ios7/Icon-60.png" gap:platform="ios" width="60" height="60"/>
     <icon src="img/icons/ios7/Icon-60@2x.png" gap:platform="ios" width="120" height="120"/>
