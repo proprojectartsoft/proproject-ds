@@ -406,6 +406,11 @@ dsApp.service('SyncService', [
                                     //set for the new added defect the id stored on server
                                     defect.id = res.data;
 
+                                    if(navigator.onLine) {
+                                        //mixpanel people proprieties
+                                        mixpanel.people.increment('Defects created: DS app', 1);
+                                    }
+
                                     //if the created defect has related defects that are not added yet to the server,
                                     //add it to defectsToUpd list and update it after the related defects get on server
                                     for (var i = 0; i < oldDefect.related_tasks.length; i++) {

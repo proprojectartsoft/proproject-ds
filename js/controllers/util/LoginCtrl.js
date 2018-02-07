@@ -31,6 +31,31 @@ dsApp.controller('LoginCtrl', [
             AuthService.login($scope.user).success(function(result) {
                 // console.log('doing the log in');
                 // console.log(window.indexedDB , window.mozIndexedDB , window.webkitIndexedDB , window.msIndexedDB , window.shimIndexedDB)
+                if(navigator.onLine) {
+                    //mixpanel login info by user
+                    mixpanel.identify($scope.user.username);
+
+                    // mixpanel.time_event("Total time spent on platform");
+
+                    mixpanel.register_once({
+                    'Images uploaded: DS app': 0,
+                    'Defects created: DS app': 0,
+                    'Subcon invites: DS app': 0
+                    });
+
+                    mixpanel.people.set_once({
+                    'First Login Date: DS app': new Date(),
+                    'No. of logins: DS app': 0
+                    });
+
+                    mixpanel.people.set({
+                      "$last_login": new Date(),         // properties can be dates...
+                    });
+
+                    //mixpanel people proprieties
+                    mixpanel.people.increment('No. of logins: DS app', 1);
+                }
+
                 SyncService.syncData().then(function(res) {
                     SyncService.sync().then(function(res) {
                         $rootScope.offlineData = false;
@@ -108,6 +133,30 @@ dsApp.controller('LoginCtrl', [
             if ($scope.user.username && $scope.user.password) {
                 $scope.user.gmt = -(new Date().getTimezoneOffset() / 60);
                 AuthService.login($scope.user).success(function(result) {
+                    if(navigator.onLine) {
+                        //mixpanel login info by user
+                        mixpanel.identify($scope.user.username);
+
+                        // mixpanel.time_event("Total time spent on platform");
+
+                        mixpanel.register_once({
+                        'Images uploaded: DS app': 0,
+                        'Defects created: DS app': 0,
+                        'Subcon invites: DS app': 0
+                        });
+
+                        mixpanel.people.set_once({
+                        'First Login Date: DS app': new Date(),
+                        'No. of logins: DS app': 0
+                        });
+
+                        mixpanel.people.set({
+                          "$last_login": new Date(),         // properties can be dates...
+                        });
+
+                        //mixpanel people proprieties
+                        mixpanel.people.increment('No. of logins: DS app', 1);
+                    }
                     if (result.data) {
                         SyncService.sync().then(function(res) {
                             $rootScope.offlineData = false;

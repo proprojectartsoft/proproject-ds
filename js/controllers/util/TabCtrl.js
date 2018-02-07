@@ -491,6 +491,10 @@ dsApp.controller('TabCtrl', [
                                     url: 'defect',
                                     data: syncedDefect
                                 }, function(res) {
+                                    if(navigator.onLine) {
+                                        //mixpanel people proprieties
+                                        mixpanel.people.increment('Defects created: DS app', 1);
+                                    }
                                     newDef.id = res.data;
                                     delete newDef.isNew;
                                     setReporterId(newDef).then(function(data) {
@@ -685,6 +689,10 @@ dsApp.controller('TabCtrl', [
             });
             vm.settings.tabs[predicate] = vm.settings.tabs[predicate].substr(0, vm.settings.tabs[predicate].lastIndexOf(".png")) + "_active" + vm.settings.tabs[predicate].substr(vm.settings.tabs[predicate].lastIndexOf(".png"));
             $rootScope.currentTab = predicate;
+            // mixpanel track events
+            if (navigator.onLine) {
+              mixpanel.track("Page view: DS app", {'Page name:': $rootScope.currentTab.charAt(0).toUpperCase() + $rootScope.currentTab.slice(1) + ' list'});
+            }
             SettingsService.set_settings(vm.settings);
             //no updates were made, so just reload data
             vm.reload();
@@ -758,7 +766,10 @@ dsApp.controller('TabCtrl', [
                             }, 10);
                             $timeout(function() {
                                 SettingsService.show_message_popup('Success', 'Subcontractor invited');
-
+                                if(navigator.onLine) {
+                                    //mixpanel people proprieties
+                                    mixpanel.people.increment('Subcon invites: DS app', 1);
+                                }
                             }, 10);
                         }, function(err) {
                             $timeout(function() {

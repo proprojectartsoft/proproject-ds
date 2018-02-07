@@ -14,6 +14,11 @@ dsApp.controller('ProjectsCtrl', [
         vm.local.createProject = {}
         // vm.showList = false;
 
+        // mixpanel track events
+        if (navigator.onLine) {
+          mixpanel.track("Page view: DS app", {'Page name:': 'Projects list'});
+        }
+
         if (document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen) {
             setTimeout(function() {
                 screen.orientation.lock('portrait')
