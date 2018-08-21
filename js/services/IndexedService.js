@@ -127,7 +127,7 @@ dsApp.service('IndexedService', ['$q', function($q) {
                 for (var i = 0; i < data.length; i++) {
                     dt.push(data[i]);
                 }
-              if (dt.length > 1) {
+              if (dt.length >= 1) {
                   //adding all the info in the dexie table as an array
                   dsDb.projects.bulkAdd(dt).then(function (lastKey){
                     // console.log('The last id inserted was: ', lastKey);
