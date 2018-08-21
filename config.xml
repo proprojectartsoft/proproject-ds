@@ -12,7 +12,7 @@
     </gap:config-file> -->
 
     <config-file platform="android" parent="/manifest/application">
-        <application android:debuggable="false"/>
+        <application android:debuggable="true"/>
     </config-file>
 
     <content src="index.html"/>
